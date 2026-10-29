@@ -10,7 +10,7 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3062,
-    "totalSizeBytes": 748180865,
+    "totalSizeBytes": 748182167,
     "totalSizeMB": 748.2,
     "categories": {
       "Other": 2044,
@@ -12509,9 +12509,9 @@
         "large-file"
       ],
       "description": "Play Eaglerforge — a minecraft game playable directly in your browser. No downloads required.",
-      "size": 86426,
+      "size": 86829,
       "originalSize": 79075798,
-      "hash": "a8b3ef31cd181dbd"
+      "hash": "a8f78e3d982bfe14"
     },
     {
       "id": "eagleride",
@@ -32113,9 +32113,9 @@
         "large-file"
       ],
       "description": "Play Pixelclient — a other game playable directly in your browser. No downloads required.",
-      "size": 1896,
+      "size": 1979,
       "originalSize": 23593214,
-      "hash": "76a3a14d7ee15869"
+      "hash": "122b1b617acab64c"
     },
     {
       "id": "pixelcombat2",
@@ -49618,9 +49618,9 @@
         "large-file"
       ],
       "description": "Play Uwuclient — a other game playable directly in your browser. No downloads required.",
-      "size": 3196,
+      "size": 3639,
       "originalSize": 38856478,
-      "hash": "b711b7e77c86f680"
+      "hash": "8b661c8308a2133d"
     },
     {
       "id": "uzg",
@@ -52382,9 +52382,9 @@
         "eaglercraft"
       ],
       "description": "Minecraft 26.1.2 Novix WASM build in the browser (EaglercraftNOA).",
-      "size": 1491141,
+      "size": 1491514,
       "originalSize": 65694777,
-      "hash": "4293167ae1bbdc92"
+      "hash": "01597fbb1a9e10e0"
     },
     {
       "id": "eaglercraft-1-21-11",

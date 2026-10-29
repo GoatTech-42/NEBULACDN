@@ -1,0 +1,39 @@
+<!doctype html><meta charset=utf-8><pre id=o>x</pre><script>
+const ASSET_BASE='https://cdn.example/gh/x@main';
+function withAssetBase(html, game) {
+  if (html.indexOf('assets/') === -1) return html;
+  // Look for tags on a masked copy where comments and script/style bodies are blanked
+  // (same length, so indexes line up). A <base> or <head> inside a comment or a JS
+  // string must not count.
+  const blank = m => m.replace(/[^\n]/g, ' ');
+  const mask = html
+    .replace(/<!--[\s\S]*?-->/g, blank)
+    .replace(/(<script\b[^>]*>)([\s\S]*?)(<\/script>)/gi, (m, o, body, c) => o + blank(body) + c)
+    .replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi, (m, o, body, c) => o + blank(body) + c);
+  const headEnd = mask.search(/<\/head>/i);
+  if (/<base[\s>]/i.test(headEnd === -1 ? mask : mask.slice(0, headEnd))) return html;
+  const dir = ASSET_BASE + '/' + game.file.replace(/[^\/]*$/, '');
+  const tag = '<base href="' + dir + '">';
+  const h = /<head[^>]*>/i.exec(mask);
+  return h ? html.slice(0, h.index + h[0].length) + tag + html.slice(h.index + h[0].length) : tag + html;
+}
+
+const game={file:'games/g.html'};
+const ASSETS='<body><script src="assets/a.js"><\/script></body></html>';
+const cases={
+ plain:'<html><head><title>t</title></head>'+ASSETS,
+ commentedBase:'<html><head><!-- <base href="https://evil/"> --></head>'+ASSETS,
+ commentedHeadFirst:'<!-- <head> --><html><head></head>'+ASSETS,
+ scriptStringBase:'<html><head><script>var s="<head><base href=\'https://evil/\'></head>";<\/script></head>'+ASSETS,
+ realBase:'<html><head><base href="https://real/"></head>'+ASSETS,
+ noAssets:'<html><head></head><body>hi</body></html>'
+};
+const res={};
+for(const [k,h] of Object.entries(cases)){
+  const out=withAssetBase(h,game);
+  const doc=new DOMParser().parseFromString(out,'text/html');
+  const bases=[...doc.querySelectorAll('base')].map(b=>b.getAttribute('href'));
+  res[k]={bases,inHead:[...doc.head.querySelectorAll('base')].length,changed:out!==h};
+}
+document.getElementById('o').textContent='RESULT '+JSON.stringify(res);
+</script>
