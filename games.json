@@ -10,7 +10,7 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3062,
-    "totalSizeBytes": 748181876,
+    "totalSizeBytes": 748181753,
     "totalSizeMB": 748.2,
     "categories": {
       "Other": 2044,
@@ -56504,9 +56504,9 @@
         "cdn-streamed"
       ],
       "description": "Play Öoo in your browser (streams game files via jsDelivr CDN).",
-      "size": 3932,
+      "size": 3809,
       "originalSize": 3932,
-      "hash": "5aeed58adcaaaf3c"
+      "hash": "146972389591c801"
     },
     {
       "id": "other-car-driving-simulator",
