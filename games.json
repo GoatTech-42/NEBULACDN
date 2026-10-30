@@ -10,7 +10,7 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3061,
-    "totalSizeBytes": 748177351,
+    "totalSizeBytes": 748177507,
     "totalSizeMB": 748.2,
     "categories": {
       "Other": 2043,
@@ -2645,9 +2645,9 @@
         "large-file"
       ],
       "description": "Play Astrawasm — a other game playable directly in your browser. No downloads required.",
-      "size": 13700,
+      "size": 13856,
       "originalSize": 59214663,
-      "hash": "e5295c65b4557e24"
+      "hash": "ba756762af46299e"
     },
     {
       "id": "astros-dreamland",
