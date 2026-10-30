@@ -1,0 +1,2283 @@
+<!--
+  queens, from wavde/games (https://github.com/wavde/games), Copyright (c) 2026 Tejas Wavde, MIT License.
+  Bundled into one file for Nebula CDN: external stylesheets and scripts inlined; Google Fonts link, manifest, icons and back link removed. Game logic unmodified.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>queens · games</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Queens — place one queen per row, column, and colored region. No two queens may touch.">
+<style>
+  .qn-grid {
+    display: grid;
+    gap: 0;
+    width: min(480px, 92vw);
+    aspect-ratio: 1;
+    margin: 8px auto;
+    border: 2px solid var(--fg);
+    background: var(--bg-2);
+    touch-action: manipulation;
+  }
+  .qn-cell {
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.2rem, 5.5vw, 2rem);
+    cursor: pointer;
+    user-select: none;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--fg);
+  }
+  .qn-cell .mk {
+    color: var(--fg);
+    opacity: 0.5;
+    font-weight: 700;
+  }
+  .qn-cell .qq {
+    color: #1a1a1a;
+    font-size: 1.5em;
+    font-weight: bold;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+    -webkit-text-stroke: 0.5px rgba(255,255,255,0.3);
+  }
+  .qn-cell.err .qq { color: var(--danger); filter: none; }
+
+  /* Win animation — golden blinking queens */
+  @keyframes golden-blink {
+    0%, 100% { color: #ffd700; filter: drop-shadow(0 0 6px #ffd700); }
+    50% { color: #ffaa00; filter: drop-shadow(0 0 12px #ffaa00) drop-shadow(0 0 20px rgba(255,170,0,0.4)); }
+  }
+  .qn-cell.won .qq {
+    color: #ffd700;
+    animation: golden-blink 1.2s ease-in-out infinite;
+    -webkit-text-stroke: 0.5px rgba(0,0,0,0.3);
+  }
+
+  /* Region colors — high-contrast, widely spaced hues */
+  .qn-cell.r0 { background: #e74c3c; }
+  .qn-cell.r1 { background: #3498db; }
+  .qn-cell.r2 { background: #2ecc71; }
+  .qn-cell.r3 { background: #f39c12; }
+  .qn-cell.r4 { background: #9b59b6; }
+  .qn-cell.r5 { background: #1abc9c; }
+  .qn-cell.r6 { background: #e67e22; }
+  .qn-cell.r7 { background: #e84393; }
+  .qn-cell.r8 { background: #0984e3; }
+
+  /* Thick region borders */
+  .qn-cell.br-t { border-top:    2px solid rgba(0,0,0,0.5); }
+  .qn-cell.br-b { border-bottom: 2px solid rgba(0,0,0,0.5); }
+  .qn-cell.br-l { border-left:   2px solid rgba(0,0,0,0.5); }
+  .qn-cell.br-r { border-right:  2px solid rgba(0,0,0,0.5); }
+
+  .game-controls { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
+</style>
+<style>
+/* ============================================================
+   shared.css — retro terminal arcade
+   Unified design system for the games hub and every game page.
+   ============================================================ */
+
+:root {
+  /* Palette (dark, amber-CRT) */
+  --bg:        #0a0a0a;
+  --bg-2:      #0d0d0c;
+  --panel:     #111110;
+  --panel-2:   #161614;
+  --fg:        #e8e8e6;
+  --muted:     #8a8a85;
+  --dim:       #555550;
+  --border:    #1f1f1d;
+  --border-hi: #3a3a36;
+  --accent:    #f5c542;   /* amber */
+  --accent-2:  #8affc1;   /* mint */
+  --danger:    #ff6b6b;
+  --warn:      #ffd166;
+
+  /* Backward-compat aliases (older pages) */
+  --text: var(--fg);
+
+  /* Typography */
+  --font-mono: "Fira Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Scale */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+
+  /* Radii / spacing */
+  --r-sm: 3px;
+  --r-md: 4px;
+  --tap: 44px;     /* minimum tap target */
+  --gutter: 16px;
+}
+
+/* Light mode — cream paper + ink, amber/mint retained darker */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:        #f4f1e8;
+    --bg-2:      #ece8dc;
+    --panel:     #ebe6d6;
+    --panel-2:   #e0dac6;
+    --fg:        #141412;
+    --muted:     #6a6a62;
+    --dim:       #a39e8c;
+    --border:    #c9c2ac;
+    --border-hi: #a39e8c;
+    --accent:    #9a6a00;
+    --accent-2:  #2a7a55;
+    --danger:    #b83232;
+    --warn:      #8a6a14;
+  }
+}
+html[data-theme="light"] {
+  --bg: #f4f1e8; --bg-2: #ece8dc; --panel: #ebe6d6; --panel-2: #e0dac6;
+  --fg: #141412; --muted: #6a6a62; --dim: #a39e8c;
+  --border: #c9c2ac; --border-hi: #a39e8c;
+  --accent: #9a6a00; --accent-2: #2a7a55; --danger: #b83232; --warn: #8a6a14;
+}
+html[data-theme="dark"] {
+  --bg: #0a0a0a; --bg-2: #0d0d0c; --panel: #111110; --panel-2: #161614;
+  --fg: #e8e8e6; --muted: #8a8a85; --dim: #555550;
+  --border: #1f1f1d; --border-hi: #3a3a36;
+  --accent: #f5c542; --accent-2: #8affc1; --danger: #ff6b6b; --warn: #ffd166;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a { color: var(--fg); text-decoration: none; }
+a:hover { color: var(--accent); }
+
+/* Subtle scanline atmosphere (hidden when user prefers reduced motion) */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent 2px,
+    rgba(255,255,255,0.018) 2px, rgba(255,255,255,0.018) 3px
+  );
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 20px max(28px, env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+.topbar h1::before {
+  content: "$ ";
+  color: var(--accent);
+  font-weight: 500;
+}
+.topbar .back {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+}
+.topbar .back:hover { color: var(--fg); }
+
+/* ---------- Panel ---------- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 18px 18px 20px;
+  position: relative;
+}
+.panel + .panel { margin-top: 16px; }
+
+/* ---------- Rows + status ---------- */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.status {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  margin: 0 0 10px;
+  min-height: 1.4em;
+  letter-spacing: 0.2px;
+}
+.status strong, .status b { color: var(--fg); font-weight: 500; }
+.status .ok  { color: var(--accent-2); }
+.status .hot { color: var(--accent); }
+.status .bad { color: var(--danger); }
+
+/* ---------- Buttons ---------- */
+button, .btn {
+  background: var(--panel-2);
+  color: var(--fg);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-md);
+  padding: 8px 14px;
+  min-height: var(--tap);
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, transform 0.04s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+button:hover, .btn:hover {
+  background: var(--panel);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+button:active { transform: translateY(1px); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+button.primary, .btn.primary {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
+button.primary:hover, .btn.primary:hover {
+  background: rgba(245, 197, 66, 0.08);
+}
+
+button.ghost, .btn.ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted);
+}
+button.ghost:hover { color: var(--fg); border-color: var(--border-hi); background: transparent; }
+
+button.danger { color: var(--danger); border-color: var(--danger); }
+button.danger:hover { background: rgba(255, 107, 107, 0.08); }
+
+/* Icon-plus-label buttons in toolbars */
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  min-width: var(--tap);
+  justify-content: center;
+}
+.tool-btn .glyph { color: var(--dim); font-size: var(--fs-md); }
+.tool-btn:hover .glyph { color: var(--accent); }
+
+/* ---------- Focus ---------- */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible, .btn:focus-visible, select:focus-visible, input:focus-visible {
+  outline-offset: 1px;
+}
+
+/* ---------- Controls rows + toolbars ---------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+.controls.center { justify-content: center; }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: stretch;
+  justify-content: center;
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Chips (difficulty, filters) ---------- */
+.chips {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-2);
+}
+.chip {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  padding: 6px 12px;
+  min-height: 34px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+}
+.chip:hover { color: var(--fg); }
+.chip[aria-pressed="true"], .chip.active {
+  background: var(--panel);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--border-hi);
+}
+
+/* ---------- Keyboard hint pill ---------- */
+.kbd {
+  display: inline-block;
+  background: var(--bg-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  padding: 2px 7px;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.4px;
+}
+
+/* ---------- Prompt box (homepage, win banners) ---------- */
+.prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  background: var(--panel);
+}
+.prompt .sigil, .prompt .\$ { color: var(--accent); }
+.prompt .cmd { color: var(--fg); }
+.caret {
+  display: inline-block;
+  width: 7px; height: 14px;
+  background: var(--accent);
+  vertical-align: -2px;
+  animation: blink 1.1s steps(1) infinite;
+  margin-left: 2px;
+}
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+
+/* ---------- ASCII title block (per-game headers) ---------- */
+.ascii {
+  color: var(--dim);
+  font-size: 10px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  white-space: pre;
+  user-select: none;
+  margin: 0 0 14px;
+  overflow-x: auto;
+}
+@media (min-width: 720px) { .ascii { font-size: 12px; } }
+
+/* ---------- Game header bar (ASCII title + chips + actions) ---------- */
+.gamehead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.gamehead .actions {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Section header ---------- */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: var(--fs-sm);
+  letter-spacing: 1px;
+  margin: 24px 0 14px;
+}
+.section-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--border), transparent);
+}
+
+/* ---------- Board container utilities ---------- */
+.board-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0;
+}
+.board, .mem, .ms, .board2048 {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- Win / toast banner ---------- */
+.banner {
+  border: 1px solid var(--accent);
+  background: rgba(245, 197, 66, 0.08);
+  color: var(--accent);
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  margin: 12px 0;
+  animation: flash 0.6s ease-out;
+}
+.banner.win { color: var(--accent-2); border-color: var(--accent-2); background: rgba(138, 255, 193, 0.08); }
+@keyframes flash {
+  0%   { background: rgba(245, 197, 66, 0.35); }
+  100% { background: rgba(245, 197, 66, 0.08); }
+}
+@media (prefers-reduced-motion: reduce) { .banner { animation: none; } }
+
+/* ---------- Staggered board fade-in (used on cell load) ---------- */
+@keyframes cell-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: cell-in 0.24s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .fade-in { animation: none; } }
+
+/* ---------- Footer ---------- */
+.footer-note {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  margin-top: 18px;
+  text-align: center;
+}
+
+/* ---------- Mobile polish ---------- */
+@media (max-width: 560px) {
+  .wrap { padding: 20px 14px 32px; }
+  .topbar h1 { font-size: var(--fs-md); }
+  .panel { padding: 14px; }
+  .ascii { font-size: 9px; }
+}
+
+/* ============================================================
+   manpage.css — shared How-to-Play overlay (Unix-manpage style)
+   Requires shared.css tokens.
+   ============================================================ */
+
+.man-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: man-fade 0.18s ease-out;
+}
+@keyframes man-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .man-backdrop { animation: none; } }
+
+.man-window {
+  width: 100%;
+  max-width: 640px;
+  max-height: min(90dvh, 760px);
+  background: var(--panel);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-md);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: man-rise 0.2s ease-out;
+}
+@keyframes man-rise {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .man-window { animation: none; } }
+
+.man-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.man-titlebar .man-id {
+  color: var(--accent);
+  font-weight: 500;
+}
+.man-titlebar .man-hint {
+  color: var(--dim);
+  font-size: var(--fs-xs);
+}
+.man-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 2px 10px;
+  min-height: 28px;
+  min-width: 32px;
+  font-family: inherit;
+  font-size: var(--fs-md);
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+}
+.man-close:hover { color: var(--fg); border-color: var(--border-hi); }
+
+.man-body {
+  padding: 18px 22px 24px;
+  overflow-y: auto;
+  flex: 1;
+  line-height: 1.6;
+}
+
+.man-body h2 {
+  margin: 18px 0 8px;
+  font-size: var(--fs-sm);
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.man-body h2:first-child { margin-top: 0; }
+.man-body h2::after {
+  content: "";
+  display: inline-block;
+  width: 100%;
+  height: 1px;
+  margin-left: 10px;
+  vertical-align: middle;
+  background: linear-gradient(to right, var(--border), transparent);
+}
+
+.man-body p, .man-body ul, .man-body ol {
+  margin: 0 0 10px;
+  color: var(--fg);
+}
+.man-body ul, .man-body ol {
+  padding-left: 22px;
+}
+.man-body li { margin-bottom: 4px; }
+.man-body li::marker { color: var(--dim); }
+
+.man-body code, .man-body .k {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  white-space: nowrap;
+}
+.man-body pre {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  margin: 8px 0 14px;
+  overflow-x: auto;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+.man-body .muted { color: var(--muted); }
+.man-body strong { color: var(--accent-2); font-weight: 500; }
+
+.man-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.5px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.man-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+}
+.man-trigger .q { color: var(--accent); font-weight: 500; }
+
+@media (max-width: 560px) {
+  .man-window { max-height: 96dvh; }
+  .man-body { padding: 14px 16px 18px; }
+  .man-titlebar .man-hint { display: none; }
+}
+
+/* ============================================================
+   soft.css — warm dark game surfaces
+   ------------------------------------------------------------
+   Loaded AFTER shared.css on each game page.  Hub (index.html)
+   does NOT include this file and stays retro-terminal.
+
+   Strategy: override every shared CSS custom property on
+   body[class*="g-"] so that inline <style> blocks in each
+   game HTML auto-inherit warm dark values.  Per-game sections
+   layer colour personality on top.
+   ============================================================ */
+
+/* ── Design tokens ──────────────────────────────────────────── */
+:root {
+  /* Rich region palette (queens, accents) */
+  --q-rose:    #b5706e;
+  --q-peach:   #c49464;
+  --q-gold:    #b3a458;
+  --q-sage:    #6a9e5e;
+  --q-mint:    #5a9e88;
+  --q-sky:     #5c84ab;
+  --q-lilac:   #8a72a8;
+  --q-blush:   #a8687e;
+  --q-clay:    #a88a58;
+
+  /* Semantic game colours */
+  --sun:    #f5b800;
+  --moon:   #8b9cf7;
+  --coral:  #ff6b6b;
+  --teal:   #4dd9ac;
+  --grape:  #a78bfa;
+  --forest: #6dd58c;
+}
+
+/* ── Game-page dark variable overrides ──────────────────────── */
+body[class*="g-"] {
+  --bg:        #1a1715;
+  --bg-2:      #222019;
+  --panel:     #282520;
+  --panel-2:   #1a1715;
+  --fg:        #ede8e1;
+  --muted:     #9a938a;
+  --dim:       #6a6460;
+  --border:    #363028;
+  --border-hi: #4a4438;
+  --accent:    #f5b800;
+  --accent-2:  #4dd9ac;
+  --danger:    #ff6b6b;
+  --warn:      #f5b800;
+
+  --r-sm: 10px;
+  --r-md: 14px;
+
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Kill CRT scanlines on game pages */
+body[class*="g-"]::before { display: none !important; }
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+body[class*="g-"] .topbar {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+body[class*="g-"] .topbar h1 {
+  color: var(--fg);
+  font-weight: 700;
+}
+body[class*="g-"] .topbar h1::before { content: none; }
+body[class*="g-"] .topbar .back {
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background .15s, color .15s;
+}
+body[class*="g-"] .topbar .back:hover {
+  color: var(--fg);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ── Panel card ─────────────────────────────────────────────── */
+body[class*="g-"] .panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px 20px 24px;
+  color: var(--fg);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.2),
+    0 8px 28px rgba(0,0,0,0.25);
+}
+body[class*="g-"] .panel .row { gap: 10px; }
+body[class*="g-"] .panel .status { color: var(--muted); }
+body[class*="g-"] .panel .status strong,
+body[class*="g-"] .panel .status b { color: var(--fg); }
+body[class*="g-"] .panel .status .ok  { color: var(--forest); }
+body[class*="g-"] .panel .status .hot { color: var(--sun); }
+body[class*="g-"] .panel .status .bad { color: var(--coral); }
+body[class*="g-"] .footer-note { color: var(--muted); }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+body[class*="g-"] .panel button,
+body[class*="g-"] .panel .btn {
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: background .15s, border-color .15s, color .15s,
+              transform .08s, box-shadow .15s;
+  min-height: 40px;
+}
+body[class*="g-"] .panel button:hover,
+body[class*="g-"] .panel .btn:hover {
+  background: var(--border);
+  border-color: var(--border-hi);
+}
+body[class*="g-"] .panel button:active,
+body[class*="g-"] .panel .btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+body[class*="g-"] .panel button.primary,
+body[class*="g-"] .panel .btn.primary {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+body[class*="g-"] .panel button.primary:hover,
+body[class*="g-"] .panel .btn.primary:hover {
+  background: #fff;
+  border-color: #fff;
+}
+body[class*="g-"] .panel button.ghost,
+body[class*="g-"] .panel .btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border);
+}
+body[class*="g-"] .panel button.ghost:hover {
+  color: var(--fg);
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border-hi);
+}
+body[class*="g-"] .panel .tool-btn .glyph { color: var(--dim); }
+body[class*="g-"] .panel .tool-btn:hover .glyph { color: var(--fg); }
+
+/* ── Chips ──────────────────────────────────────────────────── */
+body[class*="g-"] .panel .chip {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border);
+  border-radius: 10px;
+  transition: background .15s, border-color .15s, color .15s,
+              transform .08s, box-shadow .15s;
+  min-height: 40px;
+}
+body[class*="g-"] .panel .chip:hover {
+  color: var(--fg);
+  border-color: var(--border-hi);
+}
+body[class*="g-"] .panel .chip:active {
+  transform: translateY(1px) scale(0.98);
+}
+body[class*="g-"] .panel .chip[aria-selected="true"],
+body[class*="g-"] .panel .chip.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+  box-shadow: 0 2px 8px rgba(237,232,225,0.15);
+}
+
+/* ── Misc widgets ───────────────────────────────────────────── */
+body[class*="g-"] .panel .kbd {
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+body[class*="g-"] .panel select {
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+body[class*="g-"] .panel :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Interactive cell press feedback ─────────────────────────── */
+body[class*="g-"] .panel .lo-cell:active,
+body[class*="g-"] .panel .qn-cell:active,
+body[class*="g-"] .panel .tg-cell:active,
+body[class*="g-"] .panel .mem .card:active,
+body[class*="g-"] .panel .cell:active {
+  transform: scale(0.94);
+  transition: transform 0.06s ease-out;
+}
+
+/* ================================================================
+   PER-GAME THEMES
+   ================================================================ */
+
+/* ── Tic-Tac-Toe ────────────────────────────────────────────── */
+body.g-tic-tac-toe .panel .board {
+  background: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 10px;
+  gap: 10px;
+}
+body.g-tic-tac-toe .panel .cell {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--fg);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+body.g-tic-tac-toe .panel .cell:hover:not(:disabled):not(.taken) {
+  background: var(--border);
+  border-color: var(--border-hi);
+}
+body.g-tic-tac-toe .panel .cell.x { color: var(--coral); }
+body.g-tic-tac-toe .panel .cell.o { color: var(--teal); }
+body.g-tic-tac-toe .panel .cell.win {
+  background: rgba(109,213,140,0.15);
+  border-color: rgba(109,213,140,0.4);
+}
+
+/* ── Tango ──────────────────────────────────────────────────── */
+body.g-tango .panel .tg-grid {
+  background: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 10px;
+  gap: 8px;
+}
+body.g-tango .panel .tg-cell {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--dim);
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+body.g-tango .panel .tg-cell.given {
+  border-color: var(--border-hi);
+}
+/* ☀ Sun — warm golden glow */
+body.g-tango .panel .tg-cell.sun {
+  color: var(--sun);
+  text-shadow: 0 0 12px rgba(245,184,0,0.45);
+  background: rgba(245,184,0,0.08);
+  font-size: clamp(1.8rem, 8vw, 2.6rem);
+}
+body.g-tango .panel .tg-cell.given.sun {
+  background: rgba(245,184,0,0.14);
+}
+/* ☾ Moon — cool indigo glow */
+body.g-tango .panel .tg-cell.moon {
+  color: var(--moon);
+  text-shadow: 0 0 12px rgba(139,156,247,0.45);
+  background: rgba(139,156,247,0.08);
+  font-size: clamp(1.8rem, 8vw, 2.6rem);
+}
+body.g-tango .panel .tg-cell.given.moon {
+  background: rgba(139,156,247,0.14);
+}
+body.g-tango .panel .tg-cell.error {
+  border-color: var(--coral);
+  box-shadow: inset 0 0 0 2px rgba(255,107,107,0.3);
+}
+/* Edge constraint badges */
+body.g-tango .panel .tg-edge {
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  font-weight: 700;
+}
+body.g-tango .panel .tg-edge.eq {
+  color: var(--teal);
+  border-color: var(--teal);
+  background: rgba(77,217,172,0.12);
+}
+body.g-tango .panel .tg-edge.neq {
+  color: var(--sun);
+  border-color: var(--sun);
+  background: rgba(245,184,0,0.10);
+}
+
+/* ── Queens ─────────────────────────────────────────────────── */
+body.g-queens .panel .qn-grid {
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg);
+  gap: 3px;
+  padding: 3px;
+}
+body.g-queens .panel .qn-cell {
+  color: var(--fg);
+  border: none;
+  border-radius: 10px;
+}
+/* Rich region colours — vibrant on dark, each cell lightly saturated */
+body.g-queens .panel .qn-cell.r0 { background: var(--q-rose); }
+body.g-queens .panel .qn-cell.r1 { background: var(--q-peach); }
+body.g-queens .panel .qn-cell.r2 { background: var(--q-gold); }
+body.g-queens .panel .qn-cell.r3 { background: var(--q-sage); }
+body.g-queens .panel .qn-cell.r4 { background: var(--q-mint); }
+body.g-queens .panel .qn-cell.r5 { background: var(--q-sky); }
+body.g-queens .panel .qn-cell.r6 { background: var(--q-lilac); }
+body.g-queens .panel .qn-cell.r7 { background: var(--q-blush); }
+body.g-queens .panel .qn-cell.r8 { background: var(--q-clay); }
+body.g-queens .panel .qn-cell .mk { color: rgba(0,0,0,0.4); font-weight: 700; }
+body.g-queens .panel .qn-cell .qq {
+  color: #1a1210;
+  filter: drop-shadow(0 1px 1px rgba(255,255,255,0.35));
+}
+body.g-queens .panel .qn-cell.err .qq { color: #fff; filter: drop-shadow(0 0 4px rgba(255,60,60,0.8)); }
+/* Region boundaries — subtle dark lines between coloured zones */
+body.g-queens .panel .qn-cell.br-t { border-top:    2.5px solid rgba(0,0,0,0.3); }
+body.g-queens .panel .qn-cell.br-b { border-bottom: 2.5px solid rgba(0,0,0,0.3); }
+body.g-queens .panel .qn-cell.br-l { border-left:   2.5px solid rgba(0,0,0,0.3); }
+body.g-queens .panel .qn-cell.br-r { border-right:  2.5px solid rgba(0,0,0,0.3); }
+
+/* ── Zip ────────────────────────────────────────────────────── */
+body.g-zip .panel .zp-grid {
+  background: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 4px;
+}
+body.g-zip .panel .zp-cell {
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+body.g-zip .panel .zp-cell.on {
+  background: rgba(245,184,0,0.1);
+}
+body.g-zip .panel .zp-cell .wp {
+  background: var(--grape);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(167,139,250,0.35);
+}
+body.g-zip .panel .zp-cell.start .wp {
+  background: var(--forest);
+  box-shadow: 0 2px 6px rgba(109,213,140,0.35);
+}
+body.g-zip .panel .zp-cell.end .wp {
+  background: var(--coral);
+  box-shadow: 0 2px 6px rgba(255,107,107,0.35);
+}
+body.g-zip .panel .zp-wall-h,
+body.g-zip .panel .zp-wall-v { background: var(--fg); }
+
+/* ── Patches ────────────────────────────────────────────────── */
+body.g-patches .panel .pt-grid {
+  background: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 4px;
+}
+body.g-patches .panel .pt-cell {
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+body.g-patches .panel .pt-cell.clue {
+  color: var(--fg);
+  font-weight: 800;
+  background: rgba(255,255,255,0.06);
+}
+body.g-patches .panel .pt-cell.drag {
+  background: rgba(255,255,255,0.1);
+}
+body.g-patches .panel .pt-rect-overlay {
+  border-radius: 6px;
+}
+body.g-patches .panel .pt-rect-overlay.bad {
+  border-color: var(--coral);
+  background: rgba(255,107,107,0.12);
+}
+
+/* ── Mini-Sudoku ────────────────────────────────────────────── */
+body.g-mini-sudoku .panel .sk-grid {
+  background: var(--bg);
+  border: 2px solid var(--border-hi);
+  border-radius: 14px;
+  overflow: hidden;
+}
+body.g-mini-sudoku .panel .sk-cell {
+  background: var(--bg-2);
+  border-color: var(--border);
+  color: var(--teal);
+  font-weight: 600;
+}
+body.g-mini-sudoku .panel .sk-cell.given {
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  font-weight: 800;
+}
+body.g-mini-sudoku .panel .sk-cell.sel {
+  background: rgba(90,158,232,0.18);
+  box-shadow: inset 0 0 0 2px rgba(90,158,232,0.6);
+}
+body.g-mini-sudoku .panel .sk-cell.peer {
+  background: rgba(255,255,255,0.04);
+}
+body.g-mini-sudoku .panel .sk-cell.same-num,
+body.g-mini-sudoku .panel .sk-cell.same {
+  background: rgba(90,158,232,0.10);
+}
+body.g-mini-sudoku .panel .sk-cell.error,
+body.g-mini-sudoku .panel .sk-cell.conflict {
+  color: var(--coral);
+}
+body.g-mini-sudoku .panel .sk-note,
+body.g-mini-sudoku .panel .sk-cell .notes { color: var(--muted); }
+body.g-mini-sudoku .panel .sk-cell.box-b { border-right:  2px solid var(--border-hi); }
+body.g-mini-sudoku .panel .sk-cell.box-t { border-bottom: 2px solid var(--border-hi); }
+body.g-mini-sudoku .panel .sk-cell[data-r="1"],
+body.g-mini-sudoku .panel .sk-cell[data-r="3"] { border-bottom: 2px solid var(--border-hi); }
+body.g-mini-sudoku .panel .sk-cell[data-c="2"] { border-right: 2px solid var(--border-hi); }
+body.g-mini-sudoku .panel .pad-btn,
+body.g-mini-sudoku .panel .sk-pad button {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 10px;
+}
+body.g-mini-sudoku .panel .pad-btn:hover,
+body.g-mini-sudoku .panel .sk-pad button:hover {
+  background: var(--border);
+  border-color: var(--border-hi);
+}
+body.g-mini-sudoku .panel .pad-btn.active,
+body.g-mini-sudoku .panel .sk-pad button.active,
+body.g-mini-sudoku .panel .sk-pad button[aria-pressed="true"] {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+/* ── Lights Out ─────────────────────────────────────────────── */
+body.g-lights-out .panel .lo-grid {
+  background: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 10px;
+  gap: 8px;
+}
+body.g-lights-out .panel .lo-cell {
+  background: #2a2520;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: background .15s, box-shadow .15s, border-color .15s;
+}
+body.g-lights-out .panel .lo-cell:hover { border-color: var(--border-hi); }
+body.g-lights-out .panel .lo-cell.on {
+  background: #f5b800;
+  border-color: #d4a000;
+  box-shadow:
+    0 0 24px rgba(245,184,0,0.55),
+    0 0 8px rgba(245,184,0,0.3),
+    inset 0 0 12px rgba(255,230,120,0.3);
+}
+
+/* ── Memory ─────────────────────────────────────────────────── */
+body.g-memory .panel .mem { gap: 8px; }
+body.g-memory .panel .mem .card {
+  background: linear-gradient(145deg, #3a4a6a, #4a3a6a);
+  border: none;
+  border-radius: 14px;
+  color: transparent;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+body.g-memory .panel .mem .card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+}
+body.g-memory .panel .mem .card.flip,
+body.g-memory .panel .mem .card.match {
+  background: var(--bg-2);
+  color: var(--fg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+body.g-memory .panel .mem .card.match {
+  background: rgba(109,213,140,0.12);
+  border: 1px solid rgba(109,213,140,0.3);
+  box-shadow: 0 0 8px rgba(109,213,140,0.15);
+}
+
+/* ── Connect Four ───────────────────────────────────────────── */
+body.g-connect-four .panel .c4-board,
+body.g-connect-four .panel .board {
+  background: #2a4a7a;
+  border: none;
+  border-radius: 18px;
+  padding: 8px;
+  gap: 6px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.06);
+}
+body.g-connect-four .panel .c4-slot {
+  background: var(--bg);
+  border: 2px solid #2a4a7a;
+  border-radius: 999px;
+}
+body.g-connect-four .panel .c4-slot.p1 {
+  background: var(--coral);
+  border-color: #c04838;
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,0.2),
+    0 0 10px rgba(255,107,107,0.3);
+}
+body.g-connect-four .panel .c4-slot.p2 {
+  background: #f5c800;
+  border-color: #d4aa00;
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,0.3),
+    0 0 10px rgba(245,200,0,0.3);
+}
+body.g-connect-four .panel .c4-slot.win {
+  outline: 3px solid #fff;
+  outline-offset: -4px;
+}
+body.g-connect-four .panel .c4-col-btn {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  border-radius: 10px;
+}
+body.g-connect-four .panel .c4-col-btn:hover:not(:disabled) {
+  background: rgba(245,184,0,0.08);
+  color: var(--accent);
+}
+
+/* ── 2048 ───────────────────────────────────────────────────── */
+body.g-2048 .panel .board2048 {
+  background: var(--bg);
+  border: none;
+  border-radius: 16px;
+  padding: 10px;
+  gap: 10px;
+}
+body.g-2048 .panel .tile {
+  background: #2a2520;
+  border: none;
+  color: var(--muted);
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+body.g-2048 .panel .t2    { background: #3a3428; color: #c8c0b0; }
+body.g-2048 .panel .t4    { background: #4a4030; color: #d8d0c0; }
+body.g-2048 .panel .t8    { background: #7a5528; color: #fff; }
+body.g-2048 .panel .t16   { background: #b06830; color: #fff; }
+body.g-2048 .panel .t32   { background: #c05a30; color: #fff; }
+body.g-2048 .panel .t64   { background: var(--coral); color: #fff; }
+body.g-2048 .panel .t128  {
+  background: #a08a20;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(160,138,32,0.4);
+}
+body.g-2048 .panel .t256  {
+  background: #c8a820;
+  color: #fff;
+  box-shadow: 0 0 18px rgba(200,168,32,0.45);
+}
+body.g-2048 .panel .t512  {
+  background: var(--sun);
+  color: #1a1210;
+  box-shadow: 0 0 20px rgba(245,184,0,0.5);
+}
+body.g-2048 .panel .t1024 {
+  background: #e8a000;
+  color: #1a1210;
+  box-shadow: 0 0 24px rgba(232,160,0,0.5);
+  font-size: clamp(0.9rem, 4vw, 1.5rem);
+}
+body.g-2048 .panel .t2048 {
+  background: linear-gradient(145deg, #f5c800, #e8a000);
+  color: #1a1210;
+  box-shadow: 0 0 30px rgba(245,200,0,0.55);
+  font-size: clamp(0.9rem, 4vw, 1.5rem);
+}
+body.g-2048 .panel .t4096,
+body.g-2048 .panel .t8192 {
+  background: var(--grape);
+  color: #fff;
+  box-shadow: 0 0 26px rgba(167,139,250,0.45);
+  font-size: clamp(0.9rem, 4vw, 1.5rem);
+}
+
+/* ── Chess ──────────────────────────────────────────────────── */
+body.g-chess .panel .board {
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+body.g-chess .panel .sq.light { background: #d4b888; }
+body.g-chess .panel .sq.dark  { background: #8a6840; }
+body.g-chess .panel .sq.sel {
+  outline: 3px solid var(--sun);
+  outline-offset: -3px;
+  z-index: 1;
+}
+body.g-chess .panel .sq.last {
+  box-shadow: inset 0 0 0 3px rgba(245,184,0,0.45);
+}
+body.g-chess .panel .sq.hint::after { background: rgba(245,184,0,0.35); }
+body.g-chess .panel .sq.w {
+  color: #f0e8d8;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+body.g-chess .panel .sq.b {
+  color: #1a1210;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+}
+
+/* ── Minesweeper ────────────────────────────────────────────── */
+body.g-minesweeper .panel .ms {
+  background: var(--bg);
+  border: none;
+  border-radius: 14px;
+  padding: 6px;
+  gap: 3px;
+}
+body.g-minesweeper .panel .c {
+  background: #3a3428;
+  border: none;
+  color: var(--fg);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+body.g-minesweeper .panel .c:hover {
+  background: #4a4038;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+body.g-minesweeper .panel .c.open {
+  background: var(--bg-2);
+  box-shadow: none;
+}
+body.g-minesweeper .panel .c.open:hover {
+  background: var(--bg-2);
+  box-shadow: none;
+}
+body.g-minesweeper .panel .c.flag {
+  background: rgba(245,184,0,0.12);
+  color: var(--sun);
+  box-shadow: none;
+}
+body.g-minesweeper .panel .c.mine {
+  background: rgba(255,107,107,0.15);
+  color: var(--coral);
+  box-shadow: none;
+}
+body.g-minesweeper .panel .n1 { color: #6aa8e8; }
+body.g-minesweeper .panel .n2 { color: var(--forest); }
+body.g-minesweeper .panel .n3 { color: var(--coral); }
+body.g-minesweeper .panel .n4 { color: var(--grape); }
+body.g-minesweeper .panel .n5 { color: #e8885a; }
+body.g-minesweeper .panel .n6 { color: var(--teal); }
+body.g-minesweeper .panel .n7 { color: var(--fg); }
+body.g-minesweeper .panel .n8 { color: #e85a5a; }
+
+/* ================================================================
+   UNIVERSAL POLISH
+   ================================================================ */
+
+/* ── Win / status banners ───────────────────────────────────── */
+body[class*="g-"] .panel .banner {
+  border: 1px solid var(--border-hi);
+  background: var(--bg-2);
+  color: var(--muted);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+body[class*="g-"] .panel .banner.win {
+  border-color: rgba(109,213,140,0.4);
+  background: rgba(109,213,140,0.08);
+  color: var(--forest);
+  box-shadow: 0 0 12px rgba(109,213,140,0.1);
+}
+body[class*="g-"] .panel .banner.bad,
+body[class*="g-"] .panel .banner.err {
+  border-color: rgba(255,107,107,0.35);
+  background: rgba(255,107,107,0.08);
+  color: var(--coral);
+}
+
+/* ── Board elevation ────────────────────────────────────────── */
+body[class*="g-"] .panel .board,
+body[class*="g-"] .panel .tg-grid,
+body[class*="g-"] .panel .qn-grid,
+body[class*="g-"] .panel .zp-grid,
+body[class*="g-"] .panel .pt-grid,
+body[class*="g-"] .panel .sk-grid,
+body[class*="g-"] .panel .lo-grid,
+body[class*="g-"] .panel .c4-board,
+body[class*="g-"] .panel .mem,
+body[class*="g-"] .panel .board2048,
+body[class*="g-"] .panel .ms {
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.2),
+    0 1px 3px rgba(0,0,0,0.15);
+}
+/* Chess & Connect-Four deeper shadows */
+body.g-chess .panel .board {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+body.g-connect-four .panel .c4-board {
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.06),
+    0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* ── Tactile press feedback ─────────────────────────────────── */
+body[class*="g-"] .panel .cell,
+body[class*="g-"] .panel .tg-cell,
+body[class*="g-"] .panel .qn-cell,
+body[class*="g-"] .panel .zp-cell,
+body[class*="g-"] .panel .pt-cell,
+body[class*="g-"] .panel .sk-cell,
+body[class*="g-"] .panel .lo-cell,
+body[class*="g-"] .panel .c4-slot,
+body[class*="g-"] .panel .mem .card,
+body[class*="g-"] .panel .tile,
+body[class*="g-"] .panel .sq,
+body[class*="g-"] .panel .c {
+  transition: background .12s, transform .08s,
+              box-shadow .15s, color .12s,
+              border-color .12s;
+}
+body[class*="g-"] .panel .cell:active:not(:disabled),
+body[class*="g-"] .panel .tg-cell:active,
+body[class*="g-"] .panel .qn-cell:active,
+body[class*="g-"] .panel .zp-cell:active,
+body[class*="g-"] .panel .pt-cell:active,
+body[class*="g-"] .panel .sk-cell:active,
+body[class*="g-"] .panel .lo-cell:active,
+body[class*="g-"] .panel .c4-slot:active,
+body[class*="g-"] .panel .mem .card:active,
+body[class*="g-"] .panel .c:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[class*="g-"] .panel button,
+  body[class*="g-"] .panel .btn,
+  body[class*="g-"] .panel .chip,
+  body[class*="g-"] .panel .cell,
+  body[class*="g-"] .panel .tg-cell,
+  body[class*="g-"] .panel .qn-cell,
+  body[class*="g-"] .panel .zp-cell,
+  body[class*="g-"] .panel .pt-cell,
+  body[class*="g-"] .panel .sk-cell,
+  body[class*="g-"] .panel .lo-cell,
+  body[class*="g-"] .panel .c4-slot,
+  body[class*="g-"] .panel .mem .card,
+  body[class*="g-"] .panel .tile,
+  body[class*="g-"] .panel .c { transition: none !important; }
+  body[class*="g-"] .panel *:active { transform: none !important; }
+}
+
+/* iOS: prevent double-tap zoom on interactive elements */
+body[class*="g-"] .panel button,
+body[class*="g-"] .panel .chip,
+body[class*="g-"] .panel .cell,
+body[class*="g-"] .panel .tg-cell,
+body[class*="g-"] .panel .qn-cell,
+body[class*="g-"] .panel .zp-cell,
+body[class*="g-"] .panel .pt-cell,
+body[class*="g-"] .panel .sk-cell,
+body[class*="g-"] .panel .lo-cell,
+body[class*="g-"] .panel .c4-slot,
+body[class*="g-"] .panel .mem .card,
+body[class*="g-"] .panel .c {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Mobile polish ──────────────────────────────────────────── */
+@media (max-width: 560px) {
+  body[class*="g-"] .wrap { padding: 16px 12px 28px; }
+  body[class*="g-"] .topbar { margin-bottom: 14px; padding-bottom: 10px; }
+  body[class*="g-"] .topbar h1 { font-size: 15px; }
+  body[class*="g-"] .panel {
+    padding: 16px 14px 18px;
+    border-radius: 16px;
+  }
+  body[class*="g-"] .panel .row { flex-wrap: wrap; gap: 8px; }
+  body[class*="g-"] .panel .toolbar { gap: 8px; flex-wrap: wrap; }
+  body[class*="g-"] .panel .toolbar .tool-btn { flex: 1 1 auto; min-width: 0; }
+  body[class*="g-"] .panel .chips { gap: 6px; }
+  body[class*="g-"] .panel .chip { padding: 8px 12px; }
+}
+
+/* ── Manpage overlay ────────────────────────────────────────── */
+body[class*="g-"] .man-backdrop {
+  background: rgba(0,0,0,0.55);
+}
+body[class*="g-"] .man-window {
+  background: #2a2724;
+  border: 1px solid var(--border-hi);
+  color: var(--fg);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+body[class*="g-"] .man-window h2,
+body[class*="g-"] .man-window h3 { color: var(--fg); }
+body[class*="g-"] .man-window code,
+body[class*="g-"] .man-window .kbd {
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+body[class*="g-"] .man-window .muted { color: var(--muted); }
+body[class*="g-"] .man-window .man-close { color: var(--muted); }
+body[class*="g-"] .man-window .man-close:hover {
+  color: var(--fg);
+  background: rgba(255,255,255,0.06);
+}
+
+</style>
+</head>
+<body class="g-queens">
+<main class="wrap">
+  <div class="topbar">
+    <h1>queens</h1>
+      </div>
+  <div class="panel">
+    <div class="row">
+      <p class="status" id="status">One queen per row, column, and color.</p>
+      <p class="status">Time: <span id="time">0:00</span> · Best: <span id="best">—</span></p>
+      <button class="btn ghost tool-btn man-trigger" data-man="queens" data-man-title="QUEENS(1)" type="button">
+        <span class="q">?</span> man
+      </button>
+    </div>
+    <div class="game-controls">
+      <div class="chips" id="chips" role="tablist" aria-label="Difficulty">
+        <button class="chip" data-diff="easy" role="tab" type="button">Easy · 6</button>
+        <button class="chip" data-diff="medium" role="tab" type="button">Med · 7</button>
+        <button class="chip" data-diff="hard" role="tab" type="button">Hard · 8</button>
+      </div>
+      <button class="btn ghost tool-btn" id="new-btn" type="button"><span class="glyph">↻</span> new</button>
+    </div>
+    <div class="qn-grid" id="board"></div>
+    <div class="toolbar">
+      <button class="btn ghost tool-btn" id="undo-btn" type="button"><span class="glyph">↶</span> undo</button>
+      <button class="btn ghost tool-btn" id="hint-btn" type="button"><span class="glyph">💡</span> hint</button>
+      <button class="btn ghost tool-btn" id="reset-btn" type="button"><span class="glyph">↻</span> reset</button>
+    </div>
+  </div>
+</main>
+
+<template id="man-queens">
+  <h2>Name</h2>
+  <p>queens — the LinkedIn-style non-attacking queen puzzle.</p>
+
+  <h2>Rules</h2>
+  <ul>
+    <li>Place exactly <strong>N queens</strong> on an N×N grid, where N matches the board size.</li>
+    <li>Exactly <strong>one queen per row</strong>, <strong>one per column</strong>, and <strong>one per colored region</strong>.</li>
+    <li>No two queens may touch — not even diagonally. If they share an edge or a corner, it's a conflict.</li>
+  </ul>
+
+  <h2>Controls</h2>
+  <ul>
+    <li><strong>Tap a cell</strong> to cycle: empty → × (blocked, a mark you control) → ♛ queen → empty.</li>
+    <li><code>↶ undo</code> takes back your last change.</li>
+    <li><code>💡 hint</code> places one correct queen.</li>
+    <li><code>↻ reset</code> clears your marks; <code>↻ new</code> generates a fresh puzzle.</li>
+  </ul>
+
+  <h2>Strategy</h2>
+  <p class="muted">Start with small regions — a 1-cell region forces its queen. Use the "no touching" rule to eliminate neighboring cells in adjacent regions.</p>
+</template>
+
+<script>
+/* manpage.js */
+/* ============================================================
+   manpage.js — Unix-manpage-style How-to-Play overlay.
+
+   Usage (per-game):
+
+     <link rel="stylesheet" href="../manpage.css">
+     <script defer src="../manpage.js"><\/script>
+
+     <button class="btn ghost tool-btn man-trigger"
+             data-man="queens"
+             data-man-title="QUEENS(1)">
+       <span class="q">?</span> man
+     </button>
+
+     <template id="man-queens">
+       <h2>Name</h2>
+       <p>queens — place monarchs on a colored board.</p>
+       <h2>Rules</h2>
+       <ul><li>One queen per row, column, and region.</li></ul>
+       ...
+     </template>
+
+   The overlay auto-wires click-handlers on all `.man-trigger[data-man]`
+   elements. It auto-opens once per game (localStorage) via
+   `Manpage.autoOpen(id, templateId?)`.
+   ============================================================ */
+(function (global) {
+  "use strict";
+
+  const LS_PREFIX = "man:seen:";
+  let currentBackdrop = null;
+  let lastFocus = null;
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+
+  function close() {
+    if (!currentBackdrop) return;
+    const node = currentBackdrop;
+    currentBackdrop = null;
+    node.classList.add("closing");
+    node.style.opacity = "0";
+    setTimeout(() => node.remove(), 150);
+    document.removeEventListener("keydown", onKey, true);
+    if (lastFocus && typeof lastFocus.focus === "function") {
+      try { lastFocus.focus(); } catch (e) {}
+    }
+  }
+
+  function onKey(e) {
+    if (!currentBackdrop) return;
+    if (e.key === "Escape" || e.key === "q" || e.key === "Q") {
+      e.preventDefault();
+      close();
+    }
+  }
+
+  function open(opts) {
+    if (currentBackdrop) close();
+    opts = opts || {};
+    const title   = opts.title   || "HELP(1)";
+    const content = opts.content;   // HTMLElement | DocumentFragment | string
+    const hint    = opts.hint !== undefined
+                    ? opts.hint
+                    : "ESC · q · click outside to close";
+
+    lastFocus = document.activeElement;
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "man-backdrop";
+    backdrop.setAttribute("role", "dialog");
+    backdrop.setAttribute("aria-modal", "true");
+    backdrop.setAttribute("aria-label", title);
+
+    const win = document.createElement("div");
+    win.className = "man-window";
+
+    const bar = document.createElement("div");
+    bar.className = "man-titlebar";
+    bar.innerHTML =
+      '<span>MAN <span class="man-id">' + escapeHtml(title) + '</span></span>' +
+      (hint ? '<span class="man-hint">' + escapeHtml(hint) + "</span>" : "") +
+      '<button class="man-close" type="button" aria-label="Close">×</button>';
+
+    const body = document.createElement("div");
+    body.className = "man-body";
+    if (typeof content === "string") {
+      body.innerHTML = content;
+    } else if (content instanceof HTMLTemplateElement) {
+      body.appendChild(content.content.cloneNode(true));
+    } else if (content instanceof Node) {
+      body.appendChild(content);
+    }
+
+    const footer = document.createElement("div");
+    footer.className = "man-footer";
+    footer.textContent = "GAMES · " + title.toLowerCase();
+
+    win.appendChild(bar);
+    win.appendChild(body);
+    win.appendChild(footer);
+    backdrop.appendChild(win);
+
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) close();
+    });
+    bar.querySelector(".man-close").addEventListener("click", close);
+
+    document.body.appendChild(backdrop);
+    currentBackdrop = backdrop;
+    document.addEventListener("keydown", onKey, true);
+
+    // Focus the close button for keyboard users
+    setTimeout(() => {
+      const btn = bar.querySelector(".man-close");
+      if (btn) try { btn.focus(); } catch (e) {}
+    }, 0);
+
+    return backdrop;
+  }
+
+  function openFromTrigger(trigger) {
+    const id      = trigger.getAttribute("data-man");
+    const title   = trigger.getAttribute("data-man-title")
+                   || ((id || "help") + "(1)").toUpperCase();
+    const tplId   = trigger.getAttribute("data-man-template")
+                   || ("man-" + id);
+    const tpl     = document.getElementById(tplId);
+    if (!tpl) {
+      console.warn("[manpage] template not found:", tplId);
+      return;
+    }
+    open({ title: title, content: tpl });
+  }
+
+  function autoOpen(id, tplId) {
+    if (!id) return;
+    const key = LS_PREFIX + id;
+    try {
+      if (localStorage.getItem(key)) return;
+      localStorage.setItem(key, "1");
+    } catch (e) { /* storage disabled → open anyway, don't remember */ }
+    const trigger = document.querySelector(
+      '.man-trigger[data-man="' + cssEscape(id) + '"]'
+    );
+    if (trigger) {
+      openFromTrigger(trigger);
+    } else if (tplId) {
+      const tpl = document.getElementById(tplId);
+      if (tpl) open({ title: id.toUpperCase() + "(1)", content: tpl });
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function cssEscape(s) {
+    if (window.CSS && CSS.escape) return CSS.escape(s);
+    return String(s).replace(/"/g, '\\"');
+  }
+
+  function wire() {
+    document.addEventListener("click", (e) => {
+      const t = e.target.closest && e.target.closest(".man-trigger[data-man]");
+      if (!t) return;
+      e.preventDefault();
+      openFromTrigger(t);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wire);
+  } else {
+    wire();
+  }
+
+  global.Manpage = {
+    open: open,
+    close: close,
+    autoOpen: autoOpen,
+  };
+})(window);
+
+/* gamekit.js */
+/* ============================================================
+   gamekit.js — tiny shared helpers for the new games.
+   Exposes `window.Gamekit`.
+   ============================================================ */
+(function (global) {
+  "use strict";
+
+  // Deterministic 32-bit PRNG (Mulberry32)
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // FNV-1a style 32-bit string hash
+  function hashStr(s) {
+    let h = 2166136261 >>> 0;
+    s = String(s);
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function todayISO() {
+    const d = new Date();
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const da = String(d.getUTCDate()).padStart(2, "0");
+    return y + "-" + m + "-" + da;
+  }
+
+  function dailySeed(game, difficulty) {
+    return hashStr(todayISO() + "|" + difficulty + "|" + game);
+  }
+
+  function randomSeed() {
+    return (Math.random() * 0x100000000) >>> 0;
+  }
+
+  // Shuffle in-place (Fisher-Yates) with a given rng
+  function shuffle(arr, rng) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  // Minimal localStorage wrapper that never throws
+  function storage(prefix) {
+    prefix = prefix || "";
+    return {
+      get: function (key, fallback) {
+        try { const v = localStorage.getItem(prefix + key); return v === null ? fallback : v; }
+        catch (e) { return fallback; }
+      },
+      set: function (key, value) {
+        try { localStorage.setItem(prefix + key, String(value)); } catch (e) {}
+      },
+      getInt: function (key, fallback) {
+        const v = this.get(key, null);
+        if (v === null || v === undefined) return fallback;
+        const n = parseInt(v, 10);
+        return Number.isFinite(n) ? n : fallback;
+      },
+      getJSON: function (key, fallback) {
+        const v = this.get(key, null);
+        if (v === null) return fallback;
+        try { return JSON.parse(v); } catch (e) { return fallback; }
+      },
+      setJSON: function (key, obj) {
+        try { this.set(key, JSON.stringify(obj)); } catch (e) {}
+      },
+      remove: function (key) {
+        try { localStorage.removeItem(prefix + key); } catch (e) {}
+      },
+    };
+  }
+
+  function fmtTime(seconds) {
+    seconds = Math.max(0, Math.floor(seconds));
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m + ":" + String(s).padStart(2, "0");
+  }
+
+  // Wire the standard difficulty-chip pattern. opts = { el, difficulties, initial, onChange, storage, storageKey }
+  function wireDifficultyChips(opts) {
+    const el = opts.el;
+    const diffs = opts.difficulties;
+    const store = opts.storage;
+    const key   = opts.storageKey || "diff";
+    let current = opts.initial;
+    if (store) {
+      const saved = store.get(key, null);
+      if (saved && diffs.indexOf(saved) !== -1) current = saved;
+    }
+    function apply(d, fire) {
+      current = d;
+      el.querySelectorAll(".chip").forEach(c => {
+        const on = c.getAttribute("data-diff") === current;
+        c.classList.toggle("active", on);
+        c.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      if (store) store.set(key, current);
+      if (fire && opts.onChange) opts.onChange(current);
+    }
+    el.addEventListener("click", (e) => {
+      const btn = e.target.closest(".chip");
+      if (!btn) return;
+      const d = btn.getAttribute("data-diff");
+      if (!d || !diffs.includes(d) || d === current) return;
+      apply(d, true);
+    });
+    apply(current, false);
+    return {
+      get: () => current,
+      set: (d) => { if (diffs.includes(d)) apply(d, true); },
+    };
+  }
+
+  // Long-press helper — calls onLong if the user presses for > ms without moving much.
+  // Returns a detach() fn.
+  function onLongPress(el, ms, onLong) {
+    let timer = null;
+    let sx = 0, sy = 0;
+    const CANCEL = 8;
+    function start(x, y) {
+      sx = x; sy = y;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = null;
+        onLong();
+      }, ms);
+    }
+    function cancel() { clearTimeout(timer); timer = null; }
+    function move(x, y) {
+      if (!timer) return;
+      if (Math.abs(x - sx) > CANCEL || Math.abs(y - sy) > CANCEL) cancel();
+    }
+    const td = (e) => start(e.touches[0].clientX, e.touches[0].clientY);
+    const tm = (e) => move(e.touches[0].clientX, e.touches[0].clientY);
+    const tu = () => cancel();
+    const md = (e) => start(e.clientX, e.clientY);
+    const mm = (e) => move(e.clientX, e.clientY);
+    const mu = () => cancel();
+    el.addEventListener("touchstart", td, { passive: true });
+    el.addEventListener("touchmove",  tm, { passive: true });
+    el.addEventListener("touchend",   tu);
+    el.addEventListener("touchcancel",tu);
+    el.addEventListener("mousedown",  md);
+    el.addEventListener("mousemove",  mm);
+    el.addEventListener("mouseup",    mu);
+    el.addEventListener("mouseleave", mu);
+    return function detach() {
+      el.removeEventListener("touchstart", td);
+      el.removeEventListener("touchmove", tm);
+      el.removeEventListener("touchend", tu);
+      el.removeEventListener("touchcancel", tu);
+      el.removeEventListener("mousedown", md);
+      el.removeEventListener("mousemove", mm);
+      el.removeEventListener("mouseup", mu);
+      el.removeEventListener("mouseleave", mu);
+    };
+  }
+
+  global.Gamekit = {
+    mulberry32,
+    hashStr,
+    todayISO,
+    dailySeed,
+    randomSeed,
+    shuffle,
+    storage,
+    fmtTime,
+    wireDifficultyChips,
+    onLongPress,
+  };
+})(window);
+
+/* game.js */
+(function () {
+  "use strict";
+
+  const DIFFS = { easy: 6, medium: 7, hard: 8 };
+  const EMPTY = 0, MARK = 1, QUEEN = 2;
+
+  const boardEl = document.getElementById("board");
+  const statusEl = document.getElementById("status");
+  const timeEl = document.getElementById("time");
+  const bestEl = document.getElementById("best");
+  const undoBtn = document.getElementById("undo-btn");
+  const resetBtn = document.getElementById("reset-btn");
+  const hintBtn = document.getElementById("hint-btn");
+  const newBtn = document.getElementById("new-btn");
+  const chipsEl = document.getElementById("chips");
+
+  const store = Gamekit.storage("queens:");
+  let diff = store.get("diff", "medium");
+  if (!DIFFS[diff]) diff = "medium";
+  let N = DIFFS[diff];
+
+  let regions = [];      // length N*N, region id 0..N-1
+  let solution = [];     // length N: col for each row (the hidden queen solution)
+  let grid = [];         // length N*N, EMPTY | MARK | QUEEN
+  let history = [];
+  let won = false;
+  let timerStart = 0;
+  let timerInterval = null;
+  let cellEls = [];
+
+  function idx(r, c) { return r * N + c; }
+
+  // Place non-attacking queens (one per row; no same column; no 8-adjacency with prev row).
+  function placeQueens(rng) {
+    const cols = new Array(N).fill(-1);
+    function step(r) {
+      if (r === N) return true;
+      const order = Gamekit.shuffle(Array.from({ length: N }, (_, i) => i), rng);
+      for (const c of order) {
+        let bad = false;
+        for (let pr = 0; pr < r; pr++) {
+          if (cols[pr] === c) { bad = true; break; }
+          if (pr === r - 1 && Math.abs(cols[pr] - c) <= 1) { bad = true; break; }
+        }
+        if (bad) continue;
+        cols[r] = c;
+        if (step(r + 1)) return true;
+        cols[r] = -1;
+      }
+      return false;
+    }
+    return step(0) ? cols : null;
+  }
+
+  // Grow regions by BFS from each queen cell.
+  function growRegions(queenCols, rng) {
+    const reg = new Int8Array(N * N).fill(-1);
+    // Queen cells seed regions 0..N-1
+    for (let r = 0; r < N; r++) {
+      reg[idx(r, queenCols[r])] = r;
+    }
+    // Repeatedly pick an unassigned cell adjacent to some region and assign it.
+    // Use a frontier list per region.
+    const frontiers = [];
+    for (let i = 0; i < N; i++) frontiers.push([]);
+    function addFrontiers(r, c, rid) {
+      const n = [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
+      for (const [nr, nc] of n) {
+        if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+        if (reg[idx(nr, nc)] === -1) frontiers[rid].push([nr, nc]);
+      }
+    }
+    for (let r = 0; r < N; r++) addFrontiers(r, queenCols[r], r);
+
+    let remaining = N * N - N;
+    while (remaining > 0) {
+      // Pick a region that still has frontier cells (prefer smaller regions to keep them growing)
+      const sizes = new Array(N).fill(0);
+      for (let i = 0; i < N * N; i++) if (reg[i] >= 0) sizes[reg[i]]++;
+      const candidates = [];
+      for (let rid = 0; rid < N; rid++) {
+        if (frontiers[rid].length === 0) continue;
+        // Weight = (1 / size) — smaller regions get more mass
+        candidates.push({ rid, w: 1 / sizes[rid] });
+      }
+      if (candidates.length === 0) {
+        // Dead-end: assign remaining cells to any neighbor's region
+        for (let r = 0; r < N; r++) {
+          for (let c = 0; c < N; c++) {
+            if (reg[idx(r, c)] !== -1) continue;
+            const n = [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
+            for (const [nr, nc] of n) {
+              if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+              if (reg[idx(nr, nc)] !== -1) { reg[idx(r, c)] = reg[idx(nr, nc)]; remaining--; break; }
+            }
+          }
+        }
+        break;
+      }
+      const total = candidates.reduce((a, x) => a + x.w, 0);
+      let pick = rng() * total;
+      let chosen = candidates[0];
+      for (const cand of candidates) {
+        pick -= cand.w;
+        if (pick <= 0) { chosen = cand; break; }
+      }
+      const rid = chosen.rid;
+      // Filter frontier to still-unassigned cells
+      frontiers[rid] = frontiers[rid].filter(([r, c]) => reg[idx(r, c)] === -1);
+      if (frontiers[rid].length === 0) continue;
+      const pos = Math.floor(rng() * frontiers[rid].length);
+      const [fr, fc] = frontiers[rid][pos];
+      reg[idx(fr, fc)] = rid;
+      remaining--;
+      addFrontiers(fr, fc, rid);
+    }
+    return Array.from(reg);
+  }
+
+  // Count solutions to the region puzzle. `regions` is array of length N*N.
+  // Uses bitmasks for column/region usage — faster than arrays at N=7/8.
+  function countSolutions(regions, limit) {
+    let colMask = 0, regMask = 0;
+    const chosen = new Array(N).fill(-1);
+    let count = 0;
+    function step(r) {
+      if (count >= limit) return;
+      if (r === N) { count++; return; }
+      const prev = r > 0 ? chosen[r - 1] : -2;
+      for (let c = 0; c < N; c++) {
+        const cb = 1 << c;
+        if (colMask & cb) continue;
+        if (prev >= 0 && Math.abs(prev - c) <= 1) continue;
+        const rg = regions[r * N + c];
+        const rb = 1 << rg;
+        if (regMask & rb) continue;
+        colMask |= cb; regMask |= rb; chosen[r] = c;
+        step(r + 1);
+        colMask ^= cb; regMask ^= rb;
+        if (count >= limit) return;
+      }
+    }
+    step(0);
+    return count;
+  }
+
+  function generate(seed) {
+    const rng = Gamekit.mulberry32(seed);
+    for (let attempt = 0; attempt < 60; attempt++) {
+      const qCols = placeQueens(rng);
+      if (!qCols) continue;
+      const reg = growRegions(qCols, rng);
+      if (!reg) continue;
+      const n = countSolutions(reg, 2);
+      if (n === 1) {
+        return { regions: reg, solution: qCols };
+      }
+    }
+    // Fallback: just return last attempt even if not unique.
+    const qCols = placeQueens(rng) || new Array(N).fill(0).map((_, i) => i);
+    const reg = growRegions(qCols, rng);
+    return { regions: reg, solution: qCols };
+  }
+
+  function newPuzzle(seedOverride) {
+    N = DIFFS[diff];
+    const seed = seedOverride !== undefined ? seedOverride : Gamekit.dailySeed("queens", diff);
+    const p = generate(seed);
+    regions = p.regions;
+    solution = p.solution;
+    grid = new Array(N * N).fill(EMPTY);
+    history = [];
+    won = false;
+    timerStart = Date.now();
+    startTimer();
+    renderShell();
+    renderAll();
+    updateStatus();
+  }
+
+  function renderShell() {
+    boardEl.style.gridTemplateColumns = "repeat(" + N + ", 1fr)";
+    boardEl.style.gridTemplateRows = "repeat(" + N + ", 1fr)";
+    boardEl.innerHTML = "";
+    cellEls = [];
+    for (let r = 0; r < N; r++) {
+      for (let c = 0; c < N; c++) {
+        const i = idx(r, c);
+        const el = document.createElement("button");
+        el.type = "button";
+        const rg = regions[i];
+        el.className = "qn-cell fade-in r" + rg;
+        el.style.animationDelay = (i * 6) + "ms";
+        // Thick borders on region boundaries
+        if (r === 0 || regions[idx(r - 1, c)] !== rg) el.classList.add("br-t");
+        if (r === N - 1 || regions[idx(r + 1, c)] !== rg) el.classList.add("br-b");
+        if (c === 0 || regions[idx(r, c - 1)] !== rg) el.classList.add("br-l");
+        if (c === N - 1 || regions[idx(r, c + 1)] !== rg) el.classList.add("br-r");
+        el.dataset.i = String(i);
+        el.addEventListener("click", () => onTap(i));
+        boardEl.appendChild(el);
+        cellEls.push(el);
+      }
+    }
+  }
+
+  function renderAll() {
+    for (let i = 0; i < N * N; i++) {
+      const el = cellEls[i];
+      el.innerHTML = "";
+      el.classList.remove("err");
+      if (grid[i] === MARK) {
+        const m = document.createElement("span"); m.className = "mk"; m.textContent = "×"; el.appendChild(m);
+      } else if (grid[i] === QUEEN) {
+        const q = document.createElement("span"); q.className = "qq"; q.textContent = "♛"; el.appendChild(q);
+      }
+    }
+    // Conflict highlights for queens
+    const conflicts = findQueenConflicts();
+    conflicts.forEach(i => cellEls[i].classList.add("err"));
+  }
+
+  function findQueenConflicts() {
+    const bad = new Set();
+    const queens = [];
+    for (let i = 0; i < N * N; i++) if (grid[i] === QUEEN) queens.push(i);
+    const colCount = {}, rowCount = {}, regCount = {};
+    for (const i of queens) {
+      const r = Math.floor(i / N), c = i % N;
+      rowCount[r] = (rowCount[r] || 0) + 1;
+      colCount[c] = (colCount[c] || 0) + 1;
+      regCount[regions[i]] = (regCount[regions[i]] || 0) + 1;
+    }
+    for (const i of queens) {
+      const r = Math.floor(i / N), c = i % N;
+      if (rowCount[r] > 1) bad.add(i);
+      if (colCount[c] > 1) bad.add(i);
+      if (regCount[regions[i]] > 1) bad.add(i);
+    }
+    // 8-adj
+    for (let a = 0; a < queens.length; a++) {
+      for (let b = a + 1; b < queens.length; b++) {
+        const ra = Math.floor(queens[a] / N), ca = queens[a] % N;
+        const rb = Math.floor(queens[b] / N), cb = queens[b] % N;
+        if (Math.abs(ra - rb) <= 1 && Math.abs(ca - cb) <= 1) { bad.add(queens[a]); bad.add(queens[b]); }
+      }
+    }
+    return bad;
+  }
+
+  function onTap(i) {
+    if (won) return;
+    history.push({ i, v: grid[i] });
+    grid[i] = (grid[i] + 1) % 3;
+    renderAll();
+    checkWin();
+  }
+
+  function checkWin() {
+    let qc = 0;
+    for (let i = 0; i < N * N; i++) if (grid[i] === QUEEN) qc++;
+    if (qc !== N) return;
+    const bad = findQueenConflicts();
+    if (bad.size > 0) {
+      statusEl.innerHTML = '<span class="bad">Conflicts remain — fix highlighted queens.</span>';
+      return;
+    }
+    won = true;
+    const s = Math.floor((Date.now() - timerStart) / 1000);
+    const best = store.getInt("best:" + diff, null);
+    if (best === null || s < best) {
+      store.set("best:" + diff, s);
+      bestEl.textContent = Gamekit.fmtTime(s);
+    }
+    statusEl.innerHTML = '<span class="ok">Solved in ' + Gamekit.fmtTime(s) + '.</span>';
+    // Golden blink on all queen cells
+    for (let i = 0; i < N * N; i++) {
+      if (grid[i] === QUEEN) cellEls[i].classList.add("won");
+    }
+  }
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timeEl.textContent = Gamekit.fmtTime(0);
+    timerInterval = setInterval(() => {
+      if (won) return;
+      const s = Math.floor((Date.now() - timerStart) / 1000);
+      timeEl.textContent = Gamekit.fmtTime(s);
+    }, 500);
+  }
+
+  function updateStatus() {
+    const best = store.getInt("best:" + diff, null);
+    bestEl.textContent = best === null ? "—" : Gamekit.fmtTime(best);
+  }
+
+  undoBtn.addEventListener("click", () => {
+    if (won) return;
+    const h = history.pop();
+    if (!h) return;
+    grid[h.i] = h.v;
+    renderAll();
+    statusEl.textContent = "One queen per row, column, and color.";
+  });
+  resetBtn.addEventListener("click", () => {
+    grid = new Array(N * N).fill(EMPTY);
+    history = [];
+    won = false;
+    timerStart = Date.now();
+    startTimer();
+    statusEl.textContent = "One queen per row, column, and color.";
+    renderAll();
+  });
+  hintBtn.addEventListener("click", () => {
+    if (won) return;
+    // Find a row that doesn't yet have the correct queen placed; place it.
+    for (let r = 0; r < N; r++) {
+      const target = idx(r, solution[r]);
+      if (grid[target] !== QUEEN) {
+        history.push({ i: target, v: grid[target] });
+        grid[target] = QUEEN;
+        renderAll();
+        checkWin();
+        return;
+      }
+    }
+  });
+  newBtn.addEventListener("click", () => newPuzzle(Gamekit.randomSeed()));
+
+  Gamekit.wireDifficultyChips({
+    el: chipsEl,
+    difficulties: ["easy", "medium", "hard"],
+    initial: diff,
+    storage: store,
+    storageKey: "diff",
+    onChange: (d) => { diff = d; newPuzzle(); updateStatus(); },
+  });
+  diff = store.get("diff", diff);
+  if (!DIFFS[diff]) diff = "medium";
+  N = DIFFS[diff];
+
+  newPuzzle();
+  updateStatus();
+  window.addEventListener("load", () => Manpage.autoOpen("queens"));
+})();
+
+</script>
+</body>
+</html>
