@@ -1066,6 +1066,78 @@ function withAssetBase(html, game) {
   return h ? html.slice(0, h.index + h[0].length) + tag + html.slice(h.index + h[0].length) : tag + html;
 }
 
+/* fetchTextRetry:begin */
+/* Game HTML comes from the CDN, which sometimes answers a valid file with a
+   transient error (observed: HTTP 403 "Package size exceeded the configured
+   limit"). Retry exactly once, only for statuses that can be transient, with a
+   per-attempt timeout. 404 and other client errors are final. Aborting the
+   outer signal cancels the request and any pending retry. Same URL both
+   times: no other host, no other ref.
+   Server backoff: a Retry-After header (seconds or HTTP date) is honoured when
+   the browser can read it (cross-origin responses only expose it if the server
+   lists it in Access-Control-Expose-Headers). If it asks for more than
+   MAX_RETRY_AFTER_MS we do not retry at all. 429 without a readable header
+   waits 5s instead of the short default. */
+const RETRY_STATUS = new Set([403, 408, 429, 500, 502, 503, 504]);
+const MAX_RETRY_AFTER_MS = 10000;
+function retryAfterMs(r) {
+  let v = null;
+  try { v = r.headers && r.headers.get && r.headers.get('retry-after'); } catch (e) {}
+  if (v == null || v === '') return null;
+  v = String(v).trim();
+  if (/^\d+$/.test(v)) return Math.min(Number(v), 86400) * 1000;
+  const t = Date.parse(v);
+  return isNaN(t) ? null : Math.max(0, t - Date.now());
+}
+async function fetchTextRetry(url, outer, opts) {
+  const o = Object.assign({ timeoutMs: 25000, delayMs: 1500, maxRetryAfterMs: MAX_RETRY_AFTER_MS }, opts || {});
+  const cancelled = () => { const e = new Error('cancelled'); e.cancelled = true; return e; };
+  let last, wait = o.delayMs;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (outer && outer.aborted) throw cancelled();
+    const ctl = new AbortController();
+    const onAbort = () => ctl.abort();
+    if (outer) outer.addEventListener('abort', onAbort);
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; ctl.abort(); }, o.timeoutMs);
+    try {
+      const r = await fetch(url, { signal: ctl.signal });
+      if (r.ok) return await r.text();
+      const err = new Error('Failed to fetch lesson (HTTP ' + r.status + ')');
+      err.status = r.status;
+      try { if (r.body && r.body.cancel) Promise.resolve(r.body.cancel()).catch(function () {}); } catch (e) { /* release the unread error body */ }
+      if (!RETRY_STATUS.has(r.status)) { err.final = true; throw err; }
+      const ra = retryAfterMs(r);
+      if (ra != null && ra > o.maxRetryAfterMs) {
+        err.message = 'Failed to fetch lesson (HTTP ' + r.status + ', server asked to retry in ' + Math.ceil(ra / 1000) + 's)';
+        err.final = true; throw err;
+      }
+      wait = ra != null ? Math.max(ra, o.delayMs) : (r.status === 429 ? Math.max(5000, o.delayMs) : o.delayMs);
+      last = err;
+    } catch (e) {
+      if (outer && outer.aborted) throw cancelled();
+      if (e && e.final) throw e;
+      last = timedOut ? new Error('Failed to fetch lesson (timed out)')
+                      : (e && e.status ? e : new Error('Failed to fetch lesson'));
+    } finally {
+      clearTimeout(timer);
+      if (outer) outer.removeEventListener('abort', onAbort);
+    }
+    if (attempt === 0) {
+      await new Promise((res, rej) => {
+        let onAb = null;
+        const t = setTimeout(() => { if (outer && onAb) outer.removeEventListener('abort', onAb); res(); }, wait);
+        if (outer) {
+          onAb = () => { clearTimeout(t); rej(cancelled()); };
+          outer.addEventListener('abort', onAb, { once: true });
+        }
+      });
+    }
+  }
+  throw last;
+}
+/* fetchTextRetry:end */
+
 /* ─── Load catalog ──────────────────────────────────── */
 async function init() {
   startParallax();
@@ -1309,6 +1381,8 @@ window.setView = function(v) {
 };
 
 /* ─── Play lesson ───────────────────────────────────── */
+let playAbort = null;
+let frameBlob = null;
 window.playGame = function(slug, event) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   const game = allGames.find(g => g.slug === slug);
@@ -1324,19 +1398,29 @@ window.playGame = function(slug, event) {
   loadTxt.textContent = `Loading ${game.name}…`;
 
   const frame = document.getElementById('game-frame');
+  frameBlob = null;
   frame.src = '';
-  frame.onload = () => { loading.classList.add('hidden'); };
+  /* src='' fires load for the empty document while the fetch is still pending;
+     only hide the loading/error text once the game's own blob has loaded. */
+  frame.onload = () => { if (frameBlob && frame.src === frameBlob) loading.classList.add('hidden'); };
   frame.onerror = () => { loadTxt.textContent = 'Failed to load lesson.'; };
 
+  if (playAbort) playAbort.abort();
+  const ctl = new AbortController();
+  playAbort = ctl;
   setTimeout(() => {
-    fetch(assetUrl(game))
-      .then(r => { if (!r.ok) throw new Error('Failed to fetch lesson'); return r.text(); })
+    fetchTextRetry(assetUrl(game), ctl.signal)
       .then(html => {
+        if (ctl.signal.aborted || ctl !== playAbort) return;
         const blob = new Blob([withAssetBase(html, game)], { type: 'text/html' });
         const blobUrl = URL.createObjectURL(blob);
+        frameBlob = blobUrl;
         frame.src = blobUrl;
       })
-      .catch(err => { loadTxt.textContent = 'Failed to load lesson: ' + err.message; });
+      .catch(err => {
+        if ((err && err.cancelled) || ctl.signal.aborted || ctl !== playAbort) return;
+        loadTxt.textContent = 'Failed to load lesson: ' + err.message;
+      });
   }, 80);
 
   document.getElementById('overlay').classList.add('open');
@@ -1353,9 +1437,14 @@ window.stealthGame = function(slug, event) {
   const win = window.open('about:blank', '_blank');
   if (!win) { alert('Popup blocked — please allow popups for this site.'); return; }
 
-  fetch(url)
-    .then(r => { if (!r.ok) throw new Error('Failed to fetch lesson'); return r.text(); })
+  /* Each private window owns its request. Closing it aborts the fetch and any
+     pending retry (polled every 500ms, only while loading), and a late result
+     is never written into a closed window. Windows stay independent. */
+  const wctl = new AbortController();
+  const watch = setInterval(() => { if (win.closed) wctl.abort(); }, 500);
+  fetchTextRetry(url, wctl.signal)
     .then(html => {
+      if (win.closed || wctl.signal.aborted) return;
       const blob = new Blob([withAssetBase(html, game)], { type: 'text/html' });
       const blobUrl = URL.createObjectURL(blob);
       win.document.open();
@@ -1368,14 +1457,18 @@ window.stealthGame = function(slug, event) {
       win.document.close();
     })
     .catch(err => {
+      if ((err && err.cancelled) || win.closed) return;
       win.document.open();
       win.document.write(`<html><body style="color:#fff;background:#000;padding:2rem;font-family:sans-serif"><h2>Failed to Load Lesson</h2><p>${esc(err.message)}</p></body></html>`);
       win.document.close();
-    });
+    })
+    .finally(() => clearInterval(watch));
 };
 
 /* ─── Close modal ───────────────────────────────────── */
 function closePlayer() {
+  if (playAbort) { playAbort.abort(); playAbort = null; }
+  frameBlob = null;
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('game-frame').src = '';
   document.getElementById('frame-loading').classList.remove('hidden');
