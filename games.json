@@ -10,7 +10,7 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3062,
-    "totalSizeBytes": 748182167,
+    "totalSizeBytes": 748181876,
     "totalSizeMB": 748.2,
     "categories": {
       "Other": 2044,
@@ -29605,7 +29605,7 @@
     },
     {
       "id": "nzp",
-      "name": "Nzp",
+      "name": "NZ: Portable",
       "slug": "nzp",
       "file": "games/nzp.html",
       "filename": "nzp.html",
@@ -29618,7 +29618,7 @@
         "ugs",
         "cdn-streamed"
       ],
-      "description": "Play Nzp in your browser (streams game files via jsDelivr CDN).",
+      "description": "Play NZ: Portable in your browser (streams game files via jsDelivr CDN).",
       "size": 7479,
       "originalSize": 10393,
       "hash": "b5005a02e884587e"
@@ -30318,7 +30318,7 @@
     },
     {
       "id": "osu",
-      "name": "Osu",
+      "name": "WebOsu",
       "slug": "osu",
       "file": "games/osu.html",
       "filename": "osu.html",
@@ -30331,10 +30331,10 @@
         "ugs",
         "cdn-streamed"
       ],
-      "description": "Play Osu in your browser (streams game files via jsDelivr CDN).",
-      "size": 25708,
+      "description": "Play WebOsu in your browser (streams game files via jsDelivr CDN).",
+      "size": 25417,
       "originalSize": 25355,
-      "hash": "5e2e20bfc11db74b"
+      "hash": "405d37780df1dc75"
     },
     {
       "id": "ourpleguy",
@@ -37068,7 +37068,7 @@
     },
     {
       "id": "rh",
-      "name": "Rh",
+      "name": "Rhythm Hell",
       "slug": "rh",
       "file": "games/rh.html",
       "filename": "rh.html",
@@ -37079,7 +37079,7 @@
         "html5",
         "singleplayer"
       ],
-      "description": "Play Rh — a other game playable directly in your browser. No downloads required.",
+      "description": "Play Rhythm Hell — a other game playable directly in your browser. No downloads required.",
       "size": 1433,
       "originalSize": 1458,
       "hash": "94b7b1e88d260f5f"
@@ -40466,7 +40466,7 @@
     },
     {
       "id": "smc",
-      "name": "Smc",
+      "name": "Super Mario Construct",
       "slug": "smc",
       "file": "games/smc.html",
       "filename": "smc.html",
@@ -40479,7 +40479,7 @@
         "ugs",
         "cdn-streamed"
       ],
-      "description": "Play Smc in your browser (streams game files via jsDelivr CDN).",
+      "description": "Play Super Mario Construct in your browser (streams game files via jsDelivr CDN).",
       "size": 999,
       "originalSize": 1042,
       "hash": "e33ad702f7c66acc"
