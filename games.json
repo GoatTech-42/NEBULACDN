@@ -9,8 +9,8 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3064,
-    "totalSizeBytes": 748278900,
+    "totalGames": 3065,
+    "totalSizeBytes": 748341250,
     "totalSizeMB": 748.3,
     "categories": {
       "Other": 2044,
@@ -25,7 +25,7 @@
       "Minecraft": 55,
       "Shooter": 53,
       "Horror": 51,
-      "Puzzle": 51,
+      "Puzzle": 52,
       "Zelda": 37,
       "Simulation": 34,
       "RPG": 33
@@ -57548,6 +57548,25 @@
       "size": 45248,
       "originalSize": 45248,
       "hash": "61916fb06fa0dd71"
+    },
+    {
+      "id": "lightsoutmini",
+      "name": "Lights Out",
+      "slug": "lightsoutmini",
+      "file": "games/lightsoutmini.html",
+      "filename": "lightsoutmini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Turn every light off on a 5x5 grid (Lights Out from wavde/games by Tejas Wavde, MIT). Bundled into one file; license text in games/assets/lightsoutmini.LICENSE.md.",
+      "size": 62350,
+      "originalSize": 62350,
+      "hash": "43948370a8cdfb01"
     }
   ]
 }
