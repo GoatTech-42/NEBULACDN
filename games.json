@@ -9,11 +9,11 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3062,
-    "totalSizeBytes": 748181753,
+    "totalGames": 3061,
+    "totalSizeBytes": 748177351,
     "totalSizeMB": 748.2,
     "categories": {
-      "Other": 2044,
+      "Other": 2043,
       "Pokemon": 134,
       "Platformer": 110,
       "Mario": 106,
@@ -39558,24 +39558,6 @@
       "size": 2186,
       "originalSize": 2860,
       "hash": "c495c529b46998b4"
-    },
-    {
-      "id": "singlefile",
-      "name": "Singlefile",
-      "slug": "singlefile",
-      "file": "games/singlefile.html",
-      "filename": "singlefile.html",
-      "category": "Other",
-      "tags": [
-        "offline",
-        "browser",
-        "html5",
-        "singleplayer"
-      ],
-      "description": "Play Singlefile — a other game playable directly in your browser. No downloads required.",
-      "size": 4402,
-      "originalSize": 4402,
-      "hash": "bbfd5339c6f08edc"
     },
     {
       "id": "sixwaystodie",
