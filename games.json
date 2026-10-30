@@ -9,11 +9,11 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3062,
-    "totalSizeBytes": 748227108,
+    "totalGames": 3063,
+    "totalSizeBytes": 748233652,
     "totalSizeMB": 748.2,
     "categories": {
-      "Other": 2043,
+      "Other": 2044,
       "Pokemon": 134,
       "Platformer": 110,
       "Mario": 106,
@@ -57507,6 +57507,26 @@
       "size": 5003,
       "originalSize": 5003,
       "hash": "921c030af271fa7e"
+    },
+    {
+      "id": "mdnbreakout",
+      "name": "Breakout",
+      "slug": "mdnbreakout",
+      "file": "games/mdnbreakout.html",
+      "filename": "mdnbreakout.html",
+      "category": "Other",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "canvas",
+        "open-license"
+      ],
+      "description": "Classic brick-breaking game (MDN Gamedev Canvas Workshop code by Andrzej Mazur and Mozilla contributors, CC0 code samples). Modified: in-canvas end messages.",
+      "size": 6544,
+      "originalSize": 6544,
+      "hash": "af8ae9126a12db7c"
     }
   ]
 }
