@@ -9,9 +9,9 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3063,
-    "totalSizeBytes": 748233652,
-    "totalSizeMB": 748.2,
+    "totalGames": 3064,
+    "totalSizeBytes": 748278900,
+    "totalSizeMB": 748.3,
     "categories": {
       "Other": 2044,
       "Pokemon": 134,
@@ -23,7 +23,7 @@
       "Fighting": 70,
       "Sports": 68,
       "Minecraft": 55,
-      "Shooter": 52,
+      "Shooter": 53,
       "Horror": 51,
       "Puzzle": 51,
       "Zelda": 37,
@@ -57527,6 +57527,27 @@
       "size": 6544,
       "originalSize": 6544,
       "hash": "af8ae9126a12db7c"
+    },
+    {
+      "id": "andromedainvaders",
+      "name": "Andromeda Invaders",
+      "slug": "andromedainvaders",
+      "file": "games/andromedainvaders.html",
+      "filename": "andromedainvaders.html",
+      "category": "Shooter",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "canvas",
+        "webaudio",
+        "open-license"
+      ],
+      "description": "1980s-arcade-style shooter (Andromeda Invaders 0.9.0 by Susam Pal, MIT). Unmodified; license text in games/assets/andromedainvaders.LICENSE.md.",
+      "size": 45248,
+      "originalSize": 45248,
+      "hash": "61916fb06fa0dd71"
     }
   ]
 }
