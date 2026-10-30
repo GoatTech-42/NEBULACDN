@@ -9,8 +9,8 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3061,
-    "totalSizeBytes": 748177507,
+    "totalGames": 3062,
+    "totalSizeBytes": 748227108,
     "totalSizeMB": 748.2,
     "categories": {
       "Other": 2043,
@@ -25,7 +25,7 @@
       "Minecraft": 55,
       "Shooter": 52,
       "Horror": 51,
-      "Puzzle": 50,
+      "Puzzle": 51,
       "Zelda": 37,
       "Simulation": 34,
       "RPG": 33
@@ -2648,6 +2648,26 @@
       "size": 13856,
       "originalSize": 59214663,
       "hash": "ba756762af46299e"
+    },
+    {
+      "id": "astray",
+      "name": "Astray",
+      "slug": "astray",
+      "file": "games/astray.html",
+      "filename": "astray.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "webgl",
+        "open-license"
+      ],
+      "description": "Roll a ball through 3D mazes (Astray by wwwtyro, Unlicense). Modified package with CC0 textures; third-party notices in games/assets/astray.NOTICES.txt.",
+      "size": 49601,
+      "originalSize": 742989,
+      "hash": "3dd5616c0bae8930"
     },
     {
       "id": "astros-dreamland",
