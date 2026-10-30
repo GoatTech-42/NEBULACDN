@@ -9,9 +9,9 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3065,
-    "totalSizeBytes": 748341250,
-    "totalSizeMB": 748.3,
+    "totalGames": 3068,
+    "totalSizeBytes": 748527922,
+    "totalSizeMB": 748.5,
     "categories": {
       "Other": 2044,
       "Pokemon": 134,
@@ -19,13 +19,13 @@
       "Mario": 106,
       "Sonic": 74,
       "Racing": 73,
-      "Strategy": 71,
+      "Strategy": 73,
       "Fighting": 70,
       "Sports": 68,
       "Minecraft": 55,
       "Shooter": 53,
       "Horror": 51,
-      "Puzzle": 52,
+      "Puzzle": 53,
       "Zelda": 37,
       "Simulation": 34,
       "RPG": 33
@@ -57567,6 +57567,63 @@
       "size": 62350,
       "originalSize": 62350,
       "hash": "43948370a8cdfb01"
+    },
+    {
+      "id": "tictactoemini",
+      "name": "Tic-Tac-Toe",
+      "slug": "tictactoemini",
+      "file": "games/tictactoemini.html",
+      "filename": "tictactoemini.html",
+      "category": "Strategy",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Tic-tac-toe against the computer (Tic-Tac-Toe from wavde/games by Tejas Wavde, MIT). Bundled into one file. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 54824,
+      "originalSize": 54824,
+      "hash": "3f8cea3acfcf6721"
+    },
+    {
+      "id": "memorymini",
+      "name": "Memory",
+      "slug": "memorymini",
+      "file": "games/memorymini.html",
+      "filename": "memorymini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Flip-two card matching game (Memory from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: fixes a reset-during-flip-back bug. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 61412,
+      "originalSize": 61412,
+      "hash": "8a65dfc35f9ac380"
+    },
+    {
+      "id": "connectfourmini",
+      "name": "Connect Four",
+      "slug": "connectfourmini",
+      "file": "games/connectfourmini.html",
+      "filename": "connectfourmini.html",
+      "category": "Strategy",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Connect Four against the computer (Connect Four from wavde/games by Tejas Wavde, MIT). Bundled into one file. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 70436,
+      "originalSize": 70436,
+      "hash": "cde208a1c55cf572"
     }
   ]
 }
