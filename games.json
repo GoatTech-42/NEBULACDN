@@ -10,8 +10,8 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3071,
-    "totalSizeBytes": 748742691,
-    "totalSizeMB": 748.7,
+    "totalSizeBytes": 748874748,
+    "totalSizeMB": 748.9,
     "categories": {
       "Other": 2044,
       "Pokemon": 134,
@@ -52612,9 +52612,9 @@
         "tier-s"
       ],
       "description": "Play Auto Chess Forge - a browser game playable directly in your browser. No downloads required.",
-      "size": 29864,
-      "originalSize": 29864,
-      "hash": "4c2f8497c90b2e88"
+      "size": 37989,
+      "originalSize": 37989,
+      "hash": "d366d568d4bbf5cc"
     },
     {
       "id": "backpack-arena",
@@ -52631,9 +52631,9 @@
         "tier-a"
       ],
       "description": "Play Backpack Arena - a browser game playable directly in your browser. No downloads required.",
-      "size": 32835,
-      "originalSize": 32835,
-      "hash": "fc935d5397236306"
+      "size": 40181,
+      "originalSize": 40181,
+      "hash": "99b2a9b31f015b6d"
     },
     {
       "id": "ball-arena",
@@ -53561,9 +53561,9 @@
         "tier-a"
       ],
       "description": "Play Island Survival - a browser game playable directly in your browser. No downloads required.",
-      "size": 40465,
-      "originalSize": 40465,
-      "hash": "521517e3f76f879e"
+      "size": 40795,
+      "originalSize": 40795,
+      "hash": "5cc6affdc628d76a"
     },
     {
       "id": "lantern-memory",
@@ -54207,9 +54207,9 @@
         "tier-a"
       ],
       "description": "Play Pulse Studio - a browser game playable directly in your browser. No downloads required.",
-      "size": 26084,
-      "originalSize": 26084,
-      "hash": "eead60c10846efe8"
+      "size": 92212,
+      "originalSize": 92212,
+      "hash": "386a94672d72fd9b"
     },
     {
       "id": "radish-guard",
@@ -54777,9 +54777,9 @@
         "tier-a"
       ],
       "description": "Play Tiny Factory - a browser game playable directly in your browser. No downloads required.",
-      "size": 36662,
-      "originalSize": 36662,
-      "hash": "18638e24216b6b87"
+      "size": 86790,
+      "originalSize": 86790,
+      "hash": "7f54fd9eba7bb784"
     },
     {
       "id": "touchline-manager",
