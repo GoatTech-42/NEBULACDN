@@ -10,7 +10,7 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3071,
-    "totalSizeBytes": 748742087,
+    "totalSizeBytes": 748742691,
     "totalSizeMB": 748.7,
     "categories": {
       "Other": 2044,
@@ -57639,10 +57639,10 @@
         "singleplayer",
         "open-license"
       ],
-      "description": "6x6 Sudoku with 2x3 boxes (Mini Sudoku from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: the Clear button asks for a second click instead of using window.confirm(). License text in games/assets/wavde-games.LICENSE.md.",
-      "size": 71664,
-      "originalSize": 71664,
-      "hash": "294ae6e8ec0f6366"
+      "description": "6x6 Sudoku with 2x3 boxes (Mini Sudoku from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: the Clear button asks for a second click instead of using window.confirm(), and a new puzzle resets the status line. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 71838,
+      "originalSize": 71838,
+      "hash": "9669cbdd9ffad58c"
     },
     {
       "id": "queensmini",
@@ -57658,10 +57658,10 @@
         "singleplayer",
         "open-license"
       ],
-      "description": "Queens puzzle: one queen per row, column and color (Queens from wavde/games by Tejas Wavde, MIT). Bundled into one file. License text in games/assets/wavde-games.LICENSE.md.",
-      "size": 70804,
-      "originalSize": 70804,
-      "hash": "1ac1143b54d7774e"
+      "description": "Queens puzzle: one queen per row, column and color (Queens from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: a new puzzle resets the status line. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 71025,
+      "originalSize": 71025,
+      "hash": "184405c092c513d0"
     },
     {
       "id": "tangomini",
@@ -57677,10 +57677,10 @@
         "singleplayer",
         "open-license"
       ],
-      "description": "Tango puzzle: fill the grid with suns and moons (Tango from wavde/games by Tejas Wavde, MIT). Bundled into one file. License text in games/assets/wavde-games.LICENSE.md.",
-      "size": 71697,
-      "originalSize": 71697,
-      "hash": "7b6cac369ee645b4"
+      "description": "Tango puzzle: fill the grid with suns and moons (Tango from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: a new puzzle resets the status line. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 71906,
+      "originalSize": 71906,
+      "hash": "db81f17f132b6a6d"
     }
   ]
 }
