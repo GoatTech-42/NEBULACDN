@@ -9,9 +9,9 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3062,
-    "totalSizeBytes": 748180865,
-    "totalSizeMB": 748.2,
+    "totalGames": 3071,
+    "totalSizeBytes": 748742691,
+    "totalSizeMB": 748.7,
     "categories": {
       "Other": 2044,
       "Pokemon": 134,
@@ -19,13 +19,13 @@
       "Mario": 106,
       "Sonic": 74,
       "Racing": 73,
-      "Strategy": 71,
+      "Strategy": 73,
       "Fighting": 70,
       "Sports": 68,
       "Minecraft": 55,
-      "Shooter": 52,
+      "Shooter": 53,
       "Horror": 51,
-      "Puzzle": 50,
+      "Puzzle": 56,
       "Zelda": 37,
       "Simulation": 34,
       "RPG": 33
@@ -2645,9 +2645,29 @@
         "large-file"
       ],
       "description": "Play Astrawasm — a other game playable directly in your browser. No downloads required.",
-      "size": 13700,
+      "size": 13856,
       "originalSize": 59214663,
-      "hash": "e5295c65b4557e24"
+      "hash": "ba756762af46299e"
+    },
+    {
+      "id": "astray",
+      "name": "Astray",
+      "slug": "astray",
+      "file": "games/astray.html",
+      "filename": "astray.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "webgl",
+        "open-license"
+      ],
+      "description": "Roll a ball through 3D mazes (Astray by wwwtyro, Unlicense). Modified package with CC0 textures; third-party notices in games/assets/astray.NOTICES.txt.",
+      "size": 49601,
+      "originalSize": 742989,
+      "hash": "3dd5616c0bae8930"
     },
     {
       "id": "astros-dreamland",
@@ -12509,9 +12529,9 @@
         "large-file"
       ],
       "description": "Play Eaglerforge — a minecraft game playable directly in your browser. No downloads required.",
-      "size": 86426,
+      "size": 86829,
       "originalSize": 79075798,
-      "hash": "a8b3ef31cd181dbd"
+      "hash": "a8f78e3d982bfe14"
     },
     {
       "id": "eagleride",
@@ -29605,7 +29625,7 @@
     },
     {
       "id": "nzp",
-      "name": "Nzp",
+      "name": "NZ: Portable",
       "slug": "nzp",
       "file": "games/nzp.html",
       "filename": "nzp.html",
@@ -29618,7 +29638,7 @@
         "ugs",
         "cdn-streamed"
       ],
-      "description": "Play Nzp in your browser (streams game files via jsDelivr CDN).",
+      "description": "Play NZ: Portable in your browser (streams game files via jsDelivr CDN).",
       "size": 7479,
       "originalSize": 10393,
       "hash": "b5005a02e884587e"
@@ -30318,7 +30338,7 @@
     },
     {
       "id": "osu",
-      "name": "Osu",
+      "name": "WebOsu",
       "slug": "osu",
       "file": "games/osu.html",
       "filename": "osu.html",
@@ -30331,10 +30351,10 @@
         "ugs",
         "cdn-streamed"
       ],
-      "description": "Play Osu in your browser (streams game files via jsDelivr CDN).",
-      "size": 25708,
+      "description": "Play WebOsu in your browser (streams game files via jsDelivr CDN).",
+      "size": 25417,
       "originalSize": 25355,
-      "hash": "5e2e20bfc11db74b"
+      "hash": "405d37780df1dc75"
     },
     {
       "id": "ourpleguy",
@@ -32113,9 +32133,9 @@
         "large-file"
       ],
       "description": "Play Pixelclient — a other game playable directly in your browser. No downloads required.",
-      "size": 1896,
+      "size": 1979,
       "originalSize": 23593214,
-      "hash": "76a3a14d7ee15869"
+      "hash": "122b1b617acab64c"
     },
     {
       "id": "pixelcombat2",
@@ -37068,7 +37088,7 @@
     },
     {
       "id": "rh",
-      "name": "Rh",
+      "name": "Rhythm Hell",
       "slug": "rh",
       "file": "games/rh.html",
       "filename": "rh.html",
@@ -37079,7 +37099,7 @@
         "html5",
         "singleplayer"
       ],
-      "description": "Play Rh — a other game playable directly in your browser. No downloads required.",
+      "description": "Play Rhythm Hell — a other game playable directly in your browser. No downloads required.",
       "size": 1433,
       "originalSize": 1458,
       "hash": "94b7b1e88d260f5f"
@@ -39560,24 +39580,6 @@
       "hash": "c495c529b46998b4"
     },
     {
-      "id": "singlefile",
-      "name": "Singlefile",
-      "slug": "singlefile",
-      "file": "games/singlefile.html",
-      "filename": "singlefile.html",
-      "category": "Other",
-      "tags": [
-        "offline",
-        "browser",
-        "html5",
-        "singleplayer"
-      ],
-      "description": "Play Singlefile — a other game playable directly in your browser. No downloads required.",
-      "size": 4402,
-      "originalSize": 4402,
-      "hash": "bbfd5339c6f08edc"
-    },
-    {
       "id": "sixwaystodie",
       "name": "Sixwaystodie",
       "slug": "sixwaystodie",
@@ -40466,7 +40468,7 @@
     },
     {
       "id": "smc",
-      "name": "Smc",
+      "name": "Super Mario Construct",
       "slug": "smc",
       "file": "games/smc.html",
       "filename": "smc.html",
@@ -40479,7 +40481,7 @@
         "ugs",
         "cdn-streamed"
       ],
-      "description": "Play Smc in your browser (streams game files via jsDelivr CDN).",
+      "description": "Play Super Mario Construct in your browser (streams game files via jsDelivr CDN).",
       "size": 999,
       "originalSize": 1042,
       "hash": "e33ad702f7c66acc"
@@ -49618,9 +49620,9 @@
         "large-file"
       ],
       "description": "Play Uwuclient — a other game playable directly in your browser. No downloads required.",
-      "size": 3196,
+      "size": 3639,
       "originalSize": 38856478,
-      "hash": "b711b7e77c86f680"
+      "hash": "8b661c8308a2133d"
     },
     {
       "id": "uzg",
@@ -52382,9 +52384,9 @@
         "eaglercraft"
       ],
       "description": "Minecraft 26.1.2 Novix WASM build in the browser (EaglercraftNOA).",
-      "size": 1491141,
+      "size": 1491514,
       "originalSize": 65694777,
-      "hash": "4293167ae1bbdc92"
+      "hash": "01597fbb1a9e10e0"
     },
     {
       "id": "eaglercraft-1-21-11",
@@ -56504,9 +56506,9 @@
         "cdn-streamed"
       ],
       "description": "Play Öoo in your browser (streams game files via jsDelivr CDN).",
-      "size": 3932,
+      "size": 3809,
       "originalSize": 3932,
-      "hash": "5aeed58adcaaaf3c"
+      "hash": "146972389591c801"
     },
     {
       "id": "other-car-driving-simulator",
@@ -57505,6 +57507,180 @@
       "size": 5003,
       "originalSize": 5003,
       "hash": "921c030af271fa7e"
+    },
+    {
+      "id": "mdnbreakout",
+      "name": "Breakout",
+      "slug": "mdnbreakout",
+      "file": "games/mdnbreakout.html",
+      "filename": "mdnbreakout.html",
+      "category": "Other",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "canvas",
+        "open-license"
+      ],
+      "description": "Classic brick-breaking game (MDN Gamedev Canvas Workshop code by Andrzej Mazur and Mozilla contributors, CC0 code samples). Modified: in-canvas end messages.",
+      "size": 6544,
+      "originalSize": 6544,
+      "hash": "af8ae9126a12db7c"
+    },
+    {
+      "id": "andromedainvaders",
+      "name": "Andromeda Invaders",
+      "slug": "andromedainvaders",
+      "file": "games/andromedainvaders.html",
+      "filename": "andromedainvaders.html",
+      "category": "Shooter",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "canvas",
+        "webaudio",
+        "open-license"
+      ],
+      "description": "1980s-arcade-style shooter (Andromeda Invaders 0.9.0 by Susam Pal, MIT). Unmodified; license text in games/assets/andromedainvaders.LICENSE.md.",
+      "size": 45248,
+      "originalSize": 45248,
+      "hash": "61916fb06fa0dd71"
+    },
+    {
+      "id": "lightsoutmini",
+      "name": "Lights Out",
+      "slug": "lightsoutmini",
+      "file": "games/lightsoutmini.html",
+      "filename": "lightsoutmini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Turn every light off on a 5x5 grid (Lights Out from wavde/games by Tejas Wavde, MIT). Bundled into one file; license text in games/assets/lightsoutmini.LICENSE.md.",
+      "size": 62350,
+      "originalSize": 62350,
+      "hash": "43948370a8cdfb01"
+    },
+    {
+      "id": "tictactoemini",
+      "name": "Tic-Tac-Toe",
+      "slug": "tictactoemini",
+      "file": "games/tictactoemini.html",
+      "filename": "tictactoemini.html",
+      "category": "Strategy",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Tic-tac-toe against the computer (Tic-Tac-Toe from wavde/games by Tejas Wavde, MIT). Bundled into one file. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 54824,
+      "originalSize": 54824,
+      "hash": "3f8cea3acfcf6721"
+    },
+    {
+      "id": "memorymini",
+      "name": "Memory",
+      "slug": "memorymini",
+      "file": "games/memorymini.html",
+      "filename": "memorymini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Flip-two card matching game (Memory from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: fixes a reset-during-flip-back bug. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 61412,
+      "originalSize": 61412,
+      "hash": "8a65dfc35f9ac380"
+    },
+    {
+      "id": "connectfourmini",
+      "name": "Connect Four",
+      "slug": "connectfourmini",
+      "file": "games/connectfourmini.html",
+      "filename": "connectfourmini.html",
+      "category": "Strategy",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Connect Four against the computer (Connect Four from wavde/games by Tejas Wavde, MIT). Bundled into one file. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 70436,
+      "originalSize": 70436,
+      "hash": "cde208a1c55cf572"
+    },
+    {
+      "id": "minisudokumini",
+      "name": "Mini Sudoku",
+      "slug": "minisudokumini",
+      "file": "games/minisudokumini.html",
+      "filename": "minisudokumini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "6x6 Sudoku with 2x3 boxes (Mini Sudoku from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: the Clear button asks for a second click instead of using window.confirm(), and a new puzzle resets the status line. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 71838,
+      "originalSize": 71838,
+      "hash": "9669cbdd9ffad58c"
+    },
+    {
+      "id": "queensmini",
+      "name": "Queens",
+      "slug": "queensmini",
+      "file": "games/queensmini.html",
+      "filename": "queensmini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Queens puzzle: one queen per row, column and color (Queens from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: a new puzzle resets the status line. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 71025,
+      "originalSize": 71025,
+      "hash": "184405c092c513d0"
+    },
+    {
+      "id": "tangomini",
+      "name": "Tango",
+      "slug": "tangomini",
+      "file": "games/tangomini.html",
+      "filename": "tangomini.html",
+      "category": "Puzzle",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer",
+        "open-license"
+      ],
+      "description": "Tango puzzle: fill the grid with suns and moons (Tango from wavde/games by Tejas Wavde, MIT). Bundled into one file. Modified: a new puzzle resets the status line. License text in games/assets/wavde-games.LICENSE.md.",
+      "size": 71906,
+      "originalSize": 71906,
+      "hash": "db81f17f132b6a6d"
     }
   ]
 }

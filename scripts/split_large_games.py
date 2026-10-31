@@ -21,7 +21,7 @@ Files that match no known pattern are left untouched and reported.
 
 Usage: python3 scripts/split_large_games.py [file ...]   (default: all >20MB)
 """
-import base64
+import json, base64
 import os
 import re
 import sys
@@ -173,7 +173,7 @@ def pattern_c(slug, txt):
     urls = ','.join(f"'assets/{slug}.b85.{i}'" for i in range(len(parts)))
     sep_js = "'" + SEP.replace('\\', '\\\\').replace('\n', '\\n') + "'"
     loader = ("<script>(function(){function g(u){var x=new XMLHttpRequest();x.open('GET',u,false);"
-              "x.send(null);return x.responseText}var t=[" + urls + "].map(g).join(" + sep_js + ").split(" + sep_js + ");"
+              "x.send(null);if(x.status<200||x.status>299)throw new Error('nebula chunk '+u+' HTTP '+x.status);return x.responseText}var t=[" + urls + "].map(g).join(" + sep_js + ").split(" + sep_js + ");"
               "for(var i=0;i<t.length;i++){base85decode(t[i],projectDecodeBuffer,projectDecodeIndex);projectDecodeIndex+=65536}})();</script>")
     out = txt[:runs[0].start()] + loader + txt[runs[-1].end():]
     return out, files
@@ -202,12 +202,31 @@ def pattern_e(slug, txt):
         urls.append(p)
     url_js = ','.join(f"'{u}'" for u in urls)
     injector = ("<script>(function(){function g(u){var x=new XMLHttpRequest();x.open('GET',u,false);"
-                "x.send(null);return x.responseText}document.getElementById('payload').textContent=["
+                "x.send(null);if(x.status<200||x.status>299)throw new Error('nebula chunk '+u+' HTTP '+x.status);return x.responseText}document.getElementById('payload').textContent=["
                 + url_js + "].map(g).join('')})();</script>")
-    out = txt[:m.start(2)] + txt[m.end(2):]
-    out = out[:m.start(2)] + injector + out[m.start(2):]
+    # Close the payload element first; an injector placed inside it is parsed as
+    # text and never runs.
+    out = txt[:m.end(1)] + '</script>' + injector + txt[m.end(3):]
     return out, files
 
+
+ATTR_RE = re.compile(r"([\w:-]+)(?:\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s>\"']+)))?")
+JS_TYPES = ('', 'text/javascript', 'application/javascript', 'application/x-javascript', 'text/ecmascript', 'module')
+
+
+UNSUPPORTED = {'defer', 'async', 'nomodule', 'integrity', 'nonce', 'crossorigin', 'referrerpolicy', 'src'}
+
+
+def parse_attrs(tag):
+    return {m.group(1).lower(): next((v for v in m.groups()[1:] if v is not None), '') for m in ATTR_RE.finditer(tag)}
+
+
+def is_js_tag(tag):
+    a = parse_attrs(tag)
+    t = a.get('type', '').strip().lower().split(';')[0]
+    # Only classic JS can be split and re-run by the loader. Data scripts, modules
+    # and defer/async/integrity/etc. forms are left untouched.
+    return t in JS_TYPES and t != 'module' and not (UNSUPPORTED & set(a))
 
 BIG_SCRIPT_RE = re.compile(r'<script(?![^>]*\bsrc\b)[^>]*>')
 
@@ -240,7 +259,10 @@ def pattern_d(slug, txt):
     for start, end, size, tag_end in spans:
         if total <= 19_000_000 and counter > 0:
             break
-        body = txt[tag_end:end - len('</script>')]
+        open_end = txt.find('>', tag_end) + 1
+        if not is_js_tag(txt[tag_end:open_end]):
+            continue  # data script (any non-JS type) read by id; leave untouched
+        body = txt[open_end:end - len('</script>')]
         if re.search(r'getElementById\([^)]*\)\s*\.\s*innerHTML', body):
             continue
         pieces = []
@@ -253,14 +275,21 @@ def pattern_d(slug, txt):
                     j = nl + 1
             pieces.append(body[i:j])
             i = j
-        tags = []
+        urls = []
         for piece in pieces:
             p = f'assets/{slug}.code{counter}.js'
             counter += 1
             files[p] = piece.encode('utf-8', errors='replace')
-            tags.append(f'<script src="{p}"></script>')
-        replacements[(start, end)] = ''.join(tags)
-        total -= size - len(''.join(tags))
+            urls.append(p)
+        # Chunks are fragments of ONE script, so join them and run once.
+        attrs = parse_attrs(txt[tag_end:open_end])
+        loader = ("<script>(function(){function g(u){var x=new XMLHttpRequest();x.open('GET',u,false);"
+                  "x.send(null);if(x.status<200||x.status>299)throw new Error('nebula chunk '+u+' HTTP '+x.status);return x.responseText}var t=" + json.dumps(urls) + ".map(g).join('');"
+                  "var s=document.createElement('script');var a=" + json.dumps(attrs) +
+                  ";for(var k in a)s.setAttribute(k,a[k]);s.text=t;"
+                  "document.currentScript.parentNode.insertBefore(s,document.currentScript)})();</script>")
+        replacements[(start, end)] = loader
+        total -= size - len(loader)
     if not replacements:
         return None
     out = []
@@ -311,7 +340,7 @@ def pattern_f(slug, txt):
         return None
     arr = '[' + ','.join('[' + ','.join('"%s"' % u for u in urls) + ']' for urls in inject) + ']'
     injector = ('<script>(function(){function g(u){var x=new XMLHttpRequest();x.open("GET",u,false);'
-                'x.send(null);return x.responseText}var d=' + arr + ';'
+                'x.send(null);if(x.status<200||x.status>299)throw new Error("nebula chunk "+u+" HTTP "+x.status);return x.responseText}var d=' + arr + ';'
                 'document.querySelectorAll("option[data-nbp]").forEach(function(o){'
                 'o.value=d[+o.getAttribute("data-nbp")].map(g).join("")})})();</script>')
     body = body[:idx + len('</select>')] + injector + body[idx + len('</select>'):]
