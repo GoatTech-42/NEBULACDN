@@ -1,6 +1,6 @@
 <!--
   mini-sudoku, from wavde/games (https://github.com/wavde/games), Copyright (c) 2026 Tejas Wavde, MIT License.
-  Bundled into one file for Nebula CDN: external stylesheets and scripts inlined; Google Fonts link, manifest, icons and back link removed. Modified: the Clear button (reset) used window.confirm(), which does nothing in a sandbox without allow-modals; it now asks for a second click on the button within 3 s instead (the pending arm is cancelled when a new puzzle starts or the difficulty changes). Otherwise game logic unmodified.
+  Bundled into one file for Nebula CDN: external stylesheets and scripts inlined; Google Fonts link, manifest, icons and back link removed. Modified: the Clear button (reset) used window.confirm(), which does nothing in a sandbox without allow-modals; it now asks for a second click on the button within 3 s instead (the pending arm is cancelled when a new puzzle starts or the difficulty changes; the status line is also reset on a new puzzle, which previously kept the last "Solved" message). Otherwise game logic unmodified.
 -->
 <!doctype html>
 <html lang="en">
@@ -2070,6 +2070,7 @@ body[class*="g-"] .man-window .man-close:hover {
     sel = -1;
     pencil = false;
     won = false;
+    statusEl.textContent = "Fill each row, column, and 2×3 box with 1–6.";
     elapsed = 0;
     timerStart = Date.now();
     startTimer();
