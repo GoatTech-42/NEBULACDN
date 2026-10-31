@@ -1,6 +1,6 @@
 <!--
   queens, from wavde/games (https://github.com/wavde/games), Copyright (c) 2026 Tejas Wavde, MIT License.
-  Bundled into one file for Nebula CDN: external stylesheets and scripts inlined; Google Fonts link, manifest, icons and back link removed. Game logic unmodified.
+  Bundled into one file for Nebula CDN: external stylesheets and scripts inlined; Google Fonts link, manifest, icons and back link removed. Modified: starting a new puzzle (New button or difficulty change) now resets the status line, which previously kept the last "Solved" message. Otherwise game logic unmodified.
 -->
 <!doctype html>
 <html lang="en">
@@ -2105,6 +2105,7 @@ body[class*="g-"] .man-window .man-close:hover {
     grid = new Array(N * N).fill(EMPTY);
     history = [];
     won = false;
+    statusEl.textContent = "One queen per row, column, and color.";
     timerStart = Date.now();
     startTimer();
     renderShell();
