@@ -15,7 +15,8 @@ Checks:
 Usage:
   python3 scripts/check_catalog.py [--repo PATH] [--limit N]
 
-Exit code is 0 when no problems are found, 1 otherwise.
+Exit code is 0 when no problems are found, 1 when problems are found, and
+2 when games.json is malformed (concise error on stderr).
 Standard library only.
 """
 
@@ -26,10 +27,35 @@ import sys
 from collections import defaultdict
 
 
+class CatalogError(Exception):
+    """games.json is malformed; the check cannot give a trustworthy answer."""
+
+
 def load_catalog(repo):
-    with open(os.path.join(repo, "games.json"), encoding="utf-8") as fh:
-        data = json.load(fh)
-    games = data.get("games", []) if isinstance(data, dict) else data
+    path = os.path.join(repo, "games.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError) as exc:
+        raise CatalogError("cannot read games.json: {}".format(exc))
+    if isinstance(data, dict):
+        if "games" not in data:
+            raise CatalogError("games.json has no 'games' key")
+        games = data["games"]
+    else:
+        games = data
+    if not isinstance(games, list):
+        raise CatalogError("'games' must be a list, got {}".format(
+            type(games).__name__))
+    for index, entry in enumerate(games):
+        if not isinstance(entry, dict):
+            raise CatalogError("entry #{} is not an object (got {})".format(
+                index, type(entry).__name__))
+        file_field = entry.get("file")
+        if not isinstance(file_field, str) or not file_field.strip():
+            raise CatalogError(
+                "entry #{} has a missing, empty, or non-string 'file' field"
+                .format(index))
     return data, games
 
 
@@ -165,7 +191,11 @@ def main(argv=None):
                         help="max entries to print per problem type")
     args = parser.parse_args(argv)
 
-    games, files, problems = check(args.repo)
+    try:
+        games, files, problems = check(args.repo)
+    except (CatalogError, OSError) as exc:
+        sys.stderr.write("error: {}\n".format(exc))
+        return 2
     print(report(games, files, problems, args.limit))
     return 1 if any(problems.values()) else 0
 
