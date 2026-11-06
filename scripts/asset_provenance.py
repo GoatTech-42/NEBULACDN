@@ -9,23 +9,31 @@ third-party hosts).
 
 What counts as "loaded":
   - <base href>, and relative src/href values resolved against it
-  - src= on script, iframe, img, audio, video, source, embed; data= on object
-  - href= on <link> (stylesheets, preloads, manifests)
-  - fetch(), XMLHttpRequest.open(), import(), new Worker(), url(...)
-  - quoted absolute URLs in inline scripts/config that point at a CDN or
-    end in an asset extension (.js, .wasm, .data, .rom, .nes, .swf, ...)
+  - src= on script, iframe, img, audio, video, source, embed, track;
+    data= on object; href= on <link> (parsed with html.parser, so quoted
+    and unquoted attribute values both work)
+  - fetch(), XMLHttpRequest.open(), import(), new Worker() and quoted
+    absolute URLs that point at a CDN or end in an asset extension, found
+    in inline <script> bodies only
+  - url(...) in <style> bodies and style="" attributes
 
-Not counted: links in HTML comments, XML namespaces, and plain <a href>
-navigation links.
+Not counted: links in HTML comments, XML namespaces, plain <a href>
+navigation links, and data-src or other non-loading attributes.
+
+This is static analysis of the markup, not runtime certainty: it cannot see
+URLs built at runtime, and it may flag URLs a page never actually loads.
 
 A "source" is the host, except for jsDelivr / githack / raw.githubusercontent
-GitHub mirrors, where it is host/owner/repo so each upstream repo is its own
-source. Sources under GoatTech-42/NEBULACDN are the repo's own.
+GitHub mirrors (also github.com/o/r/raw/..., fastly/gcore jsdelivr, rawcdn
+githack), where it is host/owner/repo so each upstream repo is its own
+source and the report keeps the original host. Any mirror of
+GoatTech-42/NEBULACDN is the repo's own; a mirror of another owner/repo is
+third-party.
 
 Usage:
-  python3 scripts/asset_provenance.py [--repo PATH] [--out FILE] [--top N]
+  python3 scripts/asset_provenance.py [--repo PATH] [--out FILE] [--json FILE] [--top N] [--force]
 
-Prints the markdown report to stdout (or writes it to --out). Standard
+Prints the markdown report to stdout (or writes it to --out). Refuses to overwrite an existing --out/--json file unless --force is given. Standard
 library only. Heuristic: the risk list is for human review, not a verdict.
 """
 
@@ -35,13 +43,12 @@ import os
 import re
 import sys
 from collections import Counter, defaultdict
+from html.parser import HTMLParser
 from urllib.parse import urljoin, urlsplit
 
-OWN_SOURCES = {
-    "cdn.jsdelivr.net/gh/goattech-42/nebulacdn",
-    "raw.githubusercontent.com/goattech-42/nebulacdn",
-    "github.com/goattech-42/nebulacdn",
-}
+# Repo identity (owner/repo, lowercase) of this repo. Any supported mirror of
+# it counts as own, whatever the host.
+OWN_REPO = "goattech-42/nebulacdn"
 
 MIRROR_HOSTS = {
     "cdn.jsdelivr.net",
@@ -50,6 +57,7 @@ MIRROR_HOSTS = {
     "rawcdn.githack.com",
     "raw.githack.com",
     "raw.githubusercontent.com",
+    "github.com",
 }
 
 # Hosts that are generic infrastructure (fonts, analytics, ads), reported but
@@ -92,12 +100,6 @@ COMMERCIAL_TERMS = [
     "cuphead", "bloons", "papa's", "papas", "fifa", "nba", "madden",
 ]
 
-TAG_ATTR = re.compile(
-    r"<(script|iframe|img|audio|video|source|embed|track)\b[^>]*?\bsrc\s*=\s*"
-    r"([\"'])(.*?)\2", re.I | re.S)
-OBJECT_DATA = re.compile(r"<object\b[^>]*?\bdata\s*=\s*([\"'])(.*?)\1", re.I | re.S)
-LINK_HREF = re.compile(r"<link\b[^>]*?\bhref\s*=\s*([\"'])(.*?)\1", re.I | re.S)
-BASE_HREF = re.compile(r"<base\b[^>]*?\bhref\s*=\s*([\"'])(.*?)\1", re.I | re.S)
 CALLS = re.compile(
     r"(?:fetch|import|new\s+Worker|\.open\s*\(\s*[\"'][A-Z]+[\"']\s*,)\s*\(?\s*"
     r"([\"'`])(.*?)\1", re.S)
@@ -115,7 +117,30 @@ def safe_split(url):
         return None, ""
 
 
+def repo_identity(source):
+    """owner/repo (lowercase) of a mirror source string, else None."""
+    segs = source.split("/")
+    host = segs[0]
+    if host not in MIRROR_HOSTS:
+        return None
+    if host.endswith("jsdelivr.net"):
+        if len(segs) >= 4 and segs[1] == "gh":
+            return "{}/{}".format(segs[2], segs[3])
+        return None
+    if len(segs) >= 3:
+        return "{}/{}".format(segs[1], segs[2])
+    return None
+
+
 def source_of(url):
+    """Source key: host, or host/owner/repo for GitHub mirrors.
+
+    The display host is kept (cdn.jsdelivr.net and fastly.jsdelivr.net stay
+    distinct); repo_identity() normalises across hosts for ownership checks.
+    Supported mirror forms: github.com/o/r/raw/..., raw.githubusercontent.com
+    /o/r/..., jsdelivr (cdn/fastly/gcore) /gh/o/r@ref/..., rawcdn.githack.com
+    and raw.githack.com /o/r/....
+    """
     parts, host = safe_split(url)
     if not host:
         return None
@@ -136,7 +161,7 @@ def source_of(url):
 def classify(source):
     if source is None:
         return "own"
-    if source in OWN_SOURCES:
+    if repo_identity(source) == OWN_REPO:
         return "own"
     host = source.split("/")[0]
     if host in INFRA_HOSTS:
@@ -146,23 +171,82 @@ def classify(source):
     return "third-party host"
 
 
+SRC_TAGS = {"script", "iframe", "img", "audio", "video", "source", "embed", "track"}
+
+
+class AssetParser(HTMLParser):
+    """Collects load references from real tag attributes.
+
+    Reads src on SRC_TAGS, data on object, href on link and base. Plain
+    <a href>, data-src and other attributes are ignored. The URL-pattern
+    fallbacks (fetch(), import(), quoted absolute URLs) only run on inline
+    <script> bodies, and url(...) only on <style> bodies and style="..."
+    attributes. Comments are skipped by the parser.
+    """
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.base = None
+        self.attr_urls = []
+        self.script_urls = []
+        self.css_urls = []
+        self._in = None
+        self._buf = []
+
+    def _start(self, tag, attrs):
+        a = {}
+        for k, v in attrs:
+            if k.lower() not in a and v is not None:
+                a[k.lower()] = v
+        if tag in SRC_TAGS and "src" in a:
+            self.attr_urls.append(a["src"])
+        elif tag == "object" and "data" in a:
+            self.attr_urls.append(a["data"])
+        elif tag == "link" and "href" in a:
+            self.attr_urls.append(a["href"])
+        elif tag == "base" and "href" in a and self.base is None:
+            self.base = a["href"].strip()
+        if "style" in a:
+            self.css_urls += [m.group(2) for m in CSS_URL.finditer(a["style"])]
+
+    def handle_starttag(self, tag, attrs):
+        self._start(tag, attrs)
+        if tag in ("script", "style"):
+            self._in, self._buf = tag, []
+
+    def handle_startendtag(self, tag, attrs):
+        self._start(tag, attrs)
+
+    def handle_data(self, data):
+        if self._in:
+            self._buf.append(data)
+
+    def handle_endtag(self, tag):
+        if self._in == tag:
+            body = "".join(self._buf)
+            if tag == "script":
+                self.script_urls += [m.group(2) for m in CALLS.finditer(body)]
+                for m in QUOTED_ABS.finditer(body):
+                    u = m.group(2)
+                    host = safe_split(u if not u.startswith("//") else "https:" + u)[1]
+                    if host in MIRROR_HOSTS or ASSET_EXT.search(u):
+                        self.script_urls.append(u)
+                self.css_urls += [m.group(2) for m in CSS_URL.finditer(body)]
+            else:
+                self.css_urls += [m.group(2) for m in CSS_URL.finditer(body)]
+            self._in, self._buf = None, []
+
+
 def extract_urls(html):
-    text = COMMENT.sub("", html)
-    base = None
-    m = BASE_HREF.search(text)
-    if m:
-        base = m.group(2).strip()
-    raw = []
-    raw += [m.group(3) for m in TAG_ATTR.finditer(text)]
-    raw += [m.group(2) for m in OBJECT_DATA.finditer(text)]
-    raw += [m.group(2) for m in LINK_HREF.finditer(text)]
-    raw += [m.group(2) for m in CALLS.finditer(text)]
-    raw += [m.group(2) for m in CSS_URL.finditer(text)]
-    for m in QUOTED_ABS.finditer(text):
-        u = m.group(2)
-        host = safe_split(u if not u.startswith("//") else "https:" + u)[1]
-        if host in MIRROR_HOSTS or ASSET_EXT.search(u):
-            raw.append(u)
+    """Static analysis of one wrapper: URLs it appears to load. Not runtime."""
+    parser = AssetParser()
+    try:
+        parser.feed(html)
+        parser.close()
+    except Exception:  # malformed markup must not abort the scan
+        pass
+    base = parser.base
+    raw = parser.attr_urls + parser.script_urls + parser.css_urls
 
     urls = set()
     if base and base.startswith(("http://", "https://", "//")):
@@ -330,7 +414,14 @@ def main(argv=None):
     p.add_argument("--out", help="write the markdown report here instead of stdout")
     p.add_argument("--top", type=int, default=25, help="rows per table (default 25)")
     p.add_argument("--json", help="also write per-game results as JSON to this path")
+    p.add_argument("--force", action="store_true",
+                   help="allow --out/--json to overwrite existing files")
     a = p.parse_args(argv)
+    if not a.force:
+        for path in (a.out, a.json):
+            if path and os.path.exists(path):
+                sys.stderr.write("error: {} exists; use --force to overwrite\n".format(path))
+                return 2
     games, results = scan(a.repo)
     report = render(games, results, a.top)
     if a.out:
