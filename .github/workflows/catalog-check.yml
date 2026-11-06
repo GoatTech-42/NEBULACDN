@@ -1,0 +1,34 @@
+name: catalog-check
+
+on:
+  pull_request:
+    paths:
+      - 'games/**'
+      - 'games.json'
+      - 'scripts/check_catalog.py'
+      - '.github/workflows/catalog-check.yml'
+      - '.github/catalog-gate.py'
+      - '.github/known-exclusions.txt'
+  push:
+    paths:
+      - 'games/**'
+      - 'games.json'
+      - 'scripts/check_catalog.py'
+      - '.github/workflows/catalog-check.yml'
+      - '.github/catalog-gate.py'
+      - '.github/known-exclusions.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run catalog integrity checker
+        run: python3 .github/catalog-gate.py
