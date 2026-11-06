@@ -34,6 +34,10 @@ for line in res.stdout.splitlines():
     elif in_orphans and line.startswith("  - "):
         orphans.add(line[4:].strip())
 new_orphans = orphans - known
+reported = counts.get("orphan file (not in catalog)")
+if reported is not None and reported != len(orphans):
+    print("FAIL: parsed {} orphans but checker reported {} (output format drift?)".format(len(orphans), reported))
+    sys.exit(1)
 if bad or new_orphans or not counts:
     print("FAIL: new integrity problems:", bad, sorted(new_orphans))
     sys.exit(1)
