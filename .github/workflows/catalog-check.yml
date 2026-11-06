@@ -6,11 +6,15 @@ on:
       - 'games/**'
       - 'games.json'
       - '.github/workflows/catalog-check.yml'
+      - '.github/catalog-gate.py'
+      - '.github/known-exclusions.txt'
   push:
     paths:
       - 'games/**'
       - 'games.json'
       - '.github/workflows/catalog-check.yml'
+      - '.github/catalog-gate.py'
+      - '.github/known-exclusions.txt'
   workflow_dispatch:
 
 permissions:
@@ -25,4 +29,4 @@ jobs:
         with:
           python-version: '3.x'
       - name: Run catalog integrity checker
-        run: python3 scripts/check_catalog.py
+        run: python3 .github/catalog-gate.py
