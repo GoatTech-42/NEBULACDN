@@ -5,6 +5,7 @@ on:
     paths:
       - 'games/**'
       - 'games.json'
+      - 'scripts/check_catalog.py'
       - '.github/workflows/catalog-check.yml'
       - '.github/catalog-gate.py'
       - '.github/known-exclusions.txt'
@@ -12,6 +13,7 @@ on:
     paths:
       - 'games/**'
       - 'games.json'
+      - 'scripts/check_catalog.py'
       - '.github/workflows/catalog-check.yml'
       - '.github/catalog-gate.py'
       - '.github/known-exclusions.txt'
