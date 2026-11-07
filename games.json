@@ -10,7 +10,7 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3074,
-    "totalSizeBytes": 748882582,
+    "totalSizeBytes": 748881760,
     "totalSizeMB": 748.9,
     "categories": {
       "Other": 2046,
@@ -5122,9 +5122,9 @@
         "singleplayer"
       ],
       "description": "Play Blockysnakes — a other game playable directly in your browser. No downloads required.",
-      "size": 2753,
+      "size": 2636,
       "originalSize": 2753,
-      "hash": "4c8c28eadd1f661e"
+      "hash": "f875ed41731f3b3c"
     },
     {
       "id": "blood",
@@ -21322,9 +21322,9 @@
         "singleplayer"
       ],
       "description": "Play Ice Age Baby — a other game playable directly in your browser. No downloads required.",
-      "size": 6554,
+      "size": 4973,
       "originalSize": 7897,
-      "hash": "d30f115e84a5bbc7"
+      "hash": "47ce4989294bf6e7"
     },
     {
       "id": "iceclimber",
@@ -22246,9 +22246,9 @@
         "singleplayer"
       ],
       "description": "Play Jellytruckgood — a racing game playable directly in your browser. No downloads required.",
-      "size": 8179,
+      "size": 7329,
       "originalSize": 8965,
-      "hash": "c6f8075a65c918bf"
+      "hash": "35bed67248ef80b3"
     },
     {
       "id": "jetforcegemini",
@@ -25685,9 +25685,9 @@
         "cdn-streamed"
       ],
       "description": "Play Mariovsluigi in your browser (streams game files via jsDelivr CDN).",
-      "size": 1813,
+      "size": 1808,
       "originalSize": 2034,
-      "hash": "25ce7dc88818e57d"
+      "hash": "d1c0e4f42dbb89db"
     },
     {
       "id": "marvel-super-heroes-arcade",
@@ -45009,9 +45009,9 @@
         "singleplayer"
       ],
       "description": "Play Superhotlinemiami — a other game playable directly in your browser. No downloads required.",
-      "size": 3194,
+      "size": 5042,
       "originalSize": 4240,
-      "hash": "e1b2e7b2c7be7fa9"
+      "hash": "f1fe38691b283191"
     },
     {
       "id": "superhouseofdeadninjas",
@@ -49842,9 +49842,9 @@
         "singleplayer"
       ],
       "description": "Play Vex 4 — a other game playable directly in your browser. No downloads required.",
-      "size": 1357,
+      "size": 1301,
       "originalSize": 1422,
-      "hash": "7e730c96d0cbaaf6"
+      "hash": "37642d352a607be4"
     },
     {
       "id": "vex5",
@@ -49860,9 +49860,9 @@
         "singleplayer"
       ],
       "description": "Play Vex 5 — a other game playable directly in your browser. No downloads required.",
-      "size": 1543,
+      "size": 1487,
       "originalSize": 1608,
-      "hash": "210beea4d3e19b9a"
+      "hash": "de53d0756b96b005"
     },
     {
       "id": "vex6",
@@ -56380,9 +56380,9 @@
         "cdn-streamed"
       ],
       "description": "Play Mario VS Luigi Online in your browser (streams game files via jsDelivr CDN).",
-      "size": 2034,
+      "size": 2029,
       "originalSize": 2034,
-      "hash": "4a2ff4c965f6a99b"
+      "hash": "f02c7a5ba7428e1c"
     },
     {
       "id": "minecraft-parkour",
