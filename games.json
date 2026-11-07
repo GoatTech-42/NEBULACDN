@@ -9,16 +9,16 @@
   "license": "MIT",
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
-    "totalGames": 3071,
-    "totalSizeBytes": 748874748,
+    "totalGames": 3074,
+    "totalSizeBytes": 748882582,
     "totalSizeMB": 748.9,
     "categories": {
-      "Other": 2044,
+      "Other": 2046,
       "Pokemon": 134,
       "Platformer": 110,
       "Mario": 106,
       "Sonic": 74,
-      "Racing": 73,
+      "Racing": 74,
       "Strategy": 73,
       "Fighting": 70,
       "Sports": 68,
@@ -9335,6 +9335,24 @@
       "size": 2795,
       "originalSize": 2795,
       "hash": "aa0d0dd385b8ddf4"
+    },
+    {
+      "id": "cyberbungracing",
+      "name": "Cyberbungracing",
+      "slug": "cyberbungracing",
+      "file": "games/cyberbungracing.html",
+      "filename": "cyberbungracing.html",
+      "category": "Racing",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer"
+      ],
+      "description": "Play Cyberbungracing — a racing game playable directly in your browser. No downloads required.",
+      "size": 3355,
+      "originalSize": 3236,
+      "hash": "929333e9ef587d27"
     },
     {
       "id": "cybersensation",
@@ -31127,6 +31145,24 @@
       "hash": "ab4f1759dca8f639"
     },
     {
+      "id": "paperiomania",
+      "name": "Paperiomania",
+      "slug": "paperiomania",
+      "file": "games/paperiomania.html",
+      "filename": "paperiomania.html",
+      "category": "Other",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer"
+      ],
+      "description": "Play Paperiomania — a other game playable directly in your browser. No downloads required.",
+      "size": 2516,
+      "originalSize": 2685,
+      "hash": "99ad55eb7a5543c5"
+    },
+    {
       "id": "papermario",
       "name": "Papermario",
       "slug": "papermario",
@@ -49243,6 +49279,24 @@
       "size": 5417,
       "originalSize": 5835,
       "hash": "03b42d02c37d4ae6"
+    },
+    {
+      "id": "underneath",
+      "name": "Underneath",
+      "slug": "underneath",
+      "file": "games/underneath.html",
+      "filename": "underneath.html",
+      "category": "Other",
+      "tags": [
+        "offline",
+        "browser",
+        "html5",
+        "singleplayer"
+      ],
+      "description": "Play Underneath — a other game playable directly in your browser. No downloads required.",
+      "size": 1963,
+      "originalSize": 2900,
+      "hash": "1fae1fd164419313"
     },
     {
       "id": "undertalelb",
