@@ -12,8 +12,12 @@ Checks:
   - game files in games/ that no catalog entry points to (orphans)
   - duplicate entries (same id, slug, or file appearing more than once)
 
+Optional --verify-integrity (default off) also checks, offline, that each
+entry's file byte length equals `size` and that sha256(file bytes)[:16] equals
+`hash`. Note: update_games_meta.py hashes the raw file bytes, so this does too.
+
 Usage:
-  python3 scripts/check_catalog.py [--repo PATH] [--limit N]
+  python3 scripts/check_catalog.py [--repo PATH] [--limit N] [--verify-integrity]
 
 Exit code is 0 when no problems are found, 1 when problems are found, and
 2 when games.json is malformed (concise error on stderr).
@@ -21,6 +25,7 @@ Standard library only.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -78,7 +83,33 @@ def entry_label(entry, index):
     )
 
 
-def check(repo):
+def verify_integrity(repo, games, problems):
+    """Size and hash check against raw file bytes (offline)."""
+    for index, entry in enumerate(games):
+        rel = entry.get("file") or ""
+        path = os.path.join(repo, *rel.split("/"))
+        if not os.path.isfile(path):
+            continue  # missing/case problems are reported by the base checks
+        try:
+            with open(path, "rb") as fh:
+                raw = fh.read()
+        except OSError as exc:
+            problems["unreadable file"].append(
+                "{} ({})".format(entry_label(entry, index), exc))
+            continue
+        label = entry_label(entry, index)
+        size = entry.get("size")
+        if size is not None and size != len(raw):
+            problems["size mismatch"].append(
+                "{} expected={} actual={}".format(label, size, len(raw)))
+        want = entry.get("hash")
+        actual = hashlib.sha256(raw).hexdigest()[:16]
+        if want is not None and want != actual:
+            problems["hash mismatch"].append(
+                "{} expected={} actual={}".format(label, want, actual))
+
+
+def check(repo, integrity=False):
     data, games = load_catalog(repo)
     files = list_game_files(repo)
     file_set = set(files)
@@ -139,6 +170,9 @@ def check(repo):
         problems["stats.totalGames mismatch"].append(
             "stats.totalGames={} but games has {} entries".format(declared, len(games)))
 
+    if integrity:
+        verify_integrity(repo, games, problems)
+
     return games, files, problems
 
 
@@ -154,9 +188,11 @@ ORDER = [
     "orphan file (not in catalog)",
     "stats.totalGames mismatch",
 ]
+INTEGRITY_ORDER = ["size mismatch", "hash mismatch", "unreadable file"]
 
 
-def report(games, files, problems, limit):
+def report(games, files, problems, limit, integrity=False):
+    order = ORDER + (INTEGRITY_ORDER if integrity else [])
     lines = []
     lines.append("NEBULA CDN catalog integrity report")
     lines.append("=" * 36)
@@ -166,9 +202,9 @@ def report(games, files, problems, limit):
     lines.append("Problems found:       {}".format(total))
     lines.append("")
     lines.append("Counts by type:")
-    for kind in ORDER:
+    for kind in order:
         lines.append("  {:<32} {}".format(kind, len(problems.get(kind, []))))
-    for kind in ORDER:
+    for kind in order:
         items = problems.get(kind, [])
         if not items:
             continue
@@ -189,14 +225,17 @@ def main(argv=None):
                         help="path to the NEBULACDN checkout (default: this repo)")
     parser.add_argument("--limit", type=int, default=None,
                         help="max entries to print per problem type")
+    parser.add_argument("--verify-integrity", action="store_true",
+                        help="also verify size and sha256[:16] hash of each "
+                        "file (offline; update_games_meta.py hashes raw bytes)")
     args = parser.parse_args(argv)
 
     try:
-        games, files, problems = check(args.repo)
+        games, files, problems = check(args.repo, args.verify_integrity)
     except (CatalogError, OSError) as exc:
         sys.stderr.write("error: {}\n".format(exc))
         return 2
-    print(report(games, files, problems, args.limit))
+    print(report(games, files, problems, args.limit, args.verify_integrity))
     return 1 if any(problems.values()) else 0
 
 
