@@ -133,5 +133,47 @@ class Detection(Base):
         self.assertEqual(len(self.problems(repo)["stats.totalGames mismatch"]), 1)
 
 
+class Integrity(Base):
+    BODY = b"<html>hello</html>"
+
+    def make_with_bodies(self, **kw):
+        import hashlib
+        good = hashlib.sha256(self.BODY).hexdigest()[:16]
+        e = entry(1, size=kw.get("size", len(self.BODY)),
+                  hash=kw.get("hash", good))
+        repo = self.make({"games": [e]}, files=("g1.html",))
+        with open(os.path.join(repo, "games", "g1.html"), "wb") as fh:
+            fh.write(self.BODY)
+        return repo
+
+    def run_verify(self, repo):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = check_catalog.main(["--repo", repo, "--verify-integrity"])
+        return code, out.getvalue()
+
+    def test_matching_passes(self):
+        code, out = self.run_verify(self.make_with_bodies())
+        self.assertEqual(code, 0)
+        self.assertIn("Problems found:       0", out)
+
+    def test_wrong_size_reported(self):
+        code, out = self.run_verify(self.make_with_bodies(size=5))
+        self.assertEqual(code, 1)
+        self.assertIn("SIZE MISMATCH (1)", out)
+        self.assertIn("expected=5 actual=%d" % len(self.BODY), out)
+
+    def test_wrong_hash_reported(self):
+        code, out = self.run_verify(self.make_with_bodies(hash="0" * 16))
+        self.assertEqual(code, 1)
+        self.assertIn("HASH MISMATCH (1)", out)
+
+    def test_mode_off_ignores_bad_size_and_hash(self):
+        repo = self.make_with_bodies(size=5, hash="0" * 16)
+        self.assertEqual(self.run_main(repo)[0], 0)
+        p = check_catalog.check(repo)[2]
+        self.assertFalse(p.get("size mismatch") or p.get("hash mismatch"))
+
+
 if __name__ == "__main__":
     unittest.main()
