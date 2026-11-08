@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Refresh size/hash in games.json for the given games from the exact files that
-will be published. hash = first 16 hex of sha256 of the file bytes (same as
+will be published. hash = first 16 hex of sha256 of the file bytes with CRLF normalized to LF (same as
 process_games.py, which hashes the utf-8 text). originalSize is left alone.
 Also recomputes stats.totalSizeBytes/MB as the sum of per-game sizes.
 Usage: update_games_meta.py GAMES_JSON GAMES_DIR slug [slug ...]"""
@@ -11,7 +11,7 @@ raw = json.load(open(path, encoding='utf-8'))
 games = raw['games'] if isinstance(raw, dict) else raw
 by = {g['slug']: g for g in games}
 for s in slugs:
-    b = open(os.path.join(gdir, s + '.html'), 'rb').read()
+    b = open(os.path.join(gdir, s + '.html'), 'rb').read().replace(b'\r\n', b'\n')  # canonical LF form
     g = by[s]
     print(s, g['size'], '->', len(b), g['hash'], '->', hashlib.sha256(b).hexdigest()[:16])
     g['size'], g['hash'] = len(b), hashlib.sha256(b).hexdigest()[:16]

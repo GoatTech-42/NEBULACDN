@@ -93,7 +93,7 @@ def _inside_games(repo, path):
 
 
 def verify_integrity(repo, games, problems):
-    """Size and hash check against raw file bytes (offline)."""
+    """Size and hash check against line-ending-normalized (CRLF->LF) file bytes (offline)."""
     for index, entry in enumerate(games):
         rel = entry.get("file") or ""
         path = os.path.join(repo, *rel.split("/"))
@@ -108,6 +108,7 @@ def verify_integrity(repo, games, problems):
             problems["unreadable file"].append(
                 "{} ({})".format(entry_label(entry, index), exc))
             continue
+        raw = raw.replace(b"\r\n", b"\n")  # canonical LF form (see .gitattributes)
         label = entry_label(entry, index)
         size = entry.get("size")
         if size is not None and size != len(raw):
