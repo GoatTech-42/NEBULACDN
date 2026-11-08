@@ -10,8 +10,8 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3074,
-    "totalSizeBytes": 748881760,
-    "totalSizeMB": 748.9,
+    "totalSizeBytes": 748766948,
+    "totalSizeMB": 748.8,
     "categories": {
       "Other": 2046,
       "Pokemon": 134,
@@ -212,9 +212,9 @@
         "singleplayer"
       ],
       "description": "Play 12 Minibattles — a other game playable directly in your browser. No downloads required.",
-      "size": 5418,
+      "size": 5288,
       "originalSize": 2374,
-      "hash": "c9f20ed8dd0505f0"
+      "hash": "87595e55b53f88c1"
     },
     {
       "id": "13bones",
@@ -447,9 +447,9 @@
         "cdn-streamed"
       ],
       "description": "Play 3 Dasheditor — a platformer game playable directly in your browser. No downloads required.",
-      "size": 31552,
+      "size": 30758,
       "originalSize": 18794,
-      "hash": "545cfce9fd90275e"
+      "hash": "4e859045522c0e48"
     },
     {
       "id": "3dpinballspacecadet",
@@ -1185,9 +1185,9 @@
         "cdn-streamed"
       ],
       "description": "Play Adventneon — a other game playable directly in your browser. No downloads required.",
-      "size": 3162,
+      "size": 3067,
       "originalSize": 1430,
-      "hash": "5ed7d77a80b9984c"
+      "hash": "29917857b1c16383"
     },
     {
       "id": "adventure-capatalist",
@@ -1225,9 +1225,9 @@
         "cdn-streamed"
       ],
       "description": "Play Adventurecapitalist in your browser (streams game files via jsDelivr CDN).",
-      "size": 5688,
+      "size": 5561,
       "originalSize": 6336,
-      "hash": "735afae0547ca450"
+      "hash": "a96759c389d0ed02"
     },
     {
       "id": "aflac",
@@ -2220,9 +2220,9 @@
         "cdn-streamed"
       ],
       "description": "Play Aquaparkio in your browser (streams game files via jsDelivr CDN).",
-      "size": 3960,
+      "size": 3858,
       "originalSize": 2782,
-      "hash": "54403b0bb9588785"
+      "hash": "b1374181477f70e6"
     },
     {
       "id": "arcadevolley",
@@ -2527,9 +2527,9 @@
         "cdn-streamed"
       ],
       "description": "Play Assessmentexamination — a other game playable directly in your browser. No downloads required.",
-      "size": 8576,
+      "size": 8280,
       "originalSize": 3350,
-      "hash": "e87698a261babe7b"
+      "hash": "eeff38143e4daef4"
     },
     {
       "id": "assof09",
@@ -3414,9 +3414,9 @@
         "cdn-streamed"
       ],
       "description": "Play Badtimesimulator — a simulation game playable directly in your browser. No downloads required.",
-      "size": 4497,
+      "size": 4343,
       "originalSize": 802,
-      "hash": "bd19d504dc30c011"
+      "hash": "4cf945f0afe9b718"
     },
     {
       "id": "balatrogba",
@@ -3638,9 +3638,9 @@
         "cdn-streamed"
       ],
       "description": "Play Ballsandbricks — a other game playable directly in your browser. No downloads required.",
-      "size": 2024,
+      "size": 2017,
       "originalSize": 96072,
-      "hash": "f5d907e962472e2f"
+      "hash": "970e7562e1b3cfd6"
     },
     {
       "id": "ballsandbricksgood",
@@ -4111,9 +4111,9 @@
         "singleplayer"
       ],
       "description": "Play Basketslamdunk 2 — a other game playable directly in your browser. No downloads required.",
-      "size": 4938,
+      "size": 4854,
       "originalSize": 1659,
-      "hash": "b52361e52ea98811"
+      "hash": "a379c66d0996c430"
     },
     {
       "id": "batterup",
@@ -4131,9 +4131,9 @@
         "cdn-streamed"
       ],
       "description": "Play Batterup — a other game playable directly in your browser. No downloads required.",
-      "size": 4170,
+      "size": 4048,
       "originalSize": 1795,
-      "hash": "fab91b8d845540e9"
+      "hash": "81a9e0dc25e82a2e"
     },
     {
       "id": "battlekarts",
@@ -4167,9 +4167,9 @@
         "singleplayer"
       ],
       "description": "Play Battles — a other game playable directly in your browser. No downloads required.",
-      "size": 5398,
+      "size": 5268,
       "originalSize": 1663,
-      "hash": "54cc946fbdfded7b"
+      "hash": "d559b5ba4273079f"
     },
     {
       "id": "battlesim",
@@ -4484,9 +4484,9 @@
         "cdn-streamed"
       ],
       "description": "Play Bergentruck 201x in your browser (streams game files via jsDelivr CDN).",
-      "size": 8667,
+      "size": 8383,
       "originalSize": 5597,
-      "hash": "1b8fe444ca6571b2"
+      "hash": "eb8124da477d8790"
     },
     {
       "id": "bfdi-branches",
@@ -4654,9 +4654,9 @@
         "cdn-streamed"
       ],
       "description": "Play Bigtowertinysquare 2 — a platformer game playable directly in your browser. No downloads required.",
-      "size": 2247,
+      "size": 2189,
       "originalSize": 93062,
-      "hash": "97fd38b271275bd0"
+      "hash": "8adb6d0ef2811e79"
     },
     {
       "id": "bigtowertinysquare2good",
@@ -4710,9 +4710,9 @@
         "cdn-streamed"
       ],
       "description": "Play Bioevil 4 — a horror game playable directly in your browser. No downloads required.",
-      "size": 5297,
+      "size": 5158,
       "originalSize": 3311,
-      "hash": "432f2abcb8e533c4"
+      "hash": "251a1fb752c1004d"
     },
     {
       "id": "bitlife",
@@ -4994,9 +4994,9 @@
         "cdn-streamed"
       ],
       "description": "Play Blockblast — a other game playable directly in your browser. No downloads required.",
-      "size": 4659,
+      "size": 4526,
       "originalSize": 3366,
-      "hash": "8027f61a47e3cfc4"
+      "hash": "36e04dbc0383548d"
     },
     {
       "id": "blockblastv2",
@@ -5162,9 +5162,9 @@
         "cdn-streamed"
       ],
       "description": "Play Bloodmoney in your browser (streams game files via jsDelivr CDN).",
-      "size": 5337,
+      "size": 5212,
       "originalSize": 3629,
-      "hash": "71608b313d65ca2c"
+      "hash": "7304daf5c324fa62"
     },
     {
       "id": "bloodtournament",
@@ -5730,9 +5730,9 @@
         "cdn-streamed"
       ],
       "description": "Play Boomslingers in your browser (streams game files via jsDelivr CDN).",
-      "size": 5703,
+      "size": 5530,
       "originalSize": 4009,
-      "hash": "f88ebd8ae0ec388f"
+      "hash": "51f48f01fd61e355"
     },
     {
       "id": "bottlecracks",
@@ -6366,9 +6366,9 @@
         "cdn-streamed"
       ],
       "description": "Play Buildnowgg in your browser (streams game files via jsDelivr CDN).",
-      "size": 6045,
+      "size": 5863,
       "originalSize": 4196,
-      "hash": "b2c4cad89f1ce410"
+      "hash": "0efb249a5ca107c3"
     },
     {
       "id": "bulletforce",
@@ -8435,9 +8435,9 @@
         "cdn-streamed"
       ],
       "description": "Play Countmastersstickmangames in your browser (streams game files via jsDelivr CDN).",
-      "size": 5695,
+      "size": 5525,
       "originalSize": 4014,
-      "hash": "047762a0f4db3b5f"
+      "hash": "c4959e44c6f96dea"
     },
     {
       "id": "coverorange",
@@ -9747,9 +9747,9 @@
         "cdn-streamed"
       ],
       "description": "Play Deadestate — a other game playable directly in your browser. No downloads required.",
-      "size": 3414,
+      "size": 3324,
       "originalSize": 1661,
-      "hash": "c7107226b6897f28"
+      "hash": "414c37853614b37e"
     },
     {
       "id": "deadfrontieroutbreak",
@@ -9821,9 +9821,9 @@
         "cdn-streamed"
       ],
       "description": "Play Deadplate in your browser (streams game files via jsDelivr CDN).",
-      "size": 2946,
+      "size": 2871,
       "originalSize": 2211,
-      "hash": "1c8d74ffaa25dea1"
+      "hash": "41492606fdaf29ba"
     },
     {
       "id": "deadseat",
@@ -10659,9 +10659,9 @@
         "cdn-streamed"
       ],
       "description": "Play Dogeminer — a other game playable directly in your browser. No downloads required.",
-      "size": 37038,
+      "size": 36032,
       "originalSize": 27877,
-      "hash": "0940726cd4c9c8c6"
+      "hash": "bd76d97d9188ef4c"
     },
     {
       "id": "dogeminer2",
@@ -10939,9 +10939,9 @@
         "cdn-streamed"
       ],
       "description": "Play Doodlejump — a platformer game playable directly in your browser. No downloads required.",
-      "size": 33339,
+      "size": 32466,
       "originalSize": 26643,
-      "hash": "8cc15d210905d971"
+      "hash": "41ea69be41232157"
     },
     {
       "id": "doodlejumpgoober",
@@ -11609,9 +11609,9 @@
         "cdn-streamed"
       ],
       "description": "Play Drivenwild in your browser (streams game files via jsDelivr CDN).",
-      "size": 1939,
+      "size": 1890,
       "originalSize": 1462,
-      "hash": "3f329605994784b5"
+      "hash": "848afa8428e22ba8"
     },
     {
       "id": "driverussia",
@@ -11665,9 +11665,9 @@
         "cdn-streamed"
       ],
       "description": "Play Drweedgaster — a other game playable directly in your browser. No downloads required.",
-      "size": 3014,
+      "size": 2917,
       "originalSize": 1581,
-      "hash": "b39893f6212bdef6"
+      "hash": "67c215a8e6a6f59a"
     },
     {
       "id": "dta6",
@@ -11907,9 +11907,9 @@
         "cdn-streamed"
       ],
       "description": "Play Dud — a other game playable directly in your browser. No downloads required.",
-      "size": 5038,
+      "size": 4925,
       "originalSize": 3568,
-      "hash": "f18f20ee87327d9a"
+      "hash": "1d2141035bb1881d"
     },
     {
       "id": "dukenukem2",
@@ -14240,9 +14240,9 @@
         "cdn-streamed"
       ],
       "description": "Play Fearstofathomhomealone in your browser (streams game files via jsDelivr CDN).",
-      "size": 4814,
+      "size": 4657,
       "originalSize": 3848,
-      "hash": "631459eb8676e825"
+      "hash": "a643d7bb5eb3b6da"
     },
     {
       "id": "feedthevoid",
@@ -18303,9 +18303,9 @@
         "cdn-streamed"
       ],
       "description": "Play Genericfightermaybe in your browser (streams game files via jsDelivr CDN).",
-      "size": 3508,
+      "size": 3386,
       "originalSize": 3728,
-      "hash": "f5d079095b67758c"
+      "hash": "d0c4b30c634da0d0"
     },
     {
       "id": "geometrydashlite",
@@ -18826,9 +18826,9 @@
         "singleplayer"
       ],
       "description": "Play Goldminer — a other game playable directly in your browser. No downloads required.",
-      "size": 11899,
+      "size": 11533,
       "originalSize": 948,
-      "hash": "ce0c8dbed4dc574e"
+      "hash": "c41214b59044992a"
     },
     {
       "id": "golfbattle",
@@ -18996,9 +18996,9 @@
         "cdn-streamed"
       ],
       "description": "Play Googlebaseball in your browser (streams game files via jsDelivr CDN).",
-      "size": 15284,
+      "size": 14893,
       "originalSize": 15694,
-      "hash": "82ea39e7ad7c9d8c"
+      "hash": "090cda34c15ddf2a"
     },
     {
       "id": "googledino",
@@ -19182,9 +19182,9 @@
         "cdn-streamed"
       ],
       "description": "Play Granny 3 in your browser (streams game files via jsDelivr CDN).",
-      "size": 4951,
+      "size": 4834,
       "originalSize": 10553,
-      "hash": "b01710aa2ef30b76"
+      "hash": "20d21322bccbbbb3"
     },
     {
       "id": "grannycreepy",
@@ -19465,9 +19465,9 @@
         "cdn-streamed"
       ],
       "description": "Play Growdenio in your browser (streams game files via jsDelivr CDN).",
-      "size": 37681,
+      "size": 36669,
       "originalSize": 27012,
-      "hash": "002718191c082364"
+      "hash": "6f2fc2ba8c00d5b3"
     },
     {
       "id": "growmi",
@@ -20135,9 +20135,9 @@
         "singleplayer"
       ],
       "description": "Play Hanger — a other game playable directly in your browser. No downloads required.",
-      "size": 8303,
+      "size": 8044,
       "originalSize": 945,
-      "hash": "78aa8bf56cae4d75"
+      "hash": "76d21eab0958b774"
     },
     {
       "id": "hanger2",
@@ -20153,9 +20153,9 @@
         "singleplayer"
       ],
       "description": "Play Hanger 2 — a other game playable directly in your browser. No downloads required.",
-      "size": 8305,
+      "size": 8046,
       "originalSize": 946,
-      "hash": "84002d283c0f8467"
+      "hash": "f16af85a9f5684a5"
     },
     {
       "id": "hangonsms",
@@ -21226,9 +21226,9 @@
         "cdn-streamed"
       ],
       "description": "Play Humanexpenditureprogram in your browser (streams game files via jsDelivr CDN).",
-      "size": 10872,
+      "size": 10575,
       "originalSize": 10116,
-      "hash": "603e25d02d961967"
+      "hash": "e6fae9a22242b04b"
     },
     {
       "id": "hungryknight",
@@ -21360,9 +21360,9 @@
         "cdn-streamed"
       ],
       "description": "Play Icedodo in your browser (streams game files via jsDelivr CDN).",
-      "size": 52051,
+      "size": 50714,
       "originalSize": 41776,
-      "hash": "d7843bc3aaebd554"
+      "hash": "6183874df8d63613"
     },
     {
       "id": "icefishing",
@@ -21419,9 +21419,9 @@
         "singleplayer"
       ],
       "description": "Play Idlebreakout — a other game playable directly in your browser. No downloads required.",
-      "size": 4335,
+      "size": 4245,
       "originalSize": 3037,
-      "hash": "146e49f9cea2985b"
+      "hash": "238fe7c9765e8d0e"
     },
     {
       "id": "idledice",
@@ -21666,9 +21666,9 @@
         "cdn-streamed"
       ],
       "description": "Play Infinitecraft in your browser (streams game files via jsDelivr CDN).",
-      "size": 1003,
+      "size": 974,
       "originalSize": 708,
-      "hash": "279753dfdd0fa7fb"
+      "hash": "cd1723c5f7591008"
     },
     {
       "id": "inkgame",
@@ -22190,9 +22190,9 @@
         "cdn-streamed"
       ],
       "description": "Play Jellydrift in your browser (streams game files via jsDelivr CDN).",
-      "size": 4254,
+      "size": 4120,
       "originalSize": 3402,
-      "hash": "86a26c96b5c4965d"
+      "hash": "e34acb88e8acbda6"
     },
     {
       "id": "jellymario",
@@ -22284,9 +22284,9 @@
         "cdn-streamed"
       ],
       "description": "Play Jetpackjoyride — a other game playable directly in your browser. No downloads required.",
-      "size": 1842,
+      "size": 1791,
       "originalSize": 1525,
-      "hash": "0474afb7707d8542"
+      "hash": "3a08d648cd37b4a4"
     },
     {
       "id": "jetrush",
@@ -22359,9 +22359,9 @@
         "singleplayer"
       ],
       "description": "Play Johnnytrigger — a other game playable directly in your browser. No downloads required.",
-      "size": 17366,
+      "size": 16957,
       "originalSize": 5039,
-      "hash": "02994bab8debeaff"
+      "hash": "22a04dabb3c99475"
     },
     {
       "id": "johnnyupgrade",
@@ -22838,9 +22838,9 @@
         "cdn-streamed"
       ],
       "description": "Play Karlson in your browser (streams game files via jsDelivr CDN).",
-      "size": 3713,
+      "size": 3596,
       "originalSize": 2961,
-      "hash": "bce356dd23ca3a9d"
+      "hash": "54160743fae3f931"
     },
     {
       "id": "kartbros",
@@ -25102,9 +25102,9 @@
         "singleplayer"
       ],
       "description": "Play Makesureitsclosed — a other game playable directly in your browser. No downloads required.",
-      "size": 5757,
+      "size": 5613,
       "originalSize": 722,
-      "hash": "8af08b652742bd0e"
+      "hash": "6def8f73df02f0f7"
     },
     {
       "id": "mami",
@@ -27174,9 +27174,9 @@
         "cdn-streamed"
       ],
       "description": "Play Minecraftshooter in your browser (streams game files via jsDelivr CDN).",
-      "size": 13446,
+      "size": 13037,
       "originalSize": 10241,
-      "hash": "7afe8e674514248e"
+      "hash": "7ea27914808427e5"
     },
     {
       "id": "minecrafttowerdefense",
@@ -27806,9 +27806,9 @@
         "cdn-streamed"
       ],
       "description": "Play Moneyrush in your browser (streams game files via jsDelivr CDN).",
-      "size": 36621,
+      "size": 35471,
       "originalSize": 35789,
-      "hash": "ebf4862a84f41f4a"
+      "hash": "04cd138fab15a760"
     },
     {
       "id": "monkeymart",
@@ -28964,9 +28964,9 @@
         "cdn-streamed"
       ],
       "description": "Play Nextdoor — a other game playable directly in your browser. No downloads required.",
-      "size": 3348,
+      "size": 3259,
       "originalSize": 3098,
-      "hash": "02e2712de82f0668"
+      "hash": "b7ca28e7cd15ef24"
     },
     {
       "id": "nflblitz",
@@ -29597,9 +29597,9 @@
         "cdn-streamed"
       ],
       "description": "Play Nubbysnumberfactory in your browser (streams game files via jsDelivr CDN).",
-      "size": 18560,
+      "size": 17913,
       "originalSize": 17717,
-      "hash": "5967c7584e761d3c"
+      "hash": "590190fb711a9c78"
     },
     {
       "id": "nullkevin",
@@ -31911,9 +31911,9 @@
         "cdn-streamed"
       ],
       "description": "Play Picohot — a other game playable directly in your browser. No downloads required.",
-      "size": 47356,
+      "size": 46225,
       "originalSize": 46067,
-      "hash": "f5232626c02dca10"
+      "hash": "07308d8e0b48078a"
     },
     {
       "id": "picolife",
@@ -32059,9 +32059,9 @@
         "cdn-streamed"
       ],
       "description": "Play Pingpongchaos — a other game playable directly in your browser. No downloads required.",
-      "size": 2156,
+      "size": 2116,
       "originalSize": 1940,
-      "hash": "f3a0cf2534e99f29"
+      "hash": "418a854e1a37c15e"
     },
     {
       "id": "pinkbike",
@@ -35193,9 +35193,9 @@
         "cdn-streamed"
       ],
       "description": "Play Possessquest — a rpg game playable directly in your browser. No downloads required.",
-      "size": 4141,
+      "size": 4019,
       "originalSize": 3846,
-      "hash": "c44c3f64a5542c2a"
+      "hash": "3dc8dd114049fd24"
     },
     {
       "id": "postal",
@@ -36634,9 +36634,9 @@
         "cdn-streamed"
       ],
       "description": "Play Redball 4 — a other game playable directly in your browser. No downloads required.",
-      "size": 8360,
+      "size": 8084,
       "originalSize": 507,
-      "hash": "acd7485b58f6a7ae"
+      "hash": "2b4298295eedaa3b"
     },
     {
       "id": "redball4vol2",
@@ -38375,9 +38375,9 @@
         "cdn-streamed"
       ],
       "description": "Play Sausageflip in your browser (streams game files via jsDelivr CDN).",
-      "size": 968,
+      "size": 944,
       "originalSize": 10765,
-      "hash": "18f8b2fe8ecf006d"
+      "hash": "298be6bf06e427d7"
     },
     {
       "id": "sayorisnotebook",
@@ -38472,9 +38472,9 @@
         "cdn-streamed"
       ],
       "description": "Play Scarletshift — a other game playable directly in your browser. No downloads required.",
-      "size": 4024,
+      "size": 3901,
       "originalSize": 3728,
-      "hash": "1887c32cd0c980cb"
+      "hash": "e8dd805cf1663dbf"
     },
     {
       "id": "scarymazegame",
@@ -39348,9 +39348,9 @@
         "cdn-streamed"
       ],
       "description": "Play Shredmill — a other game playable directly in your browser. No downloads required.",
-      "size": 4025,
+      "size": 3901,
       "originalSize": 3737,
-      "hash": "1bb746674d7aec3a"
+      "hash": "4f069d663168eb18"
     },
     {
       "id": "shrek-2",
@@ -39780,9 +39780,9 @@
         "cdn-streamed"
       ],
       "description": "Play Sky Riders in your browser (streams game files via jsDelivr CDN).",
-      "size": 5865,
+      "size": 5688,
       "originalSize": 4193,
-      "hash": "c7971b6abf509f12"
+      "hash": "d37b9ec065216de6"
     },
     {
       "id": "skyfactory",
@@ -40027,9 +40027,9 @@
         "cdn-streamed"
       ],
       "description": "Play Slope — a other game playable directly in your browser. No downloads required.",
-      "size": 4397,
+      "size": 4283,
       "originalSize": 1016,
-      "hash": "964395ea375ddcbc"
+      "hash": "6db03b43d88868c6"
     },
     {
       "id": "slope2player",
@@ -40348,9 +40348,9 @@
         "cdn-streamed"
       ],
       "description": "Play Smashkarts — a fighting game playable directly in your browser. No downloads required.",
-      "size": 21533,
+      "size": 21281,
       "originalSize": 6623,
-      "hash": "55cf32bdf8b5afb9"
+      "hash": "6c2107bc69d4c6cc"
     },
     {
       "id": "smashkartsworking",
@@ -42872,9 +42872,9 @@
         "cdn-streamed"
       ],
       "description": "Play Sprunki in your browser (streams game files via jsDelivr CDN).",
-      "size": 11502,
+      "size": 11123,
       "originalSize": 9598,
-      "hash": "25517f32debb4a68"
+      "hash": "f51aaec8d4b72277"
     },
     {
       "id": "sprunkiclicker",
@@ -43458,9 +43458,9 @@
         "cdn-streamed"
       ],
       "description": "Play Stickmanandguns in your browser (streams game files via jsDelivr CDN).",
-      "size": 6005,
+      "size": 5826,
       "originalSize": 5028,
-      "hash": "de7e42b53c958786"
+      "hash": "6b46cb0bca90ca73"
     },
     {
       "id": "stickmanclash",
@@ -43516,9 +43516,9 @@
         "cdn-streamed"
       ],
       "description": "Play Stickmanhook in your browser (streams game files via jsDelivr CDN).",
-      "size": 1643,
+      "size": 1598,
       "originalSize": 1341,
-      "hash": "62638ba1c59ac31f"
+      "hash": "bc30706340111f73"
     },
     {
       "id": "stickmankombat2d",
@@ -44405,9 +44405,9 @@
         "cdn-streamed"
       ],
       "description": "Play Subwaysurfersneworleans in your browser (streams game files via jsDelivr CDN).",
-      "size": 5093,
+      "size": 4953,
       "originalSize": 1409,
-      "hash": "8d479a3d110f0ba8"
+      "hash": "93b835b732709deb"
     },
     {
       "id": "subwaysurferssanfrancisco",
@@ -47205,9 +47205,9 @@
         "cdn-streamed"
       ],
       "description": "Play Thedeadseat in your browser (streams game files via jsDelivr CDN).",
-      "size": 7391,
+      "size": 7144,
       "originalSize": 5983,
-      "hash": "bba7696c32fcacde"
+      "hash": "ad166150c0621f5c"
     },
     {
       "id": "thedeepestsleep",
@@ -49804,9 +49804,9 @@
         "cdn-streamed"
       ],
       "description": "Play Vex 3 in your browser (streams game files via jsDelivr CDN).",
-      "size": 1711,
+      "size": 1663,
       "originalSize": 1507,
-      "hash": "e8f37ff2e7e9d3c4"
+      "hash": "7c8f49d47999effe"
     },
     {
       "id": "vex3xmas",
@@ -49824,9 +49824,9 @@
         "cdn-streamed"
       ],
       "description": "Play Vex 3 Xmas in your browser (streams game files via jsDelivr CDN).",
-      "size": 1881,
+      "size": 1835,
       "originalSize": 1680,
-      "hash": "586ddcca9fa1eebb"
+      "hash": "dd9891f599c47146"
     },
     {
       "id": "vex4",
@@ -49900,9 +49900,9 @@
         "cdn-streamed"
       ],
       "description": "Play Vex 7 in your browser (streams game files via jsDelivr CDN).",
-      "size": 2175,
+      "size": 2116,
       "originalSize": 2022,
-      "hash": "6610485c38892e58"
+      "hash": "a64efb0806cbbaa1"
     },
     {
       "id": "vex8",
@@ -49960,9 +49960,9 @@
         "cdn-streamed"
       ],
       "description": "Play Vexx 3m in your browser (streams game files via jsDelivr CDN).",
-      "size": 2015,
+      "size": 1961,
       "originalSize": 1826,
-      "hash": "3788dcbf0dac3d53"
+      "hash": "d09296a0765bfa53"
     },
     {
       "id": "vexx3m2",
@@ -49980,9 +49980,9 @@
         "cdn-streamed"
       ],
       "description": "Play Vexx 3m2 in your browser (streams game files via jsDelivr CDN).",
-      "size": 1907,
+      "size": 1856,
       "originalSize": 1728,
-      "hash": "fcaaf2fb2d321611"
+      "hash": "255d946468111c11"
     },
     {
       "id": "vibribbon",
@@ -50460,9 +50460,9 @@
         "cdn-streamed"
       ],
       "description": "Play Wavedash — a platformer game playable directly in your browser. No downloads required.",
-      "size": 7670,
+      "size": 7465,
       "originalSize": 1776,
-      "hash": "c08dadae58f954ff"
+      "hash": "d669b34e6c5e5a4a"
     },
     {
       "id": "waverace64",
@@ -50574,9 +50574,9 @@
         "cdn-streamed"
       ],
       "description": "Play Webfishing in your browser (streams game files via jsDelivr CDN).",
-      "size": 9289,
+      "size": 8989,
       "originalSize": 7179,
-      "hash": "6bdbb8d19790ebb7"
+      "hash": "945e50347fb72a44"
     },
     {
       "id": "weltling",
@@ -51647,9 +51647,9 @@
         "cdn-streamed"
       ],
       "description": "Play Youvs 100 Skibidi — a other game playable directly in your browser. No downloads required.",
-      "size": 4806,
+      "size": 4691,
       "originalSize": 4553,
-      "hash": "708cc6d1874fad92"
+      "hash": "60dc071388fc1d40"
     },
     {
       "id": "youvs100skibidi-v2",
@@ -51687,9 +51687,9 @@
         "cdn-streamed"
       ],
       "description": "Play Yumenikki in your browser (streams game files via jsDelivr CDN).",
-      "size": 12706,
+      "size": 12295,
       "originalSize": 12938,
-      "hash": "699ebdc639620122"
+      "hash": "7ab41bf9d64e7bb0"
     },
     {
       "id": "zdoom",
@@ -52148,9 +52148,9 @@
         "singleplayer"
       ],
       "description": "Play Papa's Pizzeria — a Simulation game playable directly in your browser. No downloads required.",
-      "size": 10594161,
+      "size": 10593874,
       "originalSize": 10594161,
-      "hash": "f29969c49bc43f95"
+      "hash": "64af2547c2abf010"
     },
     {
       "id": "sand-game",
@@ -52346,9 +52346,9 @@
         "singleplayer"
       ],
       "description": "Play Minecraft 1.8 — a Minecraft game playable directly in your browser. No downloads required.",
-      "size": 18459213,
+      "size": 18458881,
       "originalSize": 18459213,
-      "hash": "efb0242a95890c2c"
+      "hash": "2bed38647e0af914"
     },
     {
       "id": "minecraft-alpha-1-2-6",
@@ -54966,9 +54966,9 @@
         "cdn-streamed"
       ],
       "description": "Play 10 Minutes Till Dawn in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 6785,
+      "size": 6592,
       "originalSize": 6785,
-      "hash": "b5e5e8d003cc65bb"
+      "hash": "dec1403d3d6b642f"
     },
     {
       "id": "2-3-4-player-games",
@@ -54986,9 +54986,9 @@
         "cdn-streamed"
       ],
       "description": "Play 2-3-4 Player Games in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 4773,
+      "size": 4609,
       "originalSize": 4773,
-      "hash": "698d98a4ab7cef7c"
+      "hash": "6f5f5ec396b6597f"
     },
     {
       "id": "99-nights-in-the-forest",
@@ -55006,9 +55006,9 @@
         "cdn-streamed"
       ],
       "description": "Play 99 Nights In The Forest in your browser (streams game files via jsDelivr CDN).",
-      "size": 15079,
+      "size": 14641,
       "originalSize": 15079,
-      "hash": "17184afcd9d5d721"
+      "hash": "aa1b3de36ee705f6"
     },
     {
       "id": "a-dance-of-fire-and-ice",
@@ -55026,9 +55026,9 @@
         "cdn-streamed"
       ],
       "description": "Play A Dance of Fire and Ice in your browser (streams game files via jsDelivr CDN).",
-      "size": 1208,
+      "size": 1195,
       "originalSize": 1208,
-      "hash": "5039262a1a6216d1"
+      "hash": "226d243e7d4b4fd1"
     },
     {
       "id": "also-steal-a-brainrot",
@@ -55046,9 +55046,9 @@
         "cdn-streamed"
       ],
       "description": "Play Also Steal A Brainrot in your browser (streams game files via jsDelivr CDN).",
-      "size": 20114,
+      "size": 19574,
       "originalSize": 20114,
-      "hash": "df8472cbd9945394"
+      "hash": "4aae66a450d3f95a"
     },
     {
       "id": "also-tag",
@@ -55066,9 +55066,9 @@
         "cdn-streamed"
       ],
       "description": "Play Also Tag in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 2087,
+      "size": 2035,
       "originalSize": 2087,
-      "hash": "d29e1d6e99f2c353"
+      "hash": "9dc5b00b90c4347c"
     },
     {
       "id": "alt-snow-rider",
@@ -55086,9 +55086,9 @@
         "cdn-streamed"
       ],
       "description": "Play Alt Snow Rider in your browser (streams game files via jsDelivr CDN).",
-      "size": 26033,
+      "size": 24554,
       "originalSize": 1031,
-      "hash": "dd0a263bc3bc0947"
+      "hash": "2ce256fb6f96d436"
     },
     {
       "id": "amazing-strange-rope-police",
@@ -55106,9 +55106,9 @@
         "cdn-streamed"
       ],
       "description": "Play Amazing Strange Rope Police in your browser (streams game files via jsDelivr CDN).",
-      "size": 171577,
+      "size": 171400,
       "originalSize": 171577,
-      "hash": "45bf9ee08578265d"
+      "hash": "6a3c16a5a94d288c"
     },
     {
       "id": "angry-birds-online",
@@ -55166,9 +55166,9 @@
         "cdn-streamed"
       ],
       "description": "Play Baldi’s Basics Remastered in your browser (streams game files via jsDelivr CDN).",
-      "size": 4702,
+      "size": 4558,
       "originalSize": 4702,
-      "hash": "7b574cf1e745149e"
+      "hash": "70c26a75cd02469c"
     },
     {
       "id": "baldi-s-basics-the-ultra-decompile",
@@ -55186,9 +55186,9 @@
         "cdn-streamed"
       ],
       "description": "Play Baldi's Basics The Ultra Decompile in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 8976,
+      "size": 8761,
       "originalSize": 8976,
-      "hash": "f3daa51bc4911c7b"
+      "hash": "1f44222804bce925"
     },
     {
       "id": "basketball-legends-2020",
@@ -55206,9 +55206,9 @@
         "cdn-streamed"
       ],
       "description": "Play Basketball Legends 2020 in your browser (streams game files via jsDelivr CDN).",
-      "size": 319,
+      "size": 302,
       "originalSize": 319,
-      "hash": "0eebd950eddd9beb"
+      "hash": "de2c99ece64c41aa"
     },
     {
       "id": "battle-simulator",
@@ -55226,9 +55226,9 @@
         "cdn-streamed"
       ],
       "description": "Play Battle Simulator in your browser (streams game files via jsDelivr CDN).",
-      "size": 1097,
+      "size": 1088,
       "originalSize": 1097,
-      "hash": "0621d870a6a44e36"
+      "hash": "d761ebde3082f536"
     },
     {
       "id": "beach-boxing-simulator",
@@ -55246,9 +55246,9 @@
         "cdn-streamed"
       ],
       "description": "Play Beach Boxing Simulator in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 2158,
+      "size": 2097,
       "originalSize": 2158,
-      "hash": "dea8ffb721884171"
+      "hash": "e7666549818f3b09"
     },
     {
       "id": "better-tunnel-rush",
@@ -55266,9 +55266,9 @@
         "cdn-streamed"
       ],
       "description": "Play Better Tunnel Rush in your browser (streams game files via jsDelivr CDN).",
-      "size": 1115,
+      "size": 1108,
       "originalSize": 1115,
-      "hash": "6fa3feeb6fef9b8c"
+      "hash": "2deca8aeeb2e1333"
     },
     {
       "id": "big-shot-boxing",
@@ -55286,9 +55286,9 @@
         "cdn-streamed"
       ],
       "description": "Play Big Shot Boxing in your browser (streams game files via jsDelivr CDN).",
-      "size": 1795,
+      "size": 1785,
       "originalSize": 1795,
-      "hash": "52925b04a7e686c3"
+      "hash": "449d94682937bf29"
     },
     {
       "id": "block-blast-2",
@@ -55306,9 +55306,9 @@
         "cdn-streamed"
       ],
       "description": "Play Block Blast 2 in your browser (streams game files via jsDelivr CDN).",
-      "size": 4372330,
+      "size": 4320405,
       "originalSize": 4372330,
-      "hash": "f44a3fedcf40a27a"
+      "hash": "e338d87bfb240463"
     },
     {
       "id": "bowmasters",
@@ -55326,9 +55326,9 @@
         "cdn-streamed"
       ],
       "description": "Play Bowmasters in your browser (streams game files via jsDelivr CDN).",
-      "size": 1318,
+      "size": 1284,
       "originalSize": 1318,
-      "hash": "dfe396c86d001c50"
+      "hash": "06fff7e34dd4e2c9"
     },
     {
       "id": "btd6-scratch",
@@ -55386,9 +55386,9 @@
         "cdn-streamed"
       ],
       "description": "Play Cat Mario (flash) in your browser (streams game files via jsDelivr CDN).",
-      "size": 50115,
+      "size": 49090,
       "originalSize": 50115,
-      "hash": "b218ce144a64c759"
+      "hash": "75b7346ae98163e9"
     },
     {
       "id": "celeste-pico",
@@ -55406,9 +55406,9 @@
         "cdn-streamed"
       ],
       "description": "Play Celeste Pico in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 56138,
+      "size": 55000,
       "originalSize": 56138,
-      "hash": "56e811a7a08eb165"
+      "hash": "96d03ee0c3c28f49"
     },
     {
       "id": "cell-machine",
@@ -55426,9 +55426,9 @@
         "cdn-streamed"
       ],
       "description": "Play Cell Machine in your browser (streams game files via jsDelivr CDN).",
-      "size": 1521,
+      "size": 1490,
       "originalSize": 1521,
-      "hash": "76a0a1fd65b7ed13"
+      "hash": "c5ac1c6cf18331d5"
     },
     {
       "id": "clash-of-vikings",
@@ -55446,9 +55446,9 @@
         "cdn-streamed"
       ],
       "description": "Play Clash Of Vikings in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 5547,
+      "size": 5386,
       "originalSize": 5547,
-      "hash": "b6be3066b869cef4"
+      "hash": "cf9d4b7539dbe8a9"
     },
     {
       "id": "class-of-09",
@@ -55466,9 +55466,9 @@
         "cdn-streamed"
       ],
       "description": "Play Class of ‘09 in your browser (streams game files via jsDelivr CDN).",
-      "size": 7456,
+      "size": 7242,
       "originalSize": 7456,
-      "hash": "a120d5e9f62c5cb4"
+      "hash": "be9ed8c80043bf17"
     },
     {
       "id": "cleanup-io",
@@ -55486,9 +55486,9 @@
         "cdn-streamed"
       ],
       "description": "Play Cleanup.io in your browser (streams game files via jsDelivr CDN).",
-      "size": 1076,
+      "size": 1067,
       "originalSize": 1076,
-      "hash": "c217db787f23fb11"
+      "hash": "bddb764b84957739"
     },
     {
       "id": "cluster-rush",
@@ -55506,9 +55506,9 @@
         "cdn-streamed"
       ],
       "description": "Play Cluster Rush in your browser (streams game files via jsDelivr CDN).",
-      "size": 1333,
+      "size": 1297,
       "originalSize": 1333,
-      "hash": "485a97759f163aef"
+      "hash": "a3d0dcc8dddfbe9a"
     },
     {
       "id": "coal-llc",
@@ -55604,9 +55604,9 @@
         "cdn-streamed"
       ],
       "description": "Play Curse of the Lich King in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 55977,
+      "size": 54839,
       "originalSize": 55977,
-      "hash": "0f9e1b0feff93d44"
+      "hash": "133ea807cb839353"
     },
     {
       "id": "dash-party",
@@ -55684,9 +55684,9 @@
         "cdn-streamed"
       ],
       "description": "Play Drift Hunters in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 3146,
+      "size": 3019,
       "originalSize": 3146,
-      "hash": "dacc1761416e1e96"
+      "hash": "97a165ba831457ef"
     },
     {
       "id": "drive-in-russia",
@@ -55722,9 +55722,9 @@
         "singleplayer"
       ],
       "description": "Play EaglerCraft Odd Future - a browser game playable directly in your browser. No downloads required.",
-      "size": 11295821,
+      "size": 11278129,
       "originalSize": 11295821,
-      "hash": "2de9002587f36a76"
+      "hash": "f506c4acf9f8a38b"
     },
     {
       "id": "exoplanet-observation",
@@ -55742,9 +55742,9 @@
         "cdn-streamed"
       ],
       "description": "Play Exoplanet Observation in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 2217,
+      "size": 2155,
       "originalSize": 2217,
-      "hash": "a6abcd330c93e3f0"
+      "hash": "d37875e3c2e363af"
     },
     {
       "id": "five-nights-at-candy-s-1",
@@ -55762,9 +55762,9 @@
         "cdn-streamed"
       ],
       "description": "Play Five Nights at Candy’s 1 in your browser (streams game files via jsDelivr CDN).",
-      "size": 1947,
+      "size": 1911,
       "originalSize": 1947,
-      "hash": "77bf0a1c403c9123"
+      "hash": "0d7e0cd0cab08756"
     },
     {
       "id": "five-nights-at-candy-s-2",
@@ -55782,9 +55782,9 @@
         "cdn-streamed"
       ],
       "description": "Play Five Nights at Candy’s 2 in your browser (streams game files via jsDelivr CDN).",
-      "size": 1949,
+      "size": 1913,
       "originalSize": 1949,
-      "hash": "46feca0a6d1c0bf4"
+      "hash": "bbcfab6a6016c9a7"
     },
     {
       "id": "five-nights-at-winston-s",
@@ -55802,9 +55802,9 @@
         "cdn-streamed"
       ],
       "description": "Play Five Nights at Winston's in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 6074,
+      "size": 6012,
       "originalSize": 6074,
-      "hash": "b6e33a13f76148a1"
+      "hash": "c24e14d1be843c6a"
     },
     {
       "id": "fnaf-pizzeria-simulator",
@@ -56020,9 +56020,9 @@
         "cdn-streamed"
       ],
       "description": "Play Gimme the Airpod in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 952,
+      "size": 917,
       "originalSize": 952,
-      "hash": "00c47d56c5310ce8"
+      "hash": "65555fe15e9af1dc"
     },
     {
       "id": "gladihoppers",
@@ -56040,9 +56040,9 @@
         "cdn-streamed"
       ],
       "description": "Play Gladihoppers in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 1379,
+      "size": 1328,
       "originalSize": 1379,
-      "hash": "3e0449e3bc0b72d5"
+      "hash": "0d5d3ea820cc9d47"
     },
     {
       "id": "grand-action-simulator-new-york",
@@ -56060,9 +56060,9 @@
         "cdn-streamed"
       ],
       "description": "Play Grand Action Simulator: New York in your browser (streams game files via jsDelivr CDN).",
-      "size": 11360,
+      "size": 10978,
       "originalSize": 11360,
-      "hash": "e584ccb86b170055"
+      "hash": "99b5483e76300fd1"
     },
     {
       "id": "granny",
@@ -56080,9 +56080,9 @@
         "cdn-streamed"
       ],
       "description": "Play Granny in your browser (streams game files via jsDelivr CDN).",
-      "size": 9343,
+      "size": 9107,
       "originalSize": 9343,
-      "hash": "e8855bcbb3357190"
+      "hash": "967ff8bd3cfb886e"
     },
     {
       "id": "handulam",
@@ -56100,9 +56100,9 @@
         "cdn-streamed"
       ],
       "description": "Play Handulam+ in your browser (streams game files via jsDelivr CDN).",
-      "size": 5726,
+      "size": 5569,
       "originalSize": 5726,
-      "hash": "159b3dff81eea474"
+      "hash": "85575ecb1fa7c4aa"
     },
     {
       "id": "highway-racer",
@@ -56120,9 +56120,9 @@
         "cdn-streamed"
       ],
       "description": "Play Highway Racer in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 7414,
+      "size": 7115,
       "originalSize": 7414,
-      "hash": "a940ce0fe6212444"
+      "hash": "3dd13a058105a4ad"
     },
     {
       "id": "i-wanna-be-the-guy",
@@ -56160,9 +56160,9 @@
         "cdn-streamed"
       ],
       "description": "Play Indian Truck Simulator in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 8523,
+      "size": 8247,
       "originalSize": 8523,
-      "hash": "3055544357847802"
+      "hash": "d472b21042c5e5bb"
     },
     {
       "id": "islander",
@@ -56180,9 +56180,9 @@
         "cdn-streamed"
       ],
       "description": "Play Islander in your browser (streams game files via jsDelivr CDN).",
-      "size": 55974,
+      "size": 54836,
       "originalSize": 55974,
-      "hash": "606b218d5cdf150f"
+      "hash": "ae18b428738cdef6"
     },
     {
       "id": "jailbreak-obby",
@@ -56200,9 +56200,9 @@
         "cdn-streamed"
       ],
       "description": "Play Jailbreak Obby in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 25635,
+      "size": 24845,
       "originalSize": 25635,
-      "hash": "8afa5215a3ee1845"
+      "hash": "6685cc9cee597c7b"
     },
     {
       "id": "jetski-race",
@@ -56260,9 +56260,9 @@
         "cdn-streamed"
       ],
       "description": "Play Lucky Blocks Obby in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 25647,
+      "size": 24858,
       "originalSize": 25647,
-      "hash": "5639588760ad9d30"
+      "hash": "db18bd92c99b7f2d"
     },
     {
       "id": "madalin-stunt-cars-2",
@@ -56280,9 +56280,9 @@
         "cdn-streamed"
       ],
       "description": "Play Madalin Stunt Cars 2 in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 7490,
+      "size": 7271,
       "originalSize": 7490,
-      "hash": "8ad10d298e975902"
+      "hash": "3b744551dce96575"
     },
     {
       "id": "madalin-stunt-cars-multiplayer",
@@ -56300,9 +56300,9 @@
         "cdn-streamed"
       ],
       "description": "Play Madalin Stunt Cars Multiplayer in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 7564,
+      "size": 7346,
       "originalSize": 7564,
-      "hash": "322b69c758fe0c24"
+      "hash": "a591dd84913b6e9a"
     },
     {
       "id": "madness-2010",
@@ -56320,9 +56320,9 @@
         "cdn-streamed"
       ],
       "description": "Play Madness 2010 in your browser (streams game files via jsDelivr CDN).",
-      "size": 3921,
+      "size": 3793,
       "originalSize": 3921,
-      "hash": "a4c10f2f2b270e07"
+      "hash": "4052d73dd83c3a63"
     },
     {
       "id": "madness-the-stand",
@@ -56340,9 +56340,9 @@
         "cdn-streamed"
       ],
       "description": "Play Madness The Stand in your browser (streams game files via jsDelivr CDN).",
-      "size": 3922,
+      "size": 3794,
       "originalSize": 3922,
-      "hash": "3dfad8018d15fe82"
+      "hash": "6e49dc6b3c44f5cf"
     },
     {
       "id": "mage-tower-idle-defense",
@@ -56360,9 +56360,9 @@
         "cdn-streamed"
       ],
       "description": "Play Mage Tower Idle Defense in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 2568,
+      "size": 2499,
       "originalSize": 2568,
-      "hash": "86d84d6792c29275"
+      "hash": "214c706f0f696695"
     },
     {
       "id": "mario-vs-luigi-online",
@@ -56400,9 +56400,9 @@
         "cdn-streamed"
       ],
       "description": "Play Minecraft Parkour in your browser (streams game files via jsDelivr CDN).",
-      "size": 82508,
+      "size": 81636,
       "originalSize": 82508,
-      "hash": "277b7c28ed922bac"
+      "hash": "a1a287241443ff44"
     },
     {
       "id": "motox3m",
@@ -56420,9 +56420,9 @@
         "cdn-streamed"
       ],
       "description": "Play MotoX3m in your browser (streams game files via jsDelivr CDN).",
-      "size": 11679,
+      "size": 11535,
       "originalSize": 11679,
-      "hash": "8a73b17b30eaed77"
+      "hash": "8e678c2122a4b1f1"
     },
     {
       "id": "mr-racer-car-racing",
@@ -56460,9 +56460,9 @@
         "cdn-streamed"
       ],
       "description": "Play Nazi Zombies Portable (nzp) in your browser (streams game files via jsDelivr CDN).",
-      "size": 10640,
+      "size": 10393,
       "originalSize": 10640,
-      "hash": "d55637fea066c4f1"
+      "hash": "6ef76c83e1df3319"
     },
     {
       "id": "ninja-obby-parkour",
@@ -56480,9 +56480,9 @@
         "cdn-streamed"
       ],
       "description": "Play Ninja Obby Parkour in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 13056,
+      "size": 12723,
       "originalSize": 13056,
-      "hash": "9e484453627905dc"
+      "hash": "f8cf0ca1b19ba39d"
     },
     {
       "id": "obby-but-you-re-on-a-bike",
@@ -56500,9 +56500,9 @@
         "cdn-streamed"
       ],
       "description": "Play Obby But You’re On a Bike in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 6249,
+      "size": 6076,
       "originalSize": 6249,
-      "hash": "bf270a39b2d26375"
+      "hash": "671879776d7993f8"
     },
     {
       "id": "obby-robby-only-up",
@@ -56520,9 +56520,9 @@
         "cdn-streamed"
       ],
       "description": "Play Obby Robby - Only Up in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 26200,
+      "size": 25517,
       "originalSize": 26200,
-      "hash": "e4285e0217ba3bda"
+      "hash": "90355d0bb8659b1a"
     },
     {
       "id": "obby-with-friends",
@@ -56580,9 +56580,9 @@
         "cdn-streamed"
       ],
       "description": "Play Other Car Driving Simulator in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 7290,
+      "size": 7124,
       "originalSize": 7290,
-      "hash": "0b8cd410b5725094"
+      "hash": "da21593ee240641d"
     },
     {
       "id": "ovo-3-dimensions",
@@ -56600,9 +56600,9 @@
         "cdn-streamed"
       ],
       "description": "Play OVO 3 Dimensions in your browser (streams game files via jsDelivr CDN).",
-      "size": 7532,
+      "size": 7340,
       "originalSize": 7532,
-      "hash": "99b3bf9d43a1a16a"
+      "hash": "12100a253381dee0"
     },
     {
       "id": "pok-path-td",
@@ -56620,9 +56620,9 @@
         "cdn-streamed"
       ],
       "description": "Play PokéPath TD in your browser (streams game files via jsDelivr CDN).",
-      "size": 894,
+      "size": 866,
       "originalSize": 894,
-      "hash": "2d3006ffb2dd367c"
+      "hash": "a9ecb82c0630201d"
     },
     {
       "id": "poly-track-old-ver",
@@ -56660,9 +56660,9 @@
         "cdn-streamed"
       ],
       "description": "Play Pom Gets Wi-Fi in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 10014,
+      "size": 9642,
       "originalSize": 10014,
-      "hash": "411bea663e881970"
+      "hash": "522dcde650c680aa"
     },
     {
       "id": "pumpkin-run-64",
@@ -56720,9 +56720,9 @@
         "cdn-streamed"
       ],
       "description": "Play Real Flight Simulator in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 5599,
+      "size": 5443,
       "originalSize": 5599,
-      "hash": "c50345f238158241"
+      "hash": "468ad450ae2255c0"
     },
     {
       "id": "robby-blocks",
@@ -56740,9 +56740,9 @@
         "cdn-streamed"
       ],
       "description": "Play Robby Blocks in your browser (streams game files via jsDelivr CDN).",
-      "size": 33038,
+      "size": 32176,
       "originalSize": 33038,
-      "hash": "c5e02611bcdd6e27"
+      "hash": "128220ef2026b974"
     },
     {
       "id": "russian-cs-go-6",
@@ -56780,9 +56780,9 @@
         "cdn-streamed"
       ],
       "description": "Play Short Life in your browser (streams game files via jsDelivr CDN).",
-      "size": 1091,
+      "size": 1068,
       "originalSize": 1091,
-      "hash": "1f688557254666a7"
+      "hash": "90fe5258fdf8daed"
     },
     {
       "id": "shredsauce",
@@ -56800,9 +56800,9 @@
         "cdn-streamed"
       ],
       "description": "Play Shredsauce in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 11437,
+      "size": 11136,
       "originalSize": 11437,
-      "hash": "ded8509d50a7fe24"
+      "hash": "ca916fcca2d622fe"
     },
     {
       "id": "silhouette-showdown",
@@ -56820,9 +56820,9 @@
         "cdn-streamed"
       ],
       "description": "Play Silhouette Showdown in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 8493,
+      "size": 8198,
       "originalSize": 8493,
-      "hash": "ae424eaf25eb8a26"
+      "hash": "93441466a9437655"
     },
     {
       "id": "skibidi-toilet-io",
@@ -56840,9 +56840,9 @@
         "cdn-streamed"
       ],
       "description": "Play Skibidi toilet.io in your browser (streams game files via jsDelivr CDN).",
-      "size": 2482,
+      "size": 2474,
       "originalSize": 2482,
-      "hash": "528f7738087c8212"
+      "hash": "a41a5a5c5e764a16"
     },
     {
       "id": "snow-rider-3d",
@@ -56860,9 +56860,9 @@
         "cdn-streamed"
       ],
       "description": "Play Snow Rider 3D in your browser (streams game files via jsDelivr CDN).",
-      "size": 1052,
+      "size": 1032,
       "originalSize": 1052,
-      "hash": "c3f007b20399c4b8"
+      "hash": "30ffdf9235573bcd"
     },
     {
       "id": "sonic-and-the-falling-star",
@@ -56880,9 +56880,9 @@
         "cdn-streamed"
       ],
       "description": "Play Sonic And The Falling Star in your browser (streams game files via jsDelivr CDN).",
-      "size": 5986,
+      "size": 5781,
       "originalSize": 5986,
-      "hash": "6719a7929cbf6ad6"
+      "hash": "c41c94746a1f5949"
     },
     {
       "id": "sonic-exe-original",
@@ -56900,9 +56900,9 @@
         "cdn-streamed"
       ],
       "description": "Play Sonic.EXE Original in your browser (streams game files via jsDelivr CDN).",
-      "size": 14936,
+      "size": 14411,
       "originalSize": 14936,
-      "hash": "514626f142c2819b"
+      "hash": "fec3e56968150cde"
     },
     {
       "id": "spelunky-classic-hd",
@@ -56920,9 +56920,9 @@
         "cdn-streamed"
       ],
       "description": "Play Spelunky Classic HD in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 1223,
+      "size": 1187,
       "originalSize": 1223,
-      "hash": "c8df8096d1baa16b"
+      "hash": "c3b08958a242058f"
     },
     {
       "id": "steal-a-brainrot-duel",
@@ -56960,9 +56960,9 @@
         "cdn-streamed"
       ],
       "description": "Play Steal A Brainrot in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 28429,
+      "size": 27494,
       "originalSize": 28429,
-      "hash": "fdf4ad23c112ac31"
+      "hash": "84ba388a195c1f5c"
     },
     {
       "id": "steel-surge-revolution",
@@ -56980,9 +56980,9 @@
         "cdn-streamed"
       ],
       "description": "Play Steel Surge Revolution in your browser (streams game files via jsDelivr CDN).",
-      "size": 48217,
+      "size": 47086,
       "originalSize": 48217,
-      "hash": "b2939c5af8658a65"
+      "hash": "1da1f4f2e2aa68be"
     },
     {
       "id": "stone-grass-mowing-simulator",
@@ -57000,9 +57000,9 @@
         "cdn-streamed"
       ],
       "description": "Play Stone Grass Mowing Simulator in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 5245,
+      "size": 5104,
       "originalSize": 5245,
-      "hash": "7431e1f496fa1603"
+      "hash": "6188904cb069132b"
     },
     {
       "id": "strikeforce-kitty-2",
@@ -57020,9 +57020,9 @@
         "cdn-streamed"
       ],
       "description": "Play Strikeforce Kitty 2 in your browser (streams game files via jsDelivr CDN).",
-      "size": 3972,
+      "size": 3840,
       "originalSize": 3972,
-      "hash": "7654c51aed2cd97b"
+      "hash": "c114302020f620b4"
     },
     {
       "id": "strikeforce-kitty-last-stand",
@@ -57040,9 +57040,9 @@
         "cdn-streamed"
       ],
       "description": "Play Strikeforce Kitty Last Stand in your browser (streams game files via jsDelivr CDN).",
-      "size": 4018,
+      "size": 3886,
       "originalSize": 4018,
-      "hash": "88a6e0338c9e9111"
+      "hash": "7ff592a4851b4126"
     },
     {
       "id": "strikeforce-kitty-league",
@@ -57060,9 +57060,9 @@
         "cdn-streamed"
       ],
       "description": "Play Strikeforce Kitty League in your browser (streams game files via jsDelivr CDN).",
-      "size": 3974,
+      "size": 3842,
       "originalSize": 3974,
-      "hash": "5d2da497b02dcd25"
+      "hash": "ec4c60dbf64629ec"
     },
     {
       "id": "strikeforce-kitty",
@@ -57080,9 +57080,9 @@
         "cdn-streamed"
       ],
       "description": "Play Strikeforce Kitty in your browser (streams game files via jsDelivr CDN).",
-      "size": 3994,
+      "size": 3862,
       "originalSize": 3994,
-      "hash": "4da44feccb1b5dc7"
+      "hash": "5695294980c964c0"
     },
     {
       "id": "subway-surfers-bueno-aires",
@@ -57100,9 +57100,9 @@
         "cdn-streamed"
       ],
       "description": "Play Subway Surfers: Bueno aires in your browser (streams game files via jsDelivr CDN).",
-      "size": 4915,
+      "size": 4775,
       "originalSize": 4915,
-      "hash": "45f84402e336fc20"
+      "hash": "9cea873bf1e59b0d"
     },
     {
       "id": "suika-game",
@@ -57120,9 +57120,9 @@
         "cdn-streamed"
       ],
       "description": "Play Suika Game in your browser (streams game files via jsDelivr CDN).",
-      "size": 56150,
+      "size": 55012,
       "originalSize": 20032,
-      "hash": "715cfcaded7a59eb"
+      "hash": "4bb57ef1fa435952"
     },
     {
       "id": "summer-rider-3d",
@@ -57180,9 +57180,9 @@
         "cdn-streamed"
       ],
       "description": "Play Super Mario 64 (webgl) in your browser (streams game files via jsDelivr CDN).",
-      "size": 3491,
+      "size": 3381,
       "originalSize": 3491,
-      "hash": "812dfde351711391"
+      "hash": "5fd02d7dbda456f7"
     },
     {
       "id": "super-momos-crushers",
@@ -57200,9 +57200,9 @@
         "cdn-streamed"
       ],
       "description": "Play Super Momos Crushers in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 2538,
+      "size": 2469,
       "originalSize": 2538,
-      "hash": "669df9dcffc4c997"
+      "hash": "70a014d28e178576"
     },
     {
       "id": "survival-race",
@@ -57220,9 +57220,9 @@
         "cdn-streamed"
       ],
       "description": "Play Survival Race in your browser (streams game files via jsDelivr CDN).",
-      "size": 19784,
+      "size": 19650,
       "originalSize": 19784,
-      "hash": "f3fa972d99520cb0"
+      "hash": "12c086f1c7889805"
     },
     {
       "id": "tag-coolmathgames",
@@ -57240,9 +57240,9 @@
         "cdn-streamed"
       ],
       "description": "Play Tag (coolmathgames) in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 21149,
+      "size": 20603,
       "originalSize": 21149,
-      "hash": "edce1f6961b43f33"
+      "hash": "95df32d5e33df92c"
     },
     {
       "id": "taisei-project",
@@ -57260,9 +57260,9 @@
         "cdn-streamed"
       ],
       "description": "Play Taisei Project in your browser (streams game files via jsDelivr CDN).",
-      "size": 4178,
+      "size": 4174,
       "originalSize": 4178,
-      "hash": "27f30118359fcc0e"
+      "hash": "5893bb2b398a291e"
     },
     {
       "id": "the-end-of-disney",
@@ -57280,9 +57280,9 @@
         "cdn-streamed"
       ],
       "description": "Play The End Of Disney in your browser (streams game files via jsDelivr CDN).",
-      "size": 2026,
+      "size": 1989,
       "originalSize": 2026,
-      "hash": "1e1cdadf64a35eaa"
+      "hash": "dac40be5a5372eae"
     },
     {
       "id": "the-man-from-the-window",
@@ -57300,9 +57300,9 @@
         "cdn-streamed"
       ],
       "description": "Play The Man From The Window in your browser (streams game files via jsDelivr CDN).",
-      "size": 3763,
+      "size": 3636,
       "originalSize": 3763,
-      "hash": "8018614f838d9657"
+      "hash": "40036a33cdc5fdef"
     },
     {
       "id": "the-sun-and-moon",
@@ -57320,9 +57320,9 @@
         "cdn-streamed"
       ],
       "description": "Play The Sun and Moon in your browser (streams game files via jsDelivr CDN).",
-      "size": 3286,
+      "size": 3195,
       "originalSize": 3286,
-      "hash": "eb8ed7ba4e2c62fe"
+      "hash": "97d426817f6b9a92"
     },
     {
       "id": "the-visitor",
@@ -57340,9 +57340,9 @@
         "cdn-streamed"
       ],
       "description": "Play The Visitor in your browser (streams game files via jsDelivr CDN).",
-      "size": 10802,
+      "size": 10523,
       "originalSize": 969,
-      "hash": "bced3ea155862e52"
+      "hash": "9f80a0b08b097892"
     },
     {
       "id": "there-is-no-game",
@@ -57358,9 +57358,9 @@
         "singleplayer"
       ],
       "description": "Play There is No Game - a browser game playable directly in your browser. No downloads required.",
-      "size": 93652,
+      "size": 92742,
       "originalSize": 93652,
-      "hash": "636691f130491102"
+      "hash": "e83c1f45370e69b1"
     },
     {
       "id": "tiny-fishing",
@@ -57378,9 +57378,9 @@
         "cdn-streamed"
       ],
       "description": "Play Tiny Fishing in your browser (streams game files via jsDelivr CDN).",
-      "size": 7595,
+      "size": 7428,
       "originalSize": 7595,
-      "hash": "26142f11658ea8eb"
+      "hash": "f30497f823c85629"
     },
     {
       "id": "tomb-of-the-mask",
@@ -57398,9 +57398,9 @@
         "cdn-streamed"
       ],
       "description": "Play Tomb of the Mask in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 1186,
+      "size": 1136,
       "originalSize": 1186,
-      "hash": "a325c2f7fa4934a8"
+      "hash": "1a45fa439650968d"
     },
     {
       "id": "tomorrow-and-yesterday",
@@ -57418,9 +57418,9 @@
         "cdn-streamed"
       ],
       "description": "Play Tomorrow And Yesterday in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 2048,
+      "size": 1994,
       "originalSize": 2048,
-      "hash": "f491ce2b54e11589"
+      "hash": "f6d141a9db73e2bb"
     },
     {
       "id": "treacherous-trials-part-2",
@@ -57438,9 +57438,9 @@
         "cdn-streamed"
       ],
       "description": "Play Treacherous Trials Part 2 in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 7038,
+      "size": 6817,
       "originalSize": 7038,
-      "hash": "d6aa10f66b22235c"
+      "hash": "e0bbfca33b199da3"
     },
     {
       "id": "treacherous-trials",
@@ -57458,9 +57458,9 @@
         "cdn-streamed"
       ],
       "description": "Play Treacherous Trials in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 5796,
+      "size": 5639,
       "originalSize": 5796,
-      "hash": "375820b5ae6ecbed"
+      "hash": "5ad2242fb7179432"
     },
     {
       "id": "ufo-swamp-odyssey",
@@ -57478,9 +57478,9 @@
         "cdn-streamed"
       ],
       "description": "Play Ufo Swamp Odyssey in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 55975,
+      "size": 54837,
       "originalSize": 55975,
-      "hash": "95e8052e9b34a1f9"
+      "hash": "64d90a555cc4c77a"
     },
     {
       "id": "ultrakill-buggy",
@@ -57498,9 +57498,9 @@
         "cdn-streamed"
       ],
       "description": "Play Ultrakill (buggy) in your browser (streams game files via jsDelivr CDN).",
-      "size": 4248,
+      "size": 4123,
       "originalSize": 4248,
-      "hash": "05c541ad1e568080"
+      "hash": "4ef1508eb9ce471b"
     },
     {
       "id": "volleyball-challenge",
@@ -57518,9 +57518,9 @@
         "cdn-streamed"
       ],
       "description": "Play Volleyball Challenge in your browser (streams game files from the UGS-Assets CDN via jsDelivr).",
-      "size": 9001,
+      "size": 8697,
       "originalSize": 9001,
-      "hash": "694d254d57cffd8c"
+      "hash": "732a7712c28bb8aa"
     },
     {
       "id": "wave-road-3d",

@@ -168,6 +168,27 @@ class Integrity(Base):
         self.assertEqual(code, 1)
         self.assertIn("HASH MISMATCH (1)", out)
 
+    def _crlf_repo(self, **kw):
+        import hashlib
+        lf = b"<html>\nline\n</html>\n"
+        e = entry(1, size=kw.get("size", len(lf)),
+                  hash=kw.get("hash", hashlib.sha256(lf).hexdigest()[:16]))
+        repo = self.make({"games": [e]}, files=("g1.html",))
+        with open(os.path.join(repo, "games", "g1.html"), "wb") as fh:
+            fh.write(kw.get("body", lf.replace(b"\n", b"\r\n")))
+        return repo
+
+    def test_crlf_working_tree_with_lf_metadata_passes(self):
+        code, out = self.run_verify(self._crlf_repo())
+        self.assertEqual(code, 0)
+        self.assertIn("Problems found:       0", out)
+
+    def test_genuine_drift_still_caught_with_crlf(self):
+        code, out = self.run_verify(self._crlf_repo(body=b"<html>x\r\ny\r\n</html>\r\n"))
+        self.assertEqual(code, 1)
+        self.assertIn("HASH MISMATCH (1)", out)
+        self.assertIn("SIZE MISMATCH (1)", out)
+
     def test_mode_off_ignores_bad_size_and_hash(self):
         repo = self.make_with_bodies(size=5, hash="0" * 16)
         self.assertEqual(self.run_main(repo)[0], 0)
