@@ -83,11 +83,22 @@ def entry_label(entry, index):
     )
 
 
+def _inside_games(repo, path):
+    """True when path resolves (symlinks included) inside <repo>/games/."""
+    games_dir = os.path.realpath(os.path.join(repo, "games"))
+    try:
+        return os.path.commonpath([games_dir, os.path.realpath(path)]) == games_dir
+    except ValueError:
+        return False
+
+
 def verify_integrity(repo, games, problems):
     """Size and hash check against raw file bytes (offline)."""
     for index, entry in enumerate(games):
         rel = entry.get("file") or ""
         path = os.path.join(repo, *rel.split("/"))
+        if not _inside_games(repo, path):
+            continue  # reported under "file outside games/" only; never opened
         if not os.path.isfile(path):
             continue  # missing/case problems are reported by the base checks
         try:
@@ -129,7 +140,9 @@ def check(repo, integrity=False):
             problems["no file field"].append(label)
             continue
 
-        if not file_field.startswith("games/") or "/" in file_field[len("games/"):]:
+        if (not file_field.startswith("games/")
+                or "/" in file_field[len("games/"):]
+                or not _inside_games(repo, os.path.join(repo, *file_field.split("/")))):
             problems["file outside games/"].append(label)
 
         base = file_field.split("/")[-1]

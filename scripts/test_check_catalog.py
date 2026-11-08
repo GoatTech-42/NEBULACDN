@@ -175,5 +175,34 @@ class Integrity(Base):
         self.assertFalse(p.get("size mismatch") or p.get("hash mismatch"))
 
 
+class IntegrityContainment(Base):
+    def test_outside_entry_reported_and_never_opened(self):
+        repo = self.make({"games": [entry(1, file="games/../secret.html",
+                                          size=1, hash="x")]},
+                         files=("g1.html",))
+        canary = os.path.join(repo, "secret.html")
+        open(canary, "w").write("canary")
+        real_open = open
+        opened = []
+
+        def spy(path, *a, **k):
+            opened.append(os.path.realpath(str(path)))
+            return real_open(path, *a, **k)
+
+        orig = check_catalog.open if hasattr(check_catalog, "open") else None
+        check_catalog.open = spy
+        try:
+            p = check_catalog.check(repo, integrity=True)[2]
+        finally:
+            if orig is None:
+                del check_catalog.open
+            else:
+                check_catalog.open = orig
+        self.assertTrue(p["file outside games/"])
+        self.assertNotIn(os.path.realpath(canary), opened)
+        self.assertFalse(p["size mismatch"])
+        self.assertFalse(p["hash mismatch"])
+
+
 if __name__ == "__main__":
     unittest.main()
