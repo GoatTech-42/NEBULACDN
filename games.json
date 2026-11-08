@@ -10,8 +10,8 @@
   "generated": "2026-09-18T20:05:51Z",
   "stats": {
     "totalGames": 3074,
-    "totalSizeBytes": 748766948,
-    "totalSizeMB": 748.8,
+    "totalSizeBytes": 748724626,
+    "totalSizeMB": 748.7,
     "categories": {
       "Other": 2046,
       "Pokemon": 134,
@@ -212,9 +212,9 @@
         "singleplayer"
       ],
       "description": "Play 12 Minibattles — a other game playable directly in your browser. No downloads required.",
-      "size": 5288,
+      "size": 2374,
       "originalSize": 2374,
-      "hash": "87595e55b53f88c1"
+      "hash": "4d867730029faca7"
     },
     {
       "id": "13bones",
@@ -4167,9 +4167,9 @@
         "singleplayer"
       ],
       "description": "Play Battles — a other game playable directly in your browser. No downloads required.",
-      "size": 5268,
+      "size": 1663,
       "originalSize": 1663,
-      "hash": "d559b5ba4273079f"
+      "hash": "5c7f637f87ed2b33"
     },
     {
       "id": "battlesim",
@@ -18826,9 +18826,9 @@
         "singleplayer"
       ],
       "description": "Play Goldminer — a other game playable directly in your browser. No downloads required.",
-      "size": 11533,
+      "size": 871,
       "originalSize": 948,
-      "hash": "c41214b59044992a"
+      "hash": "af0b67d2c2b427da"
     },
     {
       "id": "golfbattle",
@@ -21419,9 +21419,9 @@
         "singleplayer"
       ],
       "description": "Play Idlebreakout — a other game playable directly in your browser. No downloads required.",
-      "size": 4245,
+      "size": 1761,
       "originalSize": 3037,
-      "hash": "238fe7c9765e8d0e"
+      "hash": "0ff5f82ad95a5026"
     },
     {
       "id": "idledice",
@@ -22359,9 +22359,9 @@
         "singleplayer"
       ],
       "description": "Play Johnnytrigger — a other game playable directly in your browser. No downloads required.",
-      "size": 16957,
+      "size": 3877,
       "originalSize": 5039,
-      "hash": "22a04dabb3c99475"
+      "hash": "659987465ebe5163"
     },
     {
       "id": "johnnyupgrade",
@@ -57340,9 +57340,9 @@
         "cdn-streamed"
       ],
       "description": "Play The Visitor in your browser (streams game files via jsDelivr CDN).",
-      "size": 10523,
+      "size": 946,
       "originalSize": 969,
-      "hash": "9f80a0b08b097892"
+      "hash": "2d31b6a2a3d9a6db"
     },
     {
       "id": "there-is-no-game",

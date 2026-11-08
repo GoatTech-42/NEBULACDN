@@ -1,411 +1,85 @@
-<!-- NEBULA CDN | GoatTech Industries | Game: johnnytrigger | File: johnnytrigger.html | https://github.com/GoatTech-42/NEBULACDN | dead-backend swap from Horizon "Johnny Trigger" -->
-<!DOCTYPE html>
-
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-<html>
-<base href="https://cdn.jsdelivr.net/gh/raz0red/jsvecx@master/src/deploy/">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href="main.css" type="text/css" rel="stylesheet" rev="stylesheet" />
-
-    <title>JSVecX: JavaScript port of VecX by raz0red.</title>
-
-    <script src="js/jquery-min.js" type="text/javascript"></script>
-
-    <script src="js/utils.js" type="text/javascript"></script>
-    <script src="js/globals.js" type="text/javascript"></script>
-    <script src="js/fastromdata.js" type="text/javascript"></script>
-    <script src="js/e6809.js" type="text/javascript"></script>
-    <script src="js/e8910.js" type="text/javascript"></script>
-    <script src="js/osint.js" type="text/javascript"></script>
-    <script src="js/vector_t.js" type="text/javascript"></script>
-    <script src="js/vecx.js" type="text/javascript"></script>
-
-    <script src="js/roms/castle.js" type="text/javascript"></script>
-
-    <script type="text/javascript" charset="utf-8">
-        var roms = [
-            ["Commercial", [
-                ["Armor Attack", "armor", "armor", "armor"],
-                ["Bedlam", "bedlam", "bedlam", "bedlam"],
-                ["Berzerk", "berzerk-debugged", "berzerk", "berzerk"],
-                ["Blitz", "blitz", "blitz", "blitz"],
-                /*[ "Clean Sweep", "sweep", "sweep", "none" ], */
-                ["Cosmic Chasm", "chasm", "chasm", "chasm"],
-                ["Fortress of Narzod", "narzod", "narzod", "narzod"],
-                ["Heads Up", "headsup", "headsup", "headsup"],
-                /*[ "Hyper Chase", "hyper", "hyper", "none" ], */
-                ["Mine Storm", "minestorm", "minestorm", "minestorm"],
-                ["Mine Storm 2", "mstorm2", "minestorm", "minestorm"],
-                ["Polar Rescue", "polar", "polar", "polar"],
-                ["Pole Position", "pole", "pole", "pole"],
-                ["Ripoff", "ripoff", "ripoff", "ripoff"],
-                ["Scramble", "scramble", "scramble", "scramble"],
-                ["Solar Quest", "solar", "solar", "solar"],
-                ["Space Wars", "space", "space", "space"],
-                ["Spike", "spike", "spike", "spike"],
-                ["Spinball", "spinball", "spinball", "spinball"],
-                ["Star Castle", "castle", "castle", "castle"],
-                ["Star Hawk", "starhawk", "starhawk", "starhawk"],
-                ["Star Trek", "startrek", "startrek", "startrek"],
-                ["Web Wars", "webwars", "webwars", "webwars"]
-            ]],
-            ["Unreleased and Prototypes", [
-                ["Dark Tower", "dktower", "dktower", "none"],
-                /*[ "Mail Plane", "MailPlane", "none", "none" ],*/
-                /*[ "Pitcher\'s Duel", "Pitchers", "none", "none" ],*/
-                ["Tour de France", "tdf", "none", "none"]
-            ]],
-            ["Homebrew", [
-                ["All Good Things", "agt", "none", "none"],
-                ["Asteroid Cowboy", "asteroid_cowboy", "none", "asteroid_cowboy"],
-                ["Birds of Prey", "birds-of-prey", "none", "none"],
-                ["Gravitrex plus", "gravplus", "none", "none"],
-                /*[ "Moonlander", "moon", "none", "none" ],*/
-                ["Nebula Commander", "nebula", "none", "none"],
-                /*[ "Omega Chase", "Omega16k", "none", "none" ]*/
-                ["Patriots", "patriot", "none", "none"],
-                ["Patriots III", "patriots-iii", "none", "none"],
-                ["Revector", "revector", "none", "none"],
-                ["Rockaroids Remix", "rocks", "none", "none"],
-                ["Space Frenzy", "sfpd", "none", "none"],
-                ["Spike Hoppin\'", "spikehop", "none", "none"],
-                /*[ "Spike\'s Water Balloons", "spikewater", "none", "none" ],*/
-                ["Thrust", "thrust", "thrust", "thrust"],
-                ["Tsunami", "tsu", "none", "none"],
-                ["Vecmania 1", "vecmania1", "none", "none"],
-                ["Vecmania 2", "vecmania2", "none", "none"],
-                ["Vectrex Frogger", "frogger", "none", "none"],
-                /*[ "Vectrexians", "vectrexians", "none", "vectrexians" ],*/
-                ["Vix", "vix", "none", "none"],
-                ["War of the Robots", "wotr", "none", "none"]
-            ]]
-        ];
-
-        var vecx = new VecX();
-        var romsSelect = [];
-        var OVERLAY_FADE = 500;
-
-        var resumeButtonImage = new Image();
-        resumeButtonImage.src = "images/resumebutton.png";
-
-        var pauseButtonImage = new Image();
-        pauseButtonImage.src = "images/pausebutton.png";
-
-        var soundButtonImage = new Image();
-        soundButtonImage.src = "images/soundbutton.png";
-
-        var soundOffButtonImage = new Image();
-        soundOffButtonImage.src = "images/soundoffbutton.png";
-
-        function overlayFade(isOut) {
-            var overlay = $('#overlay');
-            if (!isOut) {
-                overlay.fadeIn(OVERLAY_FADE);
-            } else {
-                overlay.fadeOut(OVERLAY_FADE);
-            }
-            return false;
-        }
-
-        function setPauseImage(showPause) {
-            var pauseImage = $('#pauseImage');
-            if (showPause) {
-                pauseImage.attr("src", pauseButtonImage.src)
-                    .attr("title", "Pause");
-            } else {
-                pauseImage.attr("src", resumeButtonImage.src)
-                    .attr("title", "Resume");
-            }
-        }
-
-        function setSoundImage(showSound) {
-            var soundImage = $('#soundImage');
-            if (showSound) {
-                soundImage.attr("src", soundButtonImage.src)
-                    .attr("title", "Toggle Sound");
-            } else {
-                soundImage.attr("src", soundOffButtonImage.src)
-                    .attr("title", "Toggle Sound");
-            }
-        }
-
-        function dropHandler(ev) {
-            ev.preventDefault();
-            var file = null;
-            if (ev.dataTransfer.items) {
-                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-                    if (ev.dataTransfer.items[i].kind === 'file') {
-                        file = ev.dataTransfer.items[i].getAsFile();
-                        break;
-                    }
-                }
-            } else {
-                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-                    file = ev.dataTransfer.files[i];
-                    break;
-                }
-            }
-
-            if (file) {
-                if (file.size <= 100 * 1024) /* 100kb max */ {
-                    var reader = new FileReader();  
-                    reader.readAsBinaryString(file);
-                    $("#status").text("Processing file...");
-                     reader.onloadend = function() {            
-                        $("#status").text("Processing completed.");                                 
-                        Globals.cartdata = reader.result;                                         
-                        $("#roms").val("");
-                        switchRom([null, null, "none", "none"]);
-                    }                   
-                } else {
-                    $("#status").text("File too large.");
-                }                
-            }
-        }
-
-        function switchRom(rom) {
-            // Get the overlay (DIV)
-            var overlay = $('#overlay');
-
-            // Get the boxart image
-            var boxartImage = $('#boxartImage');
-
-            // Is the overlay visible?
-            var overlayVisible = !overlay.is(":hidden");
-
-            // Fade the old overlay out (if applicable)
-            if (overlayVisible) overlayFade(true);
-
-            // Fade the old boxart out
-            boxartImage.fadeOut(OVERLAY_FADE);
-
-            // Stop the emulator
-            vecx.stop();
-
-            // Clear the screen
-            vecx.osint.osint_clearscreen();
-
-            // Start the emulator
-            setTimeout(
-                function() {
-                    // Wait until the new overlay has completed loading
-                    var imgOverlay = new Image();
-                    $(imgOverlay).on('load',
-                        function() {
-                            // Fade the new overlay in
-                            $('#overlayImage').attr("src", imgOverlay.src);
-                            if (overlayVisible) overlayFade(false);
-
-
-                            var newBoxart = new Image();
-
-                            // Update the boxart
-                            $(newBoxart).on('load',
-                                function() {
-                                    boxartImage.attr("src", newBoxart.src);
-                                    boxartImage.fadeIn(OVERLAY_FADE + 200);
-                                }
-                            ).attr("src", "images/boxart/" + rom[3] + ".png");
-
-                            // Load the script for the new rom
-                            if (rom[1]) {
-                                $.getScript(
-                                    "js/roms/" + rom[1] + ".js",
-                                    function() // Rom script loaded
-                                    {
-                                        $("#status").text("Loaded.");
-                                        vecx.reset();
-
-                                        setPauseImage(true);
-                                    }
-                                );
-                            } else {
-                                vecx.reset();
-                                setPauseImage(true);
-                            }
-                        }
-                    ).attr("src", "images/overlays/" + rom[2] + ".png");
-                },
-                overlayVisible ? OVERLAY_FADE : 0
-            );
-        }
-
-        $(document).ready(function() {
-            var romsElement = $("#roms");
-
-            $("#status").text("Starting up...");
-
-            $("<option>Select a cartridge...</option>").attr("value", "").appendTo("#roms");
-            for (var i = 0; i < roms.length; i++) {
-                var category = roms[i];
-                var optgroup = $('<optgroup></optgroup>').attr("label", category[0]);
-                var catroms = category[1];
-                for (var j = 0; j < catroms.length; j++) {
-                    var rom = catroms[j];
-
-                    $('<option>' + rom[0] + '</option>')
-                        .attr("value", romsSelect.length)
-                        .appendTo(optgroup);
-
-                    romsSelect[romsSelect.length] = rom;
-                }
-                romsElement.append(optgroup);
-            }
-            romsElement.append('<optgroup> </optgroup>');
-            romsElement.val("");
-
-            romsElement.change(
-                function() {
-                    if (romsElement.val() == "") return;
-
-                    // Remove focus from the roms element
-                    romsElement.blur();
-
-                    // Get the newly selected rom
-                    var rom = romsSelect[romsElement.val()];
-
-                    $("#status").text("Loading " + rom[0] + " ...");
-
-                    switchRom(rom);
-                }
-            );
-
-            document.onkeydown =
-                function(event) {
-                    vecx.onkeydown(event)
-                };
-
-            document.onkeyup =
-                function(event) {
-                    vecx.onkeyup(event)
-                };
-
-            /*
-            document.onkeypress =
-                function( event )
-                {
-                    event.preventDefault();
-                };
-            */
-
-            $("#pauseButton").click(
-                function() {
-                    var pauseImage = $('#pauseImage');
-                    if (vecx.running) {
-                        vecx.stop();
-                        $("#status").text("Paused.");
-                        setPauseImage(false);
-                    } else {
-                        vecx.start();
-                        $("#status").text("Resumed.");
-                        setPauseImage(true);
-                    }
-                }
-            );
-
-            $("#resetButton").click(
-                function() {
-                    vecx.reset();
-                    $("#status").text("Reset.");
-                    setPauseImage(true);
-                }
-            );
-
-            $('#overlayButton').click(
-                function() {
-                    var overlay = $('#overlay');
-                    var hidden = overlay.is(":hidden");
-
-                    overlayFade(!hidden);
-
-                    $("#status").text(
-                        hidden ? "Overlay enabled." : "Overlay disabled.");
-                }
-            );
-
-            $('#soundButton').click(
-                function() {
-                    if (vecx.toggleSoundEnabled()) {
-                        $("#status").text("Sound enabled.");
-                        setSoundImage(true);
-                    } else {
-                        $("#status").text("Sound disabled.");
-                        setSoundImage(false);
-                    }
-                }
-            );
-
-            // Drag and drop
-            $('body').on('drop dragdrop', function(evt) {
-                evt.dataTransfer = evt.originalEvent.dataTransfer
-                dropHandler(evt);
-                event.preventDefault();
-            });
-            $('body').on('dragenter', function(event) {
-                event.preventDefault();
-                //$(this).css('border','10px dashed red');
-            });
-            $('body').on('dragleave', function() {
-                //$(this).css('background','red');
-            });
-            $('body').on('dragover', function(event) {
-                event.preventDefault();
-            });
-
-
-            vecx.main();
-        });
-    </script>
-</head>
-
-<body>
-    <div id="wrapper">
-        <div id="vectrex">
-            <div id="mask"></div>
-            <div id="overlay"><img id="overlayImage" src="images/overlays/castle.png" width="351" height="449" /></div>
-            <canvas id="screen" width="330" height="410"></canvas>
-        </div>
-        <div id="description">
-            <img src="images/banner.png" width="396" height="120" alt="JSVecX" />
-            <div id="descriptionContent">
-                <p>
-                    <strong>JSVecX</strong> by <a href="http://www.twitchasylum.com">raz0red</a> is a <strong>JavaScript</strong> port of the
-                    <a href="http://www.valavan.net/vectrex.html">VecX</a>
-                    <a href="http://en.wikipedia.org/wiki/Vectrex">Vectrex</a> emulator originally developed by <strong>Valavan Manohararajah</strong>. For additional information please visit the
-                    <a href="http://www.twitchasylum.com/forum/viewtopic.php?p=3112#3112">JSVecX forum thread</a>.
-                </p>
-                <p>
-                    This port relies on the HTML5 <a href="http://en.wikipedia.org/wiki/Html5_canvas">Canvas</a> element and the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">Web Audio API</a>.
-                </p>
-                <p>
-                    Select a cartridge from the pull-down list or drag and drop a local ROM file onto the Vectrex.
-                </p>
-            </div>
-            <div id="controls">
-                <img id="controlsImage" src="images/controls.png" alt="Controls" width="314" height="122">
-            </div>
-            <div id="romsSelector">
-                <select id="roms"></select>
-            </div>
-            <div id="buttons">
-                <a href="javascript:void(0)" title="Pause" id="pauseButton"><img id="pauseImage" src="images/pausebutton.png" width="64" height="54"></a>
-                <a href="javascript:void(0)" title="Reset" id="resetButton"><img src="images/resetbutton.png" width="64" height="54"></a>
-                <a href="javascript:void(0)" title="Toggle Sound" id="soundButton"><img id="soundImage" src="images/soundbutton.png" width="64" height="54"></a>
-                <a href="javascript:void(0)" title="Toggle Overlay" id="overlayButton"><img src="images/overlaybutton.png" width="64" height="54"></a>
-            </div>
-            <div id="status">Loading ...</div>
-            <div id="boxart">
-                <img id="boxartImage" src="images/boxart/castle.png" width="270" height="332" />
-            </div>
-        </div>
-        <div class="clear"></div>
-    </div>
-</body>
-
-</html>
+<!-- NEBULA CDN | GoatTech Industries | Game: johnnytrigger | File: johnnytrigger.html | https://github.com/GoatTech-42/NEBULA-CDN -->
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="full-screen" content="true" /><meta name="screen-orientation" content="portrait" /><meta name="x5-fullscreen" content="true" /><meta name="360-fullscreen" content="true" /><style>
+html,
+body {
+-ms-touch-action: none;
+background: #5E5858;
+padding: 0;
+border: 0;
+margin: 0;
+height: 100%;
+}
+</style><script src="https://cdn.jsdelivr.net/gh/yrgen73/Jtrigger@858a22f47db1fabd07d6ac0707df0173b92a9052/js/adsdk.js"></script><script type="text/javascript">
+window.SDK_OPTIONS = {
+gameId: "xkvlejbo5n64aox2uatq53r5r10znqlk",
+onEvent: function (a) {
+switch (a.name) {
+case "SDK_GAME_PAUSE":
+break;
+case "SDK_GAME_START":
+break;
+case "SDK_READY":
+break;
+}
+},
+};
+(function (a, b, c) {
+var d = a.getElementsByTagName(b)[0];
+a.getElementById(c) || ((a = a.createElement(b)), (a.id = c), (a.src = "https://cdn.jsdelivr.net/gh/st39/sdk@main/sdk.js"), d.parentNode.insertBefore(a, d));
+})(document, "script", "gamemonetize-sdk");
+</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script></head><body><script>
+window.$T_GAME_VERSION = "1.0.13"
+window.$T_GAME_ARGS = {};
+window.$T__RES__FILE = "https://cdn.jsdelivr.net/gh/yrgen73/Jtrigger@462c576ba6026ba828c675859c838ed3d966fc66/resource/2default.res.json";
+window.$T__THE__FILE = "https://cdn.jsdelivr.net/gh/yrgen73/Jtrigger@050cca2d3bdad0e560f178b63ea2248198dff907/resource/default.thm.json";
+</script><div style="margin: auto;width: 100%;height: 100%;" class="egret-player" data-entry-class="Main" data-orientation="auto" data-scale-mode="showAll" data-frame-rate="60" data-content-width="640" data-content-height="1136" data-multi-fingered="2" data-show-fps="false" data-show-log="false" data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9"></div><script>
+var loadScript = function (list, callback) {
+var loaded = 0;
+var loadNext = function () {
+loadSingleScript(list[loaded], function () {
+loaded++;
+if (loaded >= list.length) {
+callback();
+} else {
+loadNext();
+}
+})
+};
+loadNext();
+};
+var loadSingleScript = function (src, callback) {
+var s = document.createElement('script');
+s.async = false;
+s.src = src;
+s.addEventListener('load', function () {
+s.parentNode.removeChild(s);
+s.removeEventListener('load', arguments.callee, false);
+callback();
+}, false);
+document.body.appendChild(s);
+};
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://cdn.jsdelivr.net/gh/yrgen73/Jtrigger@026d22a3c5e67a8df14227c019dab86e8df507f3/manifest.json?v=' + Math.random(), true);
+xhr.addEventListener("load", function () {
+var manifest = JSON.parse(xhr.response);
+var list = manifest.initial.concat(manifest.game);
+loadScript(list, function () {
+/** * { * "renderMode":, //Engine rendering mode, "canvas" or "webgl" * "audioType": 0 //Use the audio type, 0: default, 2: web audio, 3: audio * "antialias": //Whether the anti-aliasing is enabled in WebGL mode, true: on, false: off, defaults to false * "calculateCanvasScaleFactor": //a function return canvas scale factor * } **/
+egret.runEgret({
+renderMode: "webgl",
+audioType: 0,
+calculateCanvasScaleFactor: function (context) {
+var backingStore = context.backingStorePixelRatio || context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
+return (window.devicePixelRatio || 1) / backingStore;
+}
+});
+});
+});
+xhr.send(null);
+setTimeout(function () {
+sdk.showBanner();
+}, 3000);
+window.setInterval(function () {
+sdk.showBanner();
+}, 90000);
+</script></body></html>
