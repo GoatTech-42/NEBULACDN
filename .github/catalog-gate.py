@@ -17,9 +17,7 @@ res = subprocess.run([sys.executable, "scripts/check_catalog.py", "--verify-inte
                      capture_output=True, text=True)
 sys.stdout.write(res.stdout)
 sys.stderr.write(res.stderr)
-if res.returncode == 0:
-    sys.exit(0)
-if res.returncode != 1:
+if res.returncode not in (0, 1):
     print("FAIL: checker exit code", res.returncode)
     sys.exit(res.returncode)
 
@@ -72,6 +70,13 @@ if sections and int(sections[0]) != reported:
     die("orphan section header count != summary count")
 if len(orphans) != reported:
     die("parsed %d orphans but checker reported %d" % (len(orphans), reported), 1)
+if res.returncode == 0:
+    # rc0 must be a genuinely clean, fully validated report: all counts zero.
+    nonzero = {k: v for k, v in counts.items() if v}
+    if nonzero or orphans or sections:
+        die("checker exited 0 but reported problems: %s" % nonzero)
+    print("OK: checker exit 0 and output validated clean.")
+    sys.exit(0)
 bad = {k: v for k, v in counts.items() if v and k != ORPHAN}
 new_orphans = orphans - known
 if bad or new_orphans:

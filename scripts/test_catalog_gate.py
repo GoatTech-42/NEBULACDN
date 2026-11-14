@@ -148,6 +148,55 @@ class Gate(unittest.TestCase):
     def test_checker_exit_2(self):
         self.assertEqual(self.run_gate(self.stub_repo("", rc=2))[0], 2)
 
+    KEYS = ["missing file", "case mismatch", "filename field mismatch",
+            "file outside games/", "no file field", "duplicate id",
+            "duplicate slug", "duplicate file", "orphan file (not in catalog)",
+            "stats.totalGames mismatch", "size mismatch", "hash mismatch",
+            "unreadable file"]
+
+    def report(self, keys=None, over=None, total=None):
+        keys = self.KEYS if keys is None else keys
+        over = over or {}
+        vals = {k: over.get(k, 0) for k in keys}
+        tot = sum(vals.values()) if total is None else total
+        return "Problems found:       %d\n\nCounts by type:\n" % tot + "".join(
+            "  %-32s %d\n" % (k, v) for k, v in vals.items())
+
+    def test_rc0_garbage_fails_closed(self):
+        repo = self.stub_repo("garbage: no trustworthy summary\n", rc=0)
+        self.assertEqual(self.run_gate(repo, OLD_GATE)[0], 0)  # old gate: false green
+        code, out = self.run_gate(repo)
+        self.assertEqual(code, 2)
+        self.assertIn("fail-closed", out)
+
+    def test_rc0_nonzero_count_fails_closed(self):
+        out = self.report(over={"size mismatch": 1})
+        self.assertEqual(self.run_gate(self.stub_repo(out, rc=0))[0], 2)
+
+    def test_rc0_missing_key_fails_closed(self):
+        out = self.report(keys=self.KEYS[:-1])
+        code, text = self.run_gate(self.stub_repo(out, rc=0))
+        self.assertEqual(code, 2)
+        self.assertIn("missing", text)
+
+    def test_rc0_unknown_key_fails_closed(self):
+        out = self.report(keys=self.KEYS + ["brand new category"])
+        code, text = self.run_gate(self.stub_repo(out, rc=0))
+        self.assertEqual(code, 2)
+        self.assertIn("unrecognized", text)
+
+    def test_rc0_total_mismatch_fails_closed(self):
+        out = self.report(total=3)
+        self.assertEqual(self.run_gate(self.stub_repo(out, rc=0))[0], 2)
+
+    def test_rc0_clean_stub_passes(self):
+        code, _ = self.run_gate(self.stub_repo(self.report(), rc=0))
+        self.assertEqual(code, 0)
+
+    def test_rc0_orphan_section_fails_closed(self):
+        out = self.report() + "\nORPHAN FILE (NOT IN CATALOG) (1)\n  - games/x.html\n"
+        self.assertEqual(self.run_gate(self.stub_repo(out, rc=0))[0], 2)
+
 
 def proof():
     cmds = [
