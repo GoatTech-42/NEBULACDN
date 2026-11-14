@@ -1383,6 +1383,15 @@ window.setView = function(v) {
 /* ─── Play lesson ───────────────────────────────────── */
 let playAbort = null;
 let frameBlob = null;
+/* revokeFrameBlob:begin */
+/* Detach the modal frame first, then revoke the URL it was showing, then clear it. */
+function releaseFrameBlob(frame) {
+  const old = frameBlob;
+  frameBlob = null;
+  frame.src = '';
+  if (old) URL.revokeObjectURL(old);
+}
+/* revokeFrameBlob:end */
 window.playGame = function(slug, event) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   const game = allGames.find(g => g.slug === slug);
@@ -1398,8 +1407,7 @@ window.playGame = function(slug, event) {
   loadTxt.textContent = `Loading ${game.name}…`;
 
   const frame = document.getElementById('game-frame');
-  frameBlob = null;
-  frame.src = '';
+  releaseFrameBlob(frame);
   /* src='' fires load for the empty document while the fetch is still pending;
      only hide the loading/error text once the game's own blob has loaded. */
   frame.onload = () => { if (frameBlob && frame.src === frameBlob) loading.classList.add('hidden'); };
@@ -1468,9 +1476,8 @@ window.stealthGame = function(slug, event) {
 /* ─── Close modal ───────────────────────────────────── */
 function closePlayer() {
   if (playAbort) { playAbort.abort(); playAbort = null; }
-  frameBlob = null;
   document.getElementById('overlay').classList.remove('open');
-  document.getElementById('game-frame').src = '';
+  releaseFrameBlob(document.getElementById('game-frame'));
   document.getElementById('frame-loading').classList.remove('hidden');
   document.body.style.overflow = '';
   currentGame = null;
