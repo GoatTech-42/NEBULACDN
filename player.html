@@ -1436,6 +1436,20 @@ window.playGame = function(slug, event) {
 };
 
 /* ─── Private tab ───────────────────────────────────── */
+/* stealthGame:begin */
+/* Each private window owns its blob URL and its close watch. The watch keeps
+   running after load (win.closed is the only cross-origin-safe liveness
+   signal) and, once the window is gone, revokes that window's URL and stops.
+   Closing A never touches B. On opener pagehide we revoke what is left; blob
+   store teardown on opener unload is browser-dependent, so this is best effort. */
+const stealthOwned = new Set();
+function releaseStealth(o) {
+  if (!o || !stealthOwned.has(o)) return;
+  stealthOwned.delete(o);
+  clearInterval(o.watch);
+  if (o.url) { URL.revokeObjectURL(o.url); o.url = null; }
+}
+if (window.addEventListener) window.addEventListener('pagehide', () => { for (const o of Array.from(stealthOwned)) releaseStealth(o); });
 window.stealthGame = function(slug, event) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   const game = allGames.find(g => g.slug === slug);
@@ -1445,33 +1459,43 @@ window.stealthGame = function(slug, event) {
   const win = window.open('about:blank', '_blank');
   if (!win) { alert('Popup blocked — please allow popups for this site.'); return; }
 
-  /* Each private window owns its request. Closing it aborts the fetch and any
-     pending retry (polled every 500ms, only while loading), and a late result
-     is never written into a closed window. Windows stay independent. */
+  /* Closing the window aborts the fetch and any pending retry, and a late
+     result is never written into a closed window. Windows stay independent. */
   const wctl = new AbortController();
-  const watch = setInterval(() => { if (win.closed) wctl.abort(); }, 500);
+  const own = { win, url: null, watch: null };
+  stealthOwned.add(own);
+  own.watch = setInterval(() => { if (win.closed) { wctl.abort(); releaseStealth(own); } }, 500);
   fetchTextRetry(url, wctl.signal)
     .then(html => {
-      if (win.closed || wctl.signal.aborted) return;
+      if (win.closed || wctl.signal.aborted) { releaseStealth(own); return; }
       const blob = new Blob([withAssetBase(html, game)], { type: 'text/html' });
       const blobUrl = URL.createObjectURL(blob);
-      win.document.open();
-      win.document.write(
-        `<!DOCTYPE html><html><head><title>${esc(game.name)}</title>`+
-        `<style>*{margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:#000}`+
-        `iframe{width:100%;height:100%;border:none}</style></head>`+
-        `<body><iframe src="${esc(blobUrl)}" sandbox="allow-scripts allow-popups allow-forms allow-modals allow-pointer-lock" allowfullscreen></iframe></body></html>`
-      );
-      win.document.close();
+      own.url = blobUrl;
+      try {
+        win.document.open();
+        win.document.write(
+          `<!DOCTYPE html><html><head><title>${esc(game.name)}</title>`+
+          `<style>*{margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:#000}`+
+          `iframe{width:100%;height:100%;border:none}</style></head>`+
+          `<body><iframe src="${esc(blobUrl)}" sandbox="allow-scripts allow-popups allow-forms allow-modals allow-pointer-lock" allowfullscreen></iframe></body></html>`
+        );
+        win.document.close();
+      } catch (e) {
+        releaseStealth(own);
+        throw e;
+      }
     })
     .catch(err => {
-      if ((err && err.cancelled) || win.closed) return;
-      win.document.open();
-      win.document.write(`<html><body style="color:#fff;background:#000;padding:2rem;font-family:sans-serif"><h2>Failed to Load Lesson</h2><p>${esc(err.message)}</p></body></html>`);
-      win.document.close();
-    })
-    .finally(() => clearInterval(watch));
+      if ((err && err.cancelled) || win.closed) { releaseStealth(own); return; }
+      releaseStealth(own);
+      try {
+        win.document.open();
+        win.document.write(`<html><body style="color:#fff;background:#000;padding:2rem;font-family:sans-serif"><h2>Failed to Load Lesson</h2><p>${esc(err.message)}</p></body></html>`);
+        win.document.close();
+      } catch (e2) { console.error('stealthGame: could not show error in popup:', err, e2); }
+    });
 };
+/* stealthGame:end */
 
 /* ─── Close modal ───────────────────────────────────── */
 function closePlayer() {
