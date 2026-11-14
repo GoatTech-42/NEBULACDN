@@ -25,7 +25,9 @@ REQUIRED = ["missing file", "case mismatch", "filename field mismatch",
             "file outside games/", "no file field", "duplicate id",
             "duplicate slug", "duplicate file", "orphan file (not in catalog)",
             "stats.totalGames mismatch",
-            "size mismatch", "hash mismatch", "unreadable file"]
+            "size mismatch", "hash mismatch", "unreadable file",
+            "missing size field", "missing hash field",
+            "malformed size", "malformed hash"]
 ORPHAN = "orphan file (not in catalog)"
 
 
