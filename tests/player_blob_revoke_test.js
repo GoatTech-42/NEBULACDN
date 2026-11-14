@@ -5,14 +5,15 @@ const grab = (re, n) => { const m = src.match(re); assert(m, 'not found: ' + n);
 const rel = grab(/\/\* revokeFrameBlob:begin \*\/[\s\S]*?\/\* revokeFrameBlob:end \*\//, 'release');
 const play = grab(/window\.playGame = function[\s\S]*?\n};\n/, 'playGame');
 const close = grab(/function closePlayer\(\) \{[\s\S]*?\n\}\n/, 'closePlayer');
+const focusFns = grab(/let playInvoker = null;[\s\S]*?\nfunction restoreFocus\(inv\) \{[\s\S]*?\n\}\n/, 'focus helpers');
 function make(fetchImpl) {
   const created = [], revoked = []; let n = 0;
-  const el = () => ({ src: '', textContent: '', style: {}, classList: { add() {}, remove() {}, toggle() {} } });
-  const els = {}; const document = { getElementById: id => els[id] || (els[id] = el()), body: { style: {} } };
+  const el = () => ({ src: '', textContent: '', style: {}, classList: { add() {}, remove() {}, toggle() {}, contains() { return true; } }, focus() {}, addEventListener() {}, matches() { return false; }, querySelector() { return null; }, setAttribute() {}, removeAttribute() {} });
+  const els = {}; const document = { getElementById: id => els[id] || (els[id] = el()), body: { style: {}, children: [] }, querySelectorAll: () => [] };
   const URLs = { createObjectURL: () => { const u = 'blob:' + (++n); created.push(u); return u; }, revokeObjectURL: u => revoked.push(u) };
   const frame = document.getElementById('game-frame');
   const f = new Function('document', 'URL', 'Blob', 'allGames', 'fetchTextRetry', 'assetUrl', 'withAssetBase', 'esc', 'AbortController', 'setTimeout',
-    'let currentGame=null,playAbort=null,frameBlob=null;' + rel.replace(/^/, '') + ';' + play + ';' + close + ';return {playGame:window.playGame, closePlayer};');
+    'let currentGame=null,playAbort=null,frameBlob=null;' + rel.replace(/^/, '') + ';' + focusFns + ';' + play + ';' + close + ';return {playGame:window.playGame, closePlayer};');
   const window = {}; global.window = window;
   const api = f(document, URLs, class { }, [{ slug: 'a', name: 'A', category: 'c' }, { slug: 'b', name: 'B', category: 'c' }],
     fetchImpl, () => 'u', h => h, s => s, AbortController, fn => setTimeout(fn, 0));

@@ -589,6 +589,8 @@ img{display:block}
   animation:fadeIn 0.18s ease;
 }
 .overlay.open{display:flex;flex-direction:column}
+.pbar-btn:focus-visible,.btn-play:focus-visible,.btn-stealth:focus-visible{outline:3px solid #ffd54a;outline-offset:2px}
+.focus-sentinel{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* Player bar */
@@ -942,6 +944,7 @@ img{display:block}
 
 <!-- ═══ Lesson Player Overlay ═══════════════════════════ -->
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Lesson player">
+  <div class="focus-sentinel" id="focus-sentinel-start" tabindex="0" aria-hidden="true"></div>
   <div class="player-bar">
     <div class="player-title" id="player-title">Loading…</div>
     <div class="player-cat" id="player-cat"></div>
@@ -980,6 +983,7 @@ img{display:block}
       allow="fullscreen"
     ></iframe>
   </div>
+  <div class="focus-sentinel" id="focus-sentinel-end" tabindex="0" aria-hidden="true"></div>
 </div>
 
 <!-- Scroll to top -->
@@ -1456,8 +1460,17 @@ window.playGame = function(slug, event) {
       });
   }, 80);
 
-  document.getElementById('overlay').classList.add('open');
+  /* Remember the real invoker (reopen updates it) before focus moves. */
+  const ov = document.getElementById('overlay');
+  if (!ov.classList.contains('open')) {
+    const ct = event && event.currentTarget instanceof Element ? event.currentTarget : null;
+    playInvoker = ct ? (ct.matches('.btn') ? ct : (ct.querySelector('.btn-play') || ct))
+      : (document.activeElement && document.activeElement !== document.body ? document.activeElement : null);
+  }
+  ov.classList.add('open');
   document.body.style.overflow = 'hidden';
+  setBackgroundInert(true);
+  document.getElementById('btn-close').focus();
 };
 
 /* ─── Private tab ───────────────────────────────────── */
@@ -1522,14 +1535,53 @@ window.stealthGame = function(slug, event) {
 };
 /* stealthGame:end */
 
+/* ─── Modal focus management ───────────────────────── */
+let playInvoker = null;
+/* Background containment: native `inert` on every body child except the dialog
+   and scripts, so nothing behind the aria-modal dialog is Tab-reachable. */
+function setBackgroundInert(on) {
+  const ov = document.getElementById('overlay');
+  Array.prototype.forEach.call(document.body.children, el => {
+    if (el === ov || el.tagName === 'SCRIPT') return;
+    if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+  });
+}
+function isFocusable(el) {
+  return !!el && el.isConnected && !el.closest('[inert]') && !el.disabled && el.getClientRects().length > 0 &&
+    getComputedStyle(el).visibility !== 'hidden';
+}
+function restoreFocus(inv) {
+  if (isFocusable(inv)) { inv.focus(); return; }
+  /* Detached/hidden invoker fallback: search input, else first visible catalog control. */
+  const fb = [document.getElementById('search')]
+    .concat(Array.prototype.slice.call(document.querySelectorAll('.layout button, .layout a[href], .layout input')));
+  for (const el of fb) { if (isFocusable(el)) { el.focus(); return; } }
+}
+document.getElementById('focus-sentinel-start').addEventListener('focus', function() {
+  document.getElementById('btn-close').focus();
+});
+document.getElementById('focus-sentinel-end').addEventListener('focus', function() {
+  document.getElementById('btn-fullscreen').focus();
+});
+document.getElementById('overlay').addEventListener('keydown', function(e) {
+  if (e.key !== 'Tab') return;
+  const first = document.getElementById('btn-fullscreen'), last = document.getElementById('game-frame');
+  if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  else if (e.shiftKey && document.activeElement === document.getElementById('btn-fullscreen')) { e.preventDefault(); last.focus(); }
+});
+
 /* ─── Close modal ───────────────────────────────────── */
 function closePlayer() {
+  const wasOpen = document.getElementById('overlay').classList.contains('open');
+  const inv = playInvoker; playInvoker = null;
   if (playAbort) { playAbort.abort(); playAbort = null; }
   document.getElementById('overlay').classList.remove('open');
   releaseFrameBlob(document.getElementById('game-frame'));
   document.getElementById('frame-loading').classList.remove('hidden');
   document.body.style.overflow = '';
   currentGame = null;
+  setBackgroundInert(false);
+  if (wasOpen) restoreFocus(inv);
 }
 
 /* ─── Player bar buttons ────────────────────────────── */
