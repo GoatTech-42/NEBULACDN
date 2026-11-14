@@ -6,6 +6,9 @@ on:
       - 'games/**'
       - 'games.json'
       - 'scripts/check_catalog.py'
+      - 'scripts/test_check_catalog.py'
+      - 'scripts/test_catalog_gate.py'
+      - 'scripts/fixtures/**'
       - '.github/workflows/catalog-check.yml'
       - '.github/catalog-gate.py'
       - '.github/known-exclusions.txt'
@@ -14,6 +17,9 @@ on:
       - 'games/**'
       - 'games.json'
       - 'scripts/check_catalog.py'
+      - 'scripts/test_check_catalog.py'
+      - 'scripts/test_catalog_gate.py'
+      - 'scripts/fixtures/**'
       - '.github/workflows/catalog-check.yml'
       - '.github/catalog-gate.py'
       - '.github/known-exclusions.txt'
@@ -32,3 +38,5 @@ jobs:
           python-version: '3.x'
       - name: Run catalog integrity checker
         run: python3 .github/catalog-gate.py
+      - name: Run checker and gate tests
+        run: python3 -m unittest scripts/test_check_catalog.py scripts/test_catalog_gate.py -v

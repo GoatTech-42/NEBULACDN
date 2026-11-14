@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Run scripts/check_catalog.py unchanged and gate on its result.
+"""Run scripts/check_catalog.py --verify-integrity and gate on its result.
+
+Byte checks (size, hash, unreadable file) are fatal: they have no exclusions.
 
 The checker exits 1 for any problem, including the 14 intentional exclusions
 (removed deliberately in b955068) that show up as orphan files. Those are
@@ -10,7 +12,8 @@ import re
 import subprocess
 import sys
 
-res = subprocess.run([sys.executable, "scripts/check_catalog.py", "--limit", "100000"],
+res = subprocess.run([sys.executable, "scripts/check_catalog.py", "--verify-integrity",
+                     "--limit", "100000"],
                      capture_output=True, text=True)
 sys.stdout.write(res.stdout)
 sys.stderr.write(res.stderr)
@@ -23,7 +26,8 @@ if res.returncode != 1:
 REQUIRED = ["missing file", "case mismatch", "filename field mismatch",
             "file outside games/", "no file field", "duplicate id",
             "duplicate slug", "duplicate file", "orphan file (not in catalog)",
-            "stats.totalGames mismatch"]
+            "stats.totalGames mismatch",
+            "size mismatch", "hash mismatch", "unreadable file"]
 ORPHAN = "orphan file (not in catalog)"
 
 
