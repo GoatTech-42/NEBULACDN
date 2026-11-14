@@ -998,6 +998,12 @@ const CATALOG_SOURCES = [
 ];
 const ASSET_BASE = 'https://cdn.jsdelivr.net/gh/GoatTech-42/NEBULACDN@main';
 const PAGE_SIZE  = 60;
+const CATALOG_TIMEOUT_MS = 12000;
+/* catalog contract: games is an array (empty is legitimate); each entry an object with string name and slug */
+function isValidCatalog(d) {
+  return !!d && typeof d === 'object' && Array.isArray(d.games) &&
+    d.games.every(g => g && typeof g === 'object' && typeof g.name === 'string' && typeof g.slug === 'string');
+}
 
 /* ─── Subject icons ─────────────────────────────────── */
 const CAT_META = {
@@ -1144,12 +1150,19 @@ async function init() {
   showSkeletons();
   let data = null;
   for (const src of CATALOG_SOURCES) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), CATALOG_TIMEOUT_MS);
     try {
-      const r = await fetch(src);
+      /* one deadline covers both the fetch and the body read */
+      const abortP = new Promise((_, rej) => ctl.signal.addEventListener('abort', () => rej(new Error('timeout'))));
+      const r = await Promise.race([fetch(src, { signal: ctl.signal }), abortP]);
       if (!r.ok) continue;
-      data = await r.json();
+      const d = await Promise.race([r.json(), abortP]);
+      if (!isValidCatalog(d)) continue;
+      data = d;
       break;
-    } catch (e) { /* try next source */ }
+    } catch (e) { /* timeout, rejection or bad JSON: try next source */ }
+    finally { clearTimeout(timer); ctl.abort(); }
   }
   if (!data) {
     document.getElementById('game-grid').innerHTML = `
@@ -1159,6 +1172,18 @@ async function init() {
         <p>We couldn't load the lesson catalog right now. Please refresh the page in a moment.</p>
       </div>`;
     document.getElementById('results-info').textContent = 'Error loading catalog';
+    return;
+  }
+
+  if (data.games.length === 0) {
+    allGames = []; filtered = []; displayedN = 0;
+    document.getElementById('game-grid').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">📭</div>
+        <h3>No Lessons Yet</h3>
+        <p>The catalog is empty right now. Check back soon.</p>
+      </div>`;
+    document.getElementById('results-info').textContent = 'No lessons yet';
     return;
   }
 
