@@ -134,7 +134,8 @@ class Gate(unittest.TestCase):
                 "file outside games/", "no file field", "duplicate id",
                 "duplicate slug", "duplicate file", "orphan file (not in catalog)",
                 "stats.totalGames mismatch", "size mismatch", "hash mismatch",
-                "unreadable file", "brand new category"]
+                "unreadable file", "missing size field", "missing hash field",
+                "malformed size", "malformed hash", "brand new category"]
         out = "Problems found:       1\n\nCounts by type:\n" + "".join(
             "  %-32s %d\n" % (k, 1 if k == "brand new category" else 0) for k in keys)
         code, text = self.run_gate(self.stub_repo(out))
@@ -152,7 +153,8 @@ class Gate(unittest.TestCase):
             "file outside games/", "no file field", "duplicate id",
             "duplicate slug", "duplicate file", "orphan file (not in catalog)",
             "stats.totalGames mismatch", "size mismatch", "hash mismatch",
-            "unreadable file"]
+            "unreadable file", "missing size field", "missing hash field",
+            "malformed size", "malformed hash"]
 
     def report(self, keys=None, over=None, total=None):
         keys = self.KEYS if keys is None else keys
@@ -161,6 +163,26 @@ class Gate(unittest.TestCase):
         tot = sum(vals.values()) if total is None else total
         return "Problems found:       %d\n\nCounts by type:\n" % tot + "".join(
             "  %-32s %d\n" % (k, v) for k, v in vals.items())
+
+    def test_missing_size_meta_fails_new_red_old_green(self):
+        repo = self.one()
+        gj = os.path.join(repo, "games.json")
+        d = json.load(open(gj)); d["games"][0].pop("size"); json.dump(d, open(gj, "w"))
+        code, out = self.run_gate(repo)
+        self.assertEqual(code, 1)
+        self.assertIn("missing size field", out)
+        self.assertEqual(self.run_gate(repo, OLD_GATE)[0], 0)
+
+    def test_null_and_malformed_meta_fail(self):
+        for k, v, cat in (("hash", None, "missing hash field"), ("size", True, "malformed size"),
+                          ("hash", "ABC", "malformed hash"), ("size", -3, "malformed size")):
+            code, out = self.run_gate(self.one(**{k: v}))
+            self.assertEqual(code, 1, (k, v))
+            self.assertIn(cat, out)
+
+    def test_old_gate_keys_without_new_categories_fail_closed(self):
+        old = [k for k in self.KEYS if "field" not in k and not k.startswith("malformed")]
+        self.assertEqual(self.run_gate(self.stub_repo(self.report(keys=old), rc=0))[0], 2)
 
     def test_rc0_garbage_fails_closed(self):
         repo = self.stub_repo("garbage: no trustworthy summary\n", rc=0)

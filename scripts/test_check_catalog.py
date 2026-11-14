@@ -196,6 +196,59 @@ class Integrity(Base):
         self.assertFalse(p.get("size mismatch") or p.get("hash mismatch"))
 
 
+class IntegrityMetadataShape(Integrity):
+    def _bad(self, **kw):
+        import hashlib
+        good = hashlib.sha256(self.BODY).hexdigest()[:16]
+        e = entry(1)
+        e["size"] = len(self.BODY)
+        e["hash"] = good
+        for k, v in kw.items():
+            if v == "__drop__":
+                e.pop(k)
+            else:
+                e[k] = v
+        repo = self.make({"games": [e]}, files=("g1.html",))
+        with open(os.path.join(repo, "games", "g1.html"), "wb") as fh:
+            fh.write(self.BODY)
+        return repo
+
+    def check_cat(self, repo, cat, header):
+        code, out = self.run_verify(repo)
+        self.assertEqual(code, 1)
+        self.assertIn(header, out)
+        self.assertEqual(len(check_catalog.check(repo, True)[2][cat]), 1)
+
+    def test_missing_size(self):
+        self.check_cat(self._bad(size="__drop__"), "missing size field", "MISSING SIZE FIELD (1)")
+
+    def test_null_size(self):
+        self.check_cat(self._bad(size=None), "missing size field", "MISSING SIZE FIELD (1)")
+
+    def test_missing_hash(self):
+        self.check_cat(self._bad(hash="__drop__"), "missing hash field", "MISSING HASH FIELD (1)")
+
+    def test_null_hash(self):
+        self.check_cat(self._bad(hash=None), "missing hash field", "MISSING HASH FIELD (1)")
+
+    def test_malformed_sizes(self):
+        for v in (True, "18", 1.5, -1):
+            self.check_cat(self._bad(size=v), "malformed size", "MALFORMED SIZE (1)")
+
+    def test_malformed_hashes(self):
+        for v in (123, "ABCDEF0123456789", "abc", "g" * 16, "0" * 17, ""):
+            self.check_cat(self._bad(hash=v), "malformed hash", "MALFORMED HASH (1)")
+
+    def test_mode_off_unchanged(self):
+        repo = self._bad(size="__drop__", hash=None)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = check_catalog.main(["--repo", repo])
+        self.assertEqual(code, 0)
+        self.assertNotIn("malformed", out.getvalue().lower())
+        self.assertNotIn("size field", out.getvalue().lower())
+
+
 class IntegrityContainment(Base):
     def test_outside_entry_reported_and_never_opened(self):
         repo = self.make({"games": [entry(1, file="games/../secret.html",

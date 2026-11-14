@@ -26,6 +26,7 @@ Standard library only.
 
 import argparse
 import hashlib
+import re
 import json
 import os
 import sys
@@ -111,12 +112,20 @@ def verify_integrity(repo, games, problems):
         raw = raw.replace(b"\r\n", b"\n")  # canonical LF form (see .gitattributes)
         label = entry_label(entry, index)
         size = entry.get("size")
-        if size is not None and size != len(raw):
+        if size is None:
+            problems["missing size field"].append(label)
+        elif type(size) is not int or size < 0:
+            problems["malformed size"].append("{} size={!r}".format(label, size))
+        elif size != len(raw):
             problems["size mismatch"].append(
                 "{} expected={} actual={}".format(label, size, len(raw)))
         want = entry.get("hash")
         actual = hashlib.sha256(raw).hexdigest()[:16]
-        if want is not None and want != actual:
+        if want is None:
+            problems["missing hash field"].append(label)
+        elif not (isinstance(want, str) and re.fullmatch(r"[0-9a-f]{16}", want)):
+            problems["malformed hash"].append("{} hash={!r}".format(label, want))
+        elif want != actual:
             problems["hash mismatch"].append(
                 "{} expected={} actual={}".format(label, want, actual))
 
@@ -202,7 +211,9 @@ ORDER = [
     "orphan file (not in catalog)",
     "stats.totalGames mismatch",
 ]
-INTEGRITY_ORDER = ["size mismatch", "hash mismatch", "unreadable file"]
+INTEGRITY_ORDER = ["size mismatch", "hash mismatch", "unreadable file",
+                   "missing size field", "missing hash field",
+                   "malformed size", "malformed hash"]
 
 
 def report(games, files, problems, limit, integrity=False):
