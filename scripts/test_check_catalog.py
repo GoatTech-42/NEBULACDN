@@ -85,6 +85,18 @@ class Malformed(Base):
             e["file"] = bad
             self.assert_rejected(self.make({"games": [e]}))
 
+    def test_nonscalar_id_slug_filename_rejected_cleanly(self):
+        for field in ("id", "slug", "filename"):
+            for bad in (["dup"], {"a": 1}, True):
+                e1, e2 = entry(1), entry(2)
+                e1[field] = bad
+                e2[field] = bad
+                repo = self.make({"games": [e1, e2]})
+                code, _out, err = self.run_main(repo)
+                self.assertEqual(code, 2)
+                self.assertIn("entry #0 field '%s'" % field, err)
+                self.assertNotIn("Traceback", err)
+
     def test_invalid_json(self):
         self.assert_rejected(self.make(None, raw="{not json"))
 

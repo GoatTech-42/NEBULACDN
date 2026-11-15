@@ -62,6 +62,14 @@ def load_catalog(repo):
             raise CatalogError(
                 "entry #{} has a missing, empty, or non-string 'file' field"
                 .format(index))
+        for field in ("id", "slug", "filename"):
+            value = entry.get(field)
+            if value is not None and (
+                    isinstance(value, bool)
+                    or not isinstance(value, (str, int))):
+                raise CatalogError(
+                    "entry #{} field '{}' must be a string, integer, or "
+                    "null (got {})".format(index, field, type(value).__name__))
     return data, games
 
 
