@@ -48,6 +48,9 @@ def load_catalog(repo):
         if "games" not in data:
             raise CatalogError("games.json has no 'games' key")
         games = data["games"]
+        if "stats" in data and not isinstance(data["stats"], dict):
+            raise CatalogError("'stats' must be an object, got {}".format(
+                type(data["stats"]).__name__))
     else:
         games = data
     if not isinstance(games, list):
