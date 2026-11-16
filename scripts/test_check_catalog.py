@@ -144,6 +144,22 @@ class Detection(Base):
                          files=("g1.html",))
         self.assertEqual(len(self.problems(repo)["stats.totalGames mismatch"]), 1)
 
+    def test_stats_container_shape(self):
+        for bad in (None, [], "bad", 42, True):
+            with self.subTest(stats=bad):
+                repo = self.make({"games": [], "stats": bad}, files=())
+                with self.assertRaises(check_catalog.CatalogError) as cm:
+                    check_catalog.load_catalog(repo)
+                self.assertIn("'stats' must be an object", str(cm.exception))
+
+    def test_stats_valid_shapes(self):
+        for cat in ({"games": []}, {"games": [], "stats": {}},
+                    {"games": [entry(1)], "stats": {"totalGames": 1}}, []):
+            with self.subTest(cat=cat):
+                files = ("g1.html",) if cat and cat != [] and cat["games"] else ()
+                repo = self.make(cat, files=files)
+                check_catalog.load_catalog(repo)
+
 
 class Integrity(Base):
     BODY = b"<html>hello</html>"
