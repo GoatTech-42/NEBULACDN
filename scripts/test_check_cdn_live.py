@@ -13,6 +13,7 @@ import os
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import check_cdn_live as cc  # noqa: E402
@@ -216,12 +217,16 @@ class LimiterRetryTests(unittest.TestCase):
         th.start()
         old = cc.TIMEOUT
         cc.TIMEOUT = 0.05
+        env = mock.patch.dict(os.environ, {"NO_PROXY": "127.0.0.1",
+                                           "no_proxy": "127.0.0.1"})
+        env.start()
         try:
             url = "http://127.0.0.1:{}".format(srv.server_address[1])
             rec = cc.check_entry({"id": 1, "file": "a.html", "size": 1},
                                  url, cc.http_fetch, cc.RateLimiter(2.0),
                                  threading.Event())
         finally:
+            env.stop()
             cc.TIMEOUT = old
             srv.shutdown()
             srv.server_close()
