@@ -127,9 +127,14 @@ def check_stop_signals(status, headers, head):
         raise StopRun("captcha/challenge page detected (HTTP {})".format(status))
 
 
-def request_once(url, method, fetch, stop):
-    """One request with at most one retry on timeout."""
+def request_once(url, method, fetch, stop, limiter):
+    """One request with at most one retry on timeout. Every attempt,
+    including the retry, waits on the shared limiter, then rechecks the
+    stop flag before sending."""
     for attempt in (0, 1):
+        if stop.is_set():
+            raise StopRun("stopped")
+        limiter.wait()
         if stop.is_set():
             raise StopRun("stopped")
         try:
@@ -149,12 +154,12 @@ def check_entry(entry, base, fetch, limiter, stop):
            "status": None, "bytes": None, "expected": entry.get("size"),
            "verdict": None, "note": ""}
     try:
-        limiter.wait()
-        status, headers, nbytes, head = request_once(url, "HEAD", fetch, stop)
+        status, headers, nbytes, head = request_once(
+            url, "HEAD", fetch, stop, limiter)
         length = headers.get("content-length")
         if status != 200 or length is None or not length.isdigit():
-            limiter.wait()
-            status, headers, nbytes, head = request_once(url, "GET", fetch, stop)
+            status, headers, nbytes, head = request_once(
+                url, "GET", fetch, stop, limiter)
         else:
             nbytes = int(length)
     except StopRun:

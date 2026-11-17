@@ -4,6 +4,9 @@
 Run: python3 scripts/test_check_cdn_live.py
 """
 import contextlib
+import http.server
+import threading
+import time
 import io
 import json
 import os
@@ -143,6 +146,88 @@ class Tests(unittest.TestCase):
         for _ in range(3):
             rl.wait()
         self.assertEqual(sleeps, [0.5, 1.0])
+
+
+class CountingLimiter:
+    def __init__(self, on_wait=None):
+        self.waits = 0
+        self.on_wait = on_wait
+
+    def wait(self):
+        self.waits += 1
+        if self.on_wait:
+            self.on_wait()
+
+
+class LimiterRetryTests(unittest.TestCase):
+    def test_normal_request_waits_once(self):
+        lim = CountingLimiter()
+        rec = cc.check_entry({"id": 1, "file": "a.html", "size": 1},
+                             "http://x", lambda u, m: (200, {"content-length": "1"}, None, b""),
+                             lim, threading.Event())
+        self.assertEqual(rec["verdict"], "ok")
+        self.assertEqual(lim.waits, 1)
+
+    def test_timeout_retry_waits_again(self):
+        lim = CountingLimiter()
+        calls = []
+
+        def fetch(url, method):
+            calls.append(method)
+            if len(calls) == 1:
+                raise TimeoutError("timed out")
+            return 200, {"content-length": "1"}, None, b""
+        rec = cc.check_entry({"id": 1, "file": "a.html", "size": 1},
+                             "http://x", fetch, lim, threading.Event())
+        self.assertEqual(rec["verdict"], "ok")
+        self.assertEqual(lim.waits, 2)
+
+    def test_stop_during_wait_prevents_send(self):
+        stop = threading.Event()
+        lim = CountingLimiter(on_wait=stop.set)
+        sent = []
+        with self.assertRaises(cc.StopRun):
+            cc.request_once("http://x/a", "HEAD",
+                            lambda u, m: sent.append(m), stop, lim)
+        self.assertEqual(sent, [])
+
+    def test_loopback_retry_spacing(self):
+        starts = []
+        count = [0]
+
+        class H(http.server.BaseHTTPRequestHandler):
+            def do_HEAD(self):
+                starts.append(time.monotonic())
+                count[0] += 1
+                if count[0] == 1:
+                    time.sleep(0.12)
+                try:
+                    self.send_response(200)
+                    self.send_header("Content-Length", "1")
+                    self.end_headers()
+                except OSError:
+                    pass
+
+            def log_message(self, *a):
+                pass
+
+        srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
+        th = threading.Thread(target=srv.serve_forever, daemon=True)
+        th.start()
+        old = cc.TIMEOUT
+        cc.TIMEOUT = 0.05
+        try:
+            url = "http://127.0.0.1:{}".format(srv.server_address[1])
+            rec = cc.check_entry({"id": 1, "file": "a.html", "size": 1},
+                                 url, cc.http_fetch, cc.RateLimiter(2.0),
+                                 threading.Event())
+        finally:
+            cc.TIMEOUT = old
+            srv.shutdown()
+            srv.server_close()
+        self.assertEqual(rec["verdict"], "ok")
+        self.assertEqual(len(starts), 2)
+        self.assertGreaterEqual(starts[1] - starts[0], 0.49)
 
 
 if __name__ == "__main__":
