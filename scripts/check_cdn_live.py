@@ -27,6 +27,7 @@ Standard library only.
 import argparse
 import json
 import os
+import string
 import sys
 import threading
 import time
@@ -94,8 +95,11 @@ class RateLimiter:
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     """Expose each redirect so pacing and stop checks apply to every hop."""
 
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
+    def http_error_302(self, req, fp, code, msg, headers):
+        # Return the response before urllib parses or normalizes Location.
+        return fp
+
+    http_error_301 = http_error_303 = http_error_307 = http_error_308 = http_error_302
 
 
 def http_fetch(url, method):
@@ -165,7 +169,10 @@ def request_once(url, method, fetch, stop, limiter):
             return result
         if hop == MAX_REDIRECTS:
             raise ValueError("redirect limit exceeded")
-        target = urllib.parse.urljoin(url, headers["location"])
+        location = urllib.parse.quote(headers["location"],
+                                      encoding="iso-8859-1",
+                                      safe=string.punctuation)
+        target = urllib.parse.urljoin(url, location)
         if urllib.parse.urlsplit(target).scheme.lower() not in ("http", "https"):
             raise ValueError("redirect target must use HTTP or HTTPS")
         url = target
