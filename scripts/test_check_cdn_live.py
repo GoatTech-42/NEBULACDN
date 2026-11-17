@@ -245,7 +245,8 @@ class RedirectTests(unittest.TestCase):
                 starts.append((self.command, self.path, time.monotonic()))
                 if self.path in ("/0", "/1"):
                     self.send_response(302)
-                    self.send_header("Location", str(int(self.path[1:]) + 1))
+                    if "Location" not in headers:
+                        self.send_header("Location", str(int(self.path[1:]) + 1))
                     for key, value in headers.items():
                         self.send_header(key, value)
                     self.send_header("Content-Length", "0")
@@ -312,6 +313,20 @@ class RedirectTests(unittest.TestCase):
         self.assertIn("Retry-After", out)
         self.assertIn("Entries checked:      0", out)
         self.assertEqual([(m, p) for m, p, _ in starts], [("HEAD", "/0")])
+
+    def test_malformed_location_cannot_hide_retry_after(self):
+        base, starts = self.loopback({"Retry-After": "60", "Location": "http://["})
+        with self.assertRaisesRegex(cc.StopRun, "Retry-After"):
+            cc.request_once(base + "/0", "HEAD", cc.http_fetch,
+                            threading.Event(), NoWait())
+        self.assertEqual(len(starts), 1)
+
+    def test_location_space_encoded_without_double_encoding(self):
+        base, starts = self.loopback({"Location": "/next file%20name?q=a b"})
+        result = cc.request_once(base + "/0", "HEAD", cc.http_fetch,
+                                 threading.Event(), NoWait())
+        self.assertEqual(result[0], 200)
+        self.assertEqual(starts[-1][1], "/next%20file%20name?q=a%20b")
 
     def test_get_redirects_keep_get(self):
         base, starts = self.loopback()
