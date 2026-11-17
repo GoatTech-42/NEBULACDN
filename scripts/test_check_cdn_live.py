@@ -235,5 +235,176 @@ class LimiterRetryTests(unittest.TestCase):
         self.assertGreaterEqual(starts[1] - starts[0], 0.49)
 
 
+class RedirectTests(unittest.TestCase):
+    def loopback(self, redirect_headers=None):
+        starts = []
+        headers = redirect_headers or {}
+
+        class H(http.server.BaseHTTPRequestHandler):
+            def respond(self):
+                starts.append((self.command, self.path, time.monotonic()))
+                if self.path in ("/0", "/1"):
+                    self.send_response(302)
+                    self.send_header("Location", str(int(self.path[1:]) + 1))
+                    for key, value in headers.items():
+                        self.send_header(key, value)
+                    self.send_header("Content-Length", "0")
+                    self.end_headers()
+                else:
+                    self.send_response(200)
+                    self.send_header("Content-Length", "1")
+                    self.end_headers()
+                    if self.command == "GET":
+                        self.wfile.write(b"x")
+
+            do_HEAD = respond
+            do_GET = respond
+
+            def log_message(self, *args):
+                pass
+
+        srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
+        th = threading.Thread(target=srv.serve_forever, daemon=True)
+        th.start()
+        self.addCleanup(th.join)
+        self.addCleanup(srv.server_close)
+        self.addCleanup(srv.shutdown)
+        env = mock.patch.dict(os.environ, {"NO_PROXY": "127.0.0.1",
+                                           "no_proxy": "127.0.0.1"})
+        env.start()
+        self.addCleanup(env.stop)
+        return "http://127.0.0.1:{}".format(srv.server_port), starts
+
+    def test_loopback_redirect_spacing_and_head_preserved(self):
+        base, starts = self.loopback()
+        rec = cc.check_entry({"id": 1, "file": "0", "size": 1}, base,
+                             cc.http_fetch, cc.RateLimiter(2.0),
+                             threading.Event())
+        self.assertEqual(rec["verdict"], "ok")
+        self.assertEqual([(m, p) for m, p, _ in starts],
+                         [("HEAD", "/0"), ("HEAD", "/1"), ("HEAD", "/2")])
+        for a, b in zip(starts, starts[1:]):
+            self.assertGreaterEqual(b[2] - a[2], 0.49)
+
+    def test_loopback_retry_after_stops_before_following(self):
+        base, starts = self.loopback({"Retry-After": "60"})
+        with self.assertRaisesRegex(cc.StopRun, "Retry-After"):
+            cc.request_once(base + "/0", "HEAD", cc.http_fetch,
+                            threading.Event(), cc.RateLimiter(2.0))
+        self.assertEqual([(m, p) for m, p, _ in starts], [("HEAD", "/0")])
+
+    def test_loopback_challenge_header_stops_before_following(self):
+        base, starts = self.loopback({"cf-mitigated": "challenge"})
+        with self.assertRaisesRegex(cc.StopRun, "challenge"):
+            cc.request_once(base + "/0", "GET", cc.http_fetch,
+                            threading.Event(), cc.RateLimiter(2.0))
+        self.assertEqual([(m, p) for m, p, _ in starts], [("GET", "/0")])
+
+    def test_run_reports_redirect_retry_after_as_stopped(self):
+        base, starts = self.loopback({"Retry-After": "60"})
+        repo = make_repo(self, [])
+        with open(os.path.join(repo, "games.json"), "w") as fh:
+            json.dump({"cdn_base": base,
+                       "games": [{"id": 1, "file": "0", "size": 1}]}, fh)
+        code, out, _ = run_main(repo, cc.http_fetch)
+        self.assertEqual(code, 1)
+        self.assertIn("RUN STOPPED EARLY", out)
+        self.assertIn("Retry-After", out)
+        self.assertIn("Entries checked:      0", out)
+        self.assertEqual([(m, p) for m, p, _ in starts], [("HEAD", "/0")])
+
+    def test_get_redirects_keep_get(self):
+        base, starts = self.loopback()
+        result = cc.request_once(base + "/0", "GET", cc.http_fetch,
+                                 threading.Event(), NoWait())
+        self.assertEqual(result[0], 200)
+        self.assertEqual(result[2], 1)
+        self.assertEqual([m for m, _, _ in starts], ["GET"] * 3)
+
+    def test_all_redirect_statuses_and_relative_location(self):
+        for status in (301, 302, 303, 307, 308):
+            with self.subTest(status=status):
+                calls = []
+                def fetch(url, method):
+                    calls.append((url, method))
+                    if len(calls) == 1:
+                        return status, {"location": "../next?q=1"}, 0, b""
+                    return 200, {}, 1, b"x"
+                lim = CountingLimiter()
+                result = cc.request_once("http://x/dir/start", "HEAD", fetch,
+                                         threading.Event(), lim)
+                self.assertEqual(result[0], 200)
+                self.assertEqual(calls, [("http://x/dir/start", "HEAD"),
+                                         ("http://x/next?q=1", "HEAD")])
+                self.assertEqual(lim.waits, 2)
+
+    def test_redirect_depth_is_bounded(self):
+        lim = CountingLimiter()
+        def fetch(url, method):
+            return 302, {"location": "/again"}, 0, b""
+        with self.assertRaisesRegex(ValueError, "redirect limit"):
+            cc.request_once("http://x/start", "GET", fetch,
+                            threading.Event(), lim)
+        self.assertEqual(lim.waits, cc.MAX_REDIRECTS + 1)
+
+    def test_unsupported_redirect_scheme_is_not_fetched(self):
+        calls = []
+        def fetch(url, method):
+            calls.append(url)
+            return 302, {"location": "file:///tmp/not-read"}, 0, b""
+        with self.assertRaisesRegex(ValueError, "HTTP or HTTPS"):
+            cc.request_once("http://x/start", "GET", fetch,
+                            threading.Event(), NoWait())
+        self.assertEqual(calls, ["http://x/start"])
+
+    def test_redirect_without_location_returns_response(self):
+        response = (302, {}, 0, b"")
+        self.assertEqual(cc.request_once("http://x/start", "GET",
+                         lambda u, m: response, threading.Event(), NoWait()),
+                         response)
+
+    def test_stop_during_redirect_wait_prevents_next_hop(self):
+        stop = threading.Event()
+        calls = []
+        def fetch(url, method):
+            calls.append(url)
+            return 302, {"location": "/next"}, 0, b""
+        lim = CountingLimiter()
+        lim.on_wait = lambda: stop.set() if lim.waits == 2 else None
+        with self.assertRaises(cc.StopRun):
+            cc.request_once("http://x/start", "HEAD", fetch, stop, lim)
+        self.assertEqual(calls, ["http://x/start"])
+
+    def test_timeout_at_redirect_target_is_paced(self):
+        calls = []
+        def fetch(url, method):
+            calls.append(url)
+            if len(calls) == 1:
+                return 302, {"location": "/next"}, 0, b""
+            if len(calls) == 2:
+                raise TimeoutError("timed out")
+            return 200, {}, 1, b"x"
+        lim = CountingLimiter()
+        result = cc.request_once("http://x/start", "GET", fetch,
+                                 threading.Event(), lim)
+        self.assertEqual(result[0], 200)
+        self.assertEqual(calls, ["http://x/start", "http://x/next", "http://x/next"])
+        self.assertEqual(lim.waits, 3)
+
+    def test_only_one_timeout_retry_across_redirect_chain(self):
+        calls = []
+        def fetch(url, method):
+            calls.append(url)
+            if len(calls) in (1, 3):
+                raise TimeoutError("timed out")
+            return 302, {"location": "/next"}, 0, b""
+        lim = CountingLimiter()
+        with self.assertRaises(TimeoutError):
+            cc.request_once("http://x/start", "GET", fetch,
+                            threading.Event(), lim)
+        self.assertEqual(calls, ["http://x/start", "http://x/start", "http://x/next"])
+        self.assertEqual(lim.waits, 3)
+
+
 if __name__ == "__main__":
     unittest.main()
