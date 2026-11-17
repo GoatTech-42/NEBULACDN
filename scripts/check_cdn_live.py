@@ -38,6 +38,8 @@ from concurrent.futures import ThreadPoolExecutor
 MAX_WORKERS = 4
 MAX_RPS = 2.0
 TIMEOUT = 30
+MAX_REDIRECTS = 10
+REDIRECT_STATUSES = (301, 302, 303, 307, 308)
 CHALLENGE_MARKERS = (b"captcha", b"cf-challenge", b"challenge-platform",
                      b"bot check", b"bot-check", b"verify you are human",
                      b"attention required")
@@ -89,12 +91,19 @@ class RateLimiter:
             self.sleep(slot - now)
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Expose each redirect so pacing and stop checks apply to every hop."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def http_fetch(url, method):
     """Return (status, headers_dict_lowercase, body_len, body_head).
     Raises OSError/TimeoutError for network trouble."""
     req = urllib.request.Request(url, method=method)  # default urllib UA
     try:
-        resp = urllib.request.urlopen(req, timeout=TIMEOUT)
+        resp = urllib.request.build_opener(NoRedirect).open(req, timeout=TIMEOUT)
     except urllib.error.HTTPError as exc:
         resp = exc
     with resp:
@@ -128,24 +137,38 @@ def check_stop_signals(status, headers, head):
 
 
 def request_once(url, method, fetch, stop, limiter):
-    """One request with at most one retry on timeout. Every attempt,
-    including the retry, waits on the shared limiter, then rechecks the
-    stop flag before sending."""
-    for attempt in (0, 1):
-        if stop.is_set():
-            raise StopRun("stopped")
-        limiter.wait()
-        if stop.is_set():
-            raise StopRun("stopped")
-        try:
-            result = fetch(url, method)
-        except (TimeoutError, OSError) as exc:
-            timed_out = isinstance(exc, TimeoutError) or "timed out" in str(exc)
-            if timed_out and attempt == 0:
-                continue
-            raise
-        check_stop_signals(result[0], result[1], result[3])
-        return result
+    """Follow at most MAX_REDIRECTS hops, checking each response before
+    following Location. One timeout retry is allowed across the whole chain;
+    every attempt waits on the shared limiter and rechecks the stop flag.
+    HEAD stays HEAD across redirects; GET stays GET.
+    """
+    retry_used = False
+    for hop in range(MAX_REDIRECTS + 1):
+        for attempt in (0, 1):
+            if stop.is_set():
+                raise StopRun("stopped")
+            limiter.wait()
+            if stop.is_set():
+                raise StopRun("stopped")
+            try:
+                result = fetch(url, method)
+            except (TimeoutError, OSError) as exc:
+                timed_out = isinstance(exc, TimeoutError) or "timed out" in str(exc)
+                if timed_out and not retry_used:
+                    retry_used = True
+                    continue
+                raise
+            break
+        status, headers, _, head = result
+        check_stop_signals(status, headers, head)
+        if status not in REDIRECT_STATUSES or "location" not in headers:
+            return result
+        if hop == MAX_REDIRECTS:
+            raise ValueError("redirect limit exceeded")
+        target = urllib.parse.urljoin(url, headers["location"])
+        if urllib.parse.urlsplit(target).scheme.lower() not in ("http", "https"):
+            raise ValueError("redirect target must use HTTP or HTTPS")
+        url = target
 
 
 def check_entry(entry, base, fetch, limiter, stop):
